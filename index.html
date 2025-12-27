@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podrážděná číča – umělkyně, art & hot trollismus</title>
+    <meta name="description" content="Umělkyně Podrážděná číča – manifestační obrazy, muraly, texty a hot trollismus. Brno.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Podrážděná číča – umělkyně, art & hot trollismus">
+    <meta property="og:description" content="Umělkyně, co dělá z chaosu umění a z artu hot trollismus.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/og-image.jpg">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #050308;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #B3B3B3;
+            --divider: #2A2A2A;
+            --accent-neon: #FF00FF;
+            --accent-hover: #FF66FF;
+            --white: #FFFFFF;
+            --black: #000000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Background gradient effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 0, 255, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: gradientShift 20s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-10%, -10%); }
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(5, 3, 8, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--divider);
+            z-index: 1000;
+            padding: 1.5rem 2rem;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+        }
+        
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-image {
+            height: 50px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+        
+        .logo-image:hover {
+            filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--accent-neon));
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-neon);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-neon);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icons a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            color: var(--accent-neon);
+            transform: translateY(-2px);
+        }
+        
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .burger span {
+            width: 25px;
+            height: 2px;
+            background: var(--accent-neon);
+            transition: all 0.3s ease;
+        }
+        
+        .burger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .burger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .burger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-bottom: 1px solid var(--divider);
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .mobile-menu ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .mobile-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: block;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .mobile-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-neon);
+            transition: width 0.3s ease;
+        }
+        
+        .mobile-menu a:hover,
+        .mobile-menu a:active {
+            color: var(--accent-neon);
+        }
+        
+        .mobile-menu a:hover::after {
+            width: 100%;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Section */
+        section {
+            padding: 8rem 0;
+            position: relative;
+        }
+        
+        section:first-of-type {
+            padding-top: 10rem;
+        }
+        
+        /* Hero Section */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+        }
+        
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .hero-text {
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-neon);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--white), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2.5rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--accent-neon);
+            color: var(--white);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.5);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-neon);
+            border: 2px solid var(--accent-neon);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--accent-neon);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+        
+        .hero-visual {
+            position: relative;
+            animation: fadeIn 1.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hero-image {
+            width: 100%;
+            height: 600px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--divider);
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-hover), transparent);
+            border-radius: 24px;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        /* Section Title */
+        .section-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--white), var(--accent-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* About Section */
+        #about {
+            background: linear-gradient(180deg, transparent, rgba(17, 17, 17, 0.3), transparent);
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        .about-features {
+            list-style: none;
+            margin-top: 2rem;
+        }
+        
+        .about-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--divider);
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .about-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .about-features li::before {
+            content: '→';
+            color: var(--accent-neon);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .about-image {
+            width: 100%;
+            height: 400px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            border: 1px solid var(--divider);
+            overflow: hidden;
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Art Gallery */
+        #art {
+            position: relative;
+        }
+        
+        .art-intro {
+            max-width: 800px;
+            margin-bottom: 4rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .gallery-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--divider);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-neon);
+            box-shadow: 0 20px 60px rgba(255, 0, 255, 0.2);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            overflow: hidden;
+        }
+        
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-image img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-info {
+            padding: 1.5rem;
+        }
+        
+        .gallery-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+        
+        .gallery-info p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .art-cta {
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        /* Words Section */
+        #words {
+            background: linear-gradient(180deg, transparent, rgba(17, 17, 17, 0.3), transparent);
+        }
+        
+        .words-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .word-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--divider);
+            transition: all 0.3s ease;
+        }
+        
+        .word-card:hover {
+            border-color: var(--accent-neon);
+            box-shadow: 0 10px 40px rgba(255, 0, 255, 0.15);
+        }
+        
+        .word-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        
+        .word-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .word-card a {
+            color: var(--accent-neon);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .word-card a:hover {
+            color: var(--accent-hover);
+        }
+        
+        .coming-soon {
+            background: rgba(17, 17, 17, 0.5);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px dashed var(--divider);
+            text-align: center;
+        }
+        
+        .coming-soon h4 {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .coming-soon-icons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .coming-soon-icons span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Collaboration Section */
+        #collab {
+            position: relative;
+        }
+        
+        .collab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .collab-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--divider);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .collab-card:hover {
+            border-color: var(--accent-neon);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(255, 0, 255, 0.2);
+        }
+        
+        .collab-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        
+        .collab-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+        
+        .collab-card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        
+        .collab-card li {
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        
+        .collab-card li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--accent-neon);
+        }
+        
+        .collab-card .btn-secondary {
+            margin-top: auto;
+            padding: 0.8rem 2rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Newsletter Section */
+        #newsletter {
+            background: linear-gradient(180deg, transparent, rgba(17, 17, 17, 0.5), transparent);
+        }
+        
+        .newsletter-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        
+        .newsletter-form {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--divider);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--divider);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input[type="email"]:focus {
+            outline: none;
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent-neon);
+        }
+        
+        .checkbox-group label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        
+        .form-message {
+            display: none;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+        }
+        
+        .form-message.show {
+            display: block;
+        }
+        
+        /* Contact Section */
+        #contact {
+            position: relative;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+        
+        .contact-intro {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .contact-item {
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--divider);
+        }
+        
+        .contact-item h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-neon);
+            margin-bottom: 0.5rem;
+        }
+        
+        .contact-item p, .contact-item a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .contact-item a:hover {
+            color: var(--accent-hover);
+        }
+        
+        .contact-socials {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--divider);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            border-color: var(--accent-neon);
+            transform: translateX(5px);
+        }
+        
+        .social-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .social-link.disabled:hover {
+            transform: none;
+            border-color: var(--divider);
+        }
+        
+        .social-link span:first-child {
+            font-size: 1.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--divider);
+            padding: 3rem 0;
+            margin-top: 6rem;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-neon);
+        }
+        
+        .footer-tagline {
+            width: 100%;
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--accent-neon);
+            font-style: italic;
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            cursor: pointer;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 85vw;
+            max-height: 85vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+        }
+        
+        .lightbox-content img {
+            max-width: 85vw;
+            max-height: 75vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.3);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: -10px;
+            color: var(--white);
+            font-size: 3rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            line-height: 1;
+            font-weight: 300;
+        }
+        
+        .lightbox-close:hover {
+            color: var(--accent-neon);
+            transform: rotate(90deg);
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent-neon);
+            color: var(--white);
+            font-size: 3rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            line-height: 1;
+            padding: 0;
+        }
+        
+        .lightbox-prev {
+            left: 20px;
+        }
+        
+        .lightbox-next {
+            right: 20px;
+        }
+        
+        .lightbox-nav:hover {
+            background: var(--accent-neon);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+        }
+        
+        .lightbox-nav:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        .lightbox-title {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            section {
+                padding: 6rem 0;
+            }
+            
+            .hero-content,
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .gallery-grid,
+            .words-grid,
+            .collab-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .nav-links,
+            .social-icons {
+                display: none;
+            }
+            
+            .burger {
+                display: flex;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .hero-image {
+                height: 400px;
+            }
+            
+            .about-image {
+                height: 300px;
+            }
+            
+            .gallery-grid,
+            .words-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .collab-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                padding: 2rem 1.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .lightbox {
+                padding: 1rem;
+            }
+            
+            .lightbox-content {
+                max-width: 90vw;
+                max-height: 80vh;
+            }
+            
+            .lightbox-content img {
+                max-width: 90vw;
+                max-height: 65vh;
+                border-radius: 4px;
+            }
+            
+            .lightbox-close {
+                top: -45px;
+                right: 0;
+                font-size: 2.5rem;
+            }
+            
+            .lightbox-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 2.5rem;
+            }
+            
+            .lightbox-prev {
+                left: 10px;
+            }
+            
+            .lightbox-next {
+                right: 10px;
+            }
+            
+            .lightbox-title {
+                font-size: 1rem;
+                bottom: -50px;
+                max-width: 90%;
+                white-space: normal;
+            }
+            
+            .logo-image {
+                height: 40px;
+            }
+        }
+        
+        /* Scroll reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="top">
+        <div class="header-content">
+            <a href="#top" class="logo-link">
+                <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image">
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#about">Podrážděná číča</a></li>
+                    <li><a href="#art">Art</a></li>
+                    <li><a href="#words">Slova</a></li>
+                    <li><a href="#collab">Spolupráce</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                </ul>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" aria-label="Instagram">📷</a>
+                    <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">💼</a>
+                </div>
+            </nav>
+            <div class="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <ul>
+            <li><a href="#about">Podrážděná číča</a></li>
+            <li><a href="#art">Art</a></li>
+            <li><a href="#words">Slova</a></li>
+            <li><a href="#collab">Spolupráce</a></li>
+            <li><a href="#contact">Kontakt</a></li>
+        </ul>
+    </div>
+    
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-label">Umělkyně / brand manažerka chaosu</div>
+                    <h1 class="hero-title">Podrážděná číča. Velekněžka chaosu v neon růžové.</h1>
+                    <p class="hero-description">
+                        Maluju manifestační obrazy, muraly do školek i kanceláří a píšu Pátečičiny 
+                        pro všechny bohyně neklidu. Brno, Veselá 5. P🩸rno i roztomilosti po zdech, 
+                        trochu bordel, hodně svobody.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#art" class="btn-primary">Chci vidět art</a>
+                        <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" class="btn-secondary">Sledovat číču</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-image">
+                        <img src="images/hero.jpg" alt="Podrážděná číča" loading="eager">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title reveal">Kdo je Podrážděná číča</h2>
+            <div class="about-content reveal">
+                <div class="about-text">
+                    <p>
+                        Jsem Kristýna Mlynář Koutná. Podrážděná číča. Umělkyně, co si ze své 
+                        diagnózy udělala full-time job. Mám ateliér ve Vkusu na Veselé 5 
+                        v Brně, kde 70&nbsp;% stěn tvoří sklo a zbytek je prostor na psaní po 
+                        zdech, plátnech, lidech a vlastních příbězích.
+                    </p>
+                    <p>
+                        V mým světě spolu žijou bohyně, tažné i chovné krávy, PMS, mateřství, 
+                        trauma i rozkoš. Z kostek z hoven se tu staví katedrály a neon růžová je 
+                        barva vzpoury. Umění beru jako meditační nástroj pro všechny, kdo 
+                        odmítají být hodný holky – ale chtějí mít život vkusnej.
+                    </p>
+                    <ul class="about-features">
+                        <li>Umělecký ateliér ve Vkusu na Veselé 5, Brno</li>
+                        <li>Pátečičiny – páteční litánie pro bohyni neklidu</li>
+                        <li>Mindless mindfulness – spreje a šablony po městě</li>
+                        <li>Hot trollismus, ceckové tokeny a veřejná služba v jednom</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <img src="images/about.jpg" alt="Portrét umělkyně" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Art Gallery Section -->
+    <section id="art">
+        <div class="container">
+            <h2 class="section-title reveal">Art & bordel</h2>
+            <p class="art-intro reveal">
+                Každý obraz je malý rituál. Někdy talisman pro jednu číču, 
+                jindy mural pro celou školku nebo kancelářský kmen. Neon růžová 
+                tu dělá high-lighter na Všechno, co už nejde dál schovávat.
+            </p>
+            <div class="gallery-grid">
+                <div class="gallery-item reveal" data-delay="0">
+                    <div class="gallery-image">
+                        <img src="images/gallery-1.jpg" alt="Bohyně smrti a sexu" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Bohyně smrti a sexu</h4>
+                        <p>Oltář pro všechny, co vědí, že extáze a konečnost patří do jednoho rámu.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="100">
+                    <div class="gallery-image">
+                        <img src="images/gallery-2.jpg" alt="Dámská společnost" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Dámská společnost</h4>
+                        <p>Panely pro klub, kde se místo small talku sdílí tajemství a rtěnka.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="200">
+                    <div class="gallery-image">
+                        <img src="images/gallery-3.jpg" alt="Mironna" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Mironna</h4>
+                        <p>Portrét ženy, která už dávno ví, že se neomlouvá za svůj hlad po životě.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="0">
+                    <div class="gallery-image">
+                        <img src="images/gallery-4.jpg" alt="Kominík" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Kominík</h4>
+                        <p>Postava, co přináší štěstí – jen trochu umazaný od reality a sazí.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="100">
+                    <div class="gallery-image">
+                        <img src="images/gallery-5.jpg" alt="Ema mele salát" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Ema mele salát</h4>
+                        <p>Dětskej jazykolam přeloženej do jazyka dospělýho chaosu a humoru.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="200">
+                    <div class="gallery-image">
+                        <img src="images/gallery-6.jpg" alt="Číčíví" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Číčíví</h4>
+                        <p>Vinnej talisman, kterej připomíná, že in vino i in vemeno je vždycky trochu chaos.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="0">
+                    <div class="gallery-image">
+                        <img src="images/gallery-7.jpg" alt="The Nun" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>The Nun</h4>
+                        <p>Svatá a hříšná zároveň. Obraz pro všechny, co v sobě nosej kostel i strip klub.</p>
+                    </div>
+                </div>
+                <div class="gallery-item reveal" data-delay="100">
+                    <div class="gallery-image">
+                        <img src="images/gallery-8.jpg" alt="Dročit Fest" loading="lazy">
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Dročit Fest</h4>
+                        <p>Dílo pro moje oblíbený bois ze Štatlu.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="art-cta reveal">
+                <a href="#contact" class="btn-primary">Chci takový obraz</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Words Section -->
+    <section id="words">
+        <div class="container">
+            <h2 class="section-title reveal">Pátečičiny & jiné litánie</h2>
+            <p class="words-subtitle reveal">
+                Pátečičiny jsou moje zpravidla nepravidelné zpovědi. Někdy o babičce-badass, 
+                někdy o p🩸rnu ve školce, jindy o tom, jak sprej a šablona umí víc než 
+                klasická meditace. Vždycky trochu na hraně, vždycky s mňau na konci.
+            </p>
+            <div class="words-grid">
+                <div class="word-card reveal">
+                    <h4>PÁTEČIČINY #010 — Pochvala od paní ředitelky</h4>
+                    <p>
+                        Jak se stane, že tě za p🩸rno na zdech pochválí ředitelka školky 
+                        i školní psycholog. A proč je Podrážděná číča vlastně veřejná služba.
+                    </p>
+                    <a href="https://www.instagram.com/p/DNFa8_VsAno/" target="_blank">Číst celý příběh →</a>
+                </div>
+                <div class="word-card reveal">
+                    <h4>PÁTEČIČINY #007 — Tři krávy apokalypsy</h4>
+                    <p>
+                        Tažná, chovná a veselá. Tři role, co si ženy tahají na hřbetě, 
+                        a jeden glitch v matrixu očekávání, který z toho dělá svobodu.
+                    </p>
+                    <a href="https://www.instagram.com/p/DL93x9sMHtV/" target="_blank">Číst celý příběh →</a>
+                </div>
+                <div class="word-card reveal">
+                    <h4>PÁTEČIČINY #006 — Mindless mindfulness</h4>
+                    <p>
+                        Meditace pro ty, co nezvládají turecký sed. Šablona v kapse, sprej 
+                        v ruce, zvuk bot na asfaltu a message, co zůstane na zdi déle než ty.
+                    </p>
+                    <a href="https://www.instagram.com/p/DLrxMVdspwo/" target="_blank">Číst celý příběh →</a>
+                </div>
+                <div class="word-card reveal">
+                    <h4>PMS & jiný bordel</h4>
+                    <p>
+                        Básně o těle, co má svoje cykly i nálady. O dnech, kdy tě všichni 
+                        serou trochu víc, a o tom, jak se z toho dá udělat poezie místo dramatu.
+                    </p>
+                    <a href="https://www.instagram.com/p/DRuElCkiEdt/" target="_blank">Číst celý příběh →</a>
+                </div>
+                <div class="word-card reveal">
+                    <h4>PÁTEČIČINY #008 — Babička badass</h4>
+                    <p>
+                        First of číčas. Matriarchální glitch v jinak dost patriarchálním matrixu. 
+                        Nohy skoro až na zem, slabost pro minisukně a životní dramata, pohled 
+                        ostřejší než katana. Stovky tisíc cigaret, nula výčitek a víc šťávy než 
+                        všichni biohackeři dohromady. Dědictví, co si nepředáváme v špercích, 
+                        ale ve vzpouře.
+                    </p>
+                    <a href="https://www.instagram.com/p/DMPounLsYhr/" target="_blank">Číst celý příběh →</a>
+                </div>
+            </div>
+            <div class="coming-soon reveal">
+                <h4>Chystám víc obsahu</h4>
+                <div class="coming-soon-icons">
+                    <span>🎙️ HeroHero</span>
+                    <span>🎵 Spotify</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Collaboration Section -->
+    <section id="collab">
+        <div class="container">
+            <h2 class="section-title reveal">Co pro tebe číča udělá</h2>
+            <div class="collab-grid">
+                <div class="collab-card reveal">
+                    <h3>Manifestační obrazy</h3>
+                    <p>
+                        Obrazy jako talismany. Pro tvoji ložnici, kancelář nebo oltář 
+                        uprostřed obýváku. Každý kus vzniká na míru – k příběhu, který 
+                        potřebuješ vidět černě na neon růžové.
+                    </p>
+                    <ul>
+                        <li>pro jednotlivce, páry i celé klany</li>
+                        <li>konzultace v ateliéru nebo online</li>
+                        <li>výběr formátu, motivu a intenzity „bordelu"</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Chci tohle</a>
+                </div>
+                <div class="collab-card reveal">
+                    <h3>Mural & veřejný prostor</h3>
+                    <p>
+                        Mural do školky, kuchyňky v officu nebo na fasádu domu, kolem 
+                        kterýho už nebudeš chodit bez úsměvu. P🩸rno a roztomilosti můžou 
+                        koexistovat – mám na to razítko od paní ředitelky.
+                    </p>
+                    <ul>
+                        <li>návrh konceptu, skic a textů</li>
+                        <li>realizace na místě v ČR i jinde</li>
+                        <li>možnost zapojit děti, tým nebo komunitu</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Chci tohle</a>
+                </div>
+                <div class="collab-card reveal">
+                    <h3>Text & hlas</h3>
+                    <p>
+                        Píšu tak, aby to šlo cítit v břiše i mezi řádky. Manifesty, dopisy, 
+                        sloupky, copy pro značky, co se nebojí. Když chceš, umím to i přečíst – 
+                        můj hlas se hodí na podcast, k videu i do reklamy.
+                    </p>
+                    <ul>
+                        <li>autorské texty & Pátečičiny na míru</li>
+                        <li>copywriting pro odvážné značky</li>
+                        <li>voiceover / hostování v podcastech</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Chci tohle</a>
+                </div>
+                <div class="collab-card reveal">
+                    <h3>Na míru</h3>
+                    <p>
+                        Máš vlastní nápad? Pojďme vymyslet něco společně. 
+                        Od konceptu po realizaci.
+                    </p>
+                    <ul>
+                        <li>Kreativní konzultace</li>
+                        <li>Vlastní projekty</li>
+                        <li>Kolaborace s brandyarti</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Chci tohle</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Section -->
+    <section id="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="section-title reveal">Kouřové signály do inboxu</h2>
+                <p class="newsletter-subtitle reveal">
+                    Jednou za čas ti přistanou v inboxu Pátečičiny, zákulisí z ateliéru na Veselé 
+                    a pozvánky na věci, které se na sociální sítě nikdy nedostanou. Bez spamu, 
+                    s láskou a občasným drápnutím.
+                </p>
+                <form class="newsletter-form reveal" id="newsletterForm">
+                    <div class="form-group">
+                        <input type="email" id="emailInput" placeholder="tvuj@email.cz" required>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="consentCheckbox" required>
+                        <label for="consentCheckbox">Souhlasím, že mi bude číča lézt do inboxu.</label>
+                    </div>
+                    <button type="submit" class="btn-primary">Pošli mi to hezký</button>
+                    <div class="form-message" id="formMessage"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title reveal">Kontakt</h2>
+            <div class="contact-content">
+                <div class="contact-left reveal">
+                    <p class="contact-intro">
+                        Chceš obraz, mural, text nebo jen zjistit, jestli se do tvé hlavy i prostoru 
+                        hodí Podrážděná číča? Napiš mi. Odpovídám mezi sprejem, dětma a Pátečičinama, 
+                        ale vždycky poctivě.
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <h4>E-mail</h4>
+                            <a href="/cdn-cgi/l/email-protection#fb9a939491bb8b949f899a819f9e959aa49892989ad59881">ahoj@podrazdena_cica.cz</a>
+                        </div>
+                        <div class="contact-item">
+                            <h4>Město</h4>
+                            <p>Brno, Česká republika</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-socials reveal">
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" class="social-link">
+                        <span>📷</span>
+                        <div>
+                            <strong>Instagram</strong><br>
+                            <small>@podrazdena_cica</small>
+                        </div>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="social-link">
+                        <span>💼</span>
+                        <div>
+                            <strong>LinkedIn</strong><br>
+                            <small>Profesionální profil</small>
+                        </div>
+                    </a>
+                    <a href="#" class="social-link disabled">
+                        <span>🎙️</span>
+                        <div>
+                            <strong>HeroHero</strong><br>
+                            <small>Brzy...</small>
+                        </div>
+                    </a>
+                    <a href="#" class="social-link disabled">
+                        <span>🎵</span>
+                        <div>
+                            <strong>Spotify</strong><br>
+                            <small>Brzy...</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © <span id="currentYear"></span> Podrážděná číča
+            </div>
+            <div class="footer-links">
+                <a href="#">Cookies</a>
+                <a href="#">Podmínky</a>
+            </div>
+            <div class="footer-tagline">
+                Nech si mě v hlavě. Mňau.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">×</button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+            <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+            <img id="lightboxImage" src="" alt="">
+            <div class="lightbox-title" id="lightboxTitle"></div>
+        </div>
+    </div>
+    
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Mobile menu toggle
+        const burger = document.querySelector('.burger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu a');
+        
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                burger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('active') && 
+                !mobileMenu.contains(e.target) && 
+                !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Newsletter form
+        const newsletterForm = document.getElementById('newsletterForm');
+        const formMessage = document.getElementById('formMessage');
+        
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailInput').value;
+            const consent = document.getElementById('consentCheckbox').checked;
+            
+            if (email && consent) {
+                // Zde v budoucnu přidat API call na Mailchimp/Mailerlite
+                formMessage.textContent = 'Díky! Brzy ti něco pošlu. 💌';
+                formMessage.classList.add('show');
+                newsletterForm.reset();
+                
+                setTimeout(() => {
+                    formMessage.classList.remove('show');
+                }, 5000);
+            }
+        });
+        
+        // Scroll reveal animation
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const revealPoint = 100;
+                
+                if (elementTop < windowHeight - revealPoint) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+        
+        // Gallery lightbox with navigation
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+        let currentImageIndex = 0;
+        
+        function openLightbox(index) {
+            const item = galleryItems[index];
+            const img = item.querySelector('.gallery-image img');
+            const title = item.querySelector('.gallery-info h4');
+            
+            if (img && title) {
+                lightboxImage.src = img.src;
+                lightboxImage.alt = img.alt;
+                lightboxTitle.textContent = title.textContent;
+                currentImageIndex = index;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % galleryItems.length;
+            openLightbox(currentImageIndex);
+        }
+        
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + galleryItems.length) % galleryItems.length;
+            openLightbox(currentImageIndex);
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                openLightbox(index);
+            });
+        });
+        
+        lightboxClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+        });
+        
+        lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrevImage();
+        });
+        
+        lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNextImage();
+        });
+        
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        // Prevent closing when clicking on the image
+        document.querySelector('.lightbox-content').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                } else if (e.key === 'ArrowLeft') {
+                    showPrevImage();
+                }
+            }
+        });
+        
+        // Current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Prevent disabled links from navigating
+        document.querySelectorAll('.social-link.disabled').forEach(l
