@@ -1530,7 +1530,7 @@
                     <div class="contact-details">
                         <div class="contact-item">
                             <h4>E-mail</h4>
-                            <a href="/cdn-cgi/l/email-protection#fb9a939491bb8b949f899a819f9e959aa49892989ad59881">ahoj@podrazdena_cica.cz</a>
+                            <a href="mailto:ahoj@podrazdena_cica.cz">ahoj@podrazdena_cica.cz</a>
                         </div>
                         <div class="contact-item">
                             <h4>Město</h4>
@@ -1599,7 +1599,7 @@
         </div>
     </div>
     
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Mobile menu toggle
         const burger = document.querySelector('.burger');
         const mobileMenu = document.querySelector('.mobile-menu');
@@ -1771,4 +1771,11 @@
         document.getElementById('currentYear').textContent = new Date().getFullYear();
         
         // Prevent disabled links from navigating
-        document.querySelectorAll('.social-link.disabled').forEach(l
+        document.querySelectorAll('.social-link.disabled').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
