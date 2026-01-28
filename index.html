@@ -1508,9 +1508,9 @@
                     a pozvánky na věci, které se na sociální sítě nikdy nedostanou. Bez spamu, 
                     s láskou a občasným drápnutím.
                 </p>
-                <form class="newsletter-form reveal" id="newsletterForm">
+                <form class="newsletter-form reveal" id="newsletterForm" action="https://podrazdenacica.ecomailapp.cz/public/subscribe/2/2bb287d15897fe2f9d89c882af9a3a8b" method="POST">
                     <div class="form-group">
-                        <input type="email" id="emailInput" placeholder="tvuj@email.cz" required>
+                        <input type="email" id="emailInput" name="email" placeholder="tvuj@email.cz" required>
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="consentCheckbox" required>
@@ -1652,51 +1652,18 @@
         const newsletterForm = document.getElementById('newsletterForm');
         const formMessage = document.getElementById('formMessage');
         
-        newsletterForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        newsletterForm.addEventListener('submit', (e) => {
             const email = document.getElementById('emailInput').value;
             const consent = document.getElementById('consentCheckbox').checked;
-            const submitBtn = newsletterForm.querySelector('button[type="submit"]');
             
-            if (email && consent) {
-                // Disable button during request
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Odesílám...';
-                
-                try {
-                    const response = await fetch('https://podrazdenacica.ecomailapp.cz/public/subscribe/2/2bb287d15897fe2f9d89c882af9a3a8b', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({
-                            'email': email
-                        })
-                    });
-                    
-                    if (response.ok || response.status === 200 || response.status === 302) {
-                        formMessage.textContent = 'Díky! Koukni do mailu a potvrď odběr. 💌🐱';
-                        formMessage.style.color = '#FF00FF';
-                        formMessage.classList.add('show');
-                        newsletterForm.reset();
-                    } else {
-                        throw new Error('Chyba při odesílání');
-                    }
-                } catch (error) {
-                    formMessage.textContent = 'Něco se pokazilo. Zkus to prosím znovu. 😿';
-                    formMessage.style.color = '#ff6b6b';
-                    formMessage.classList.add('show');
-                }
-                
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Pošli mi to hezký';
-                
-                setTimeout(() => {
-                    formMessage.classList.remove('show');
-                }, 5000);
+            if (!email || !consent) {
+                e.preventDefault();
+                formMessage.textContent = 'Vyplň e-mail a zaškrtni souhlas. 😿';
+                formMessage.style.color = '#ff6b6b';
+                formMessage.classList.add('show');
+                setTimeout(() => formMessage.classList.remove('show'), 5000);
             }
+            // Form will submit normally to Ecomail
         });
         
         // Scroll reveal animation
