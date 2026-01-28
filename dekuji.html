@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jsi v tom se mnou! – Podrážděná číča</title>
+    <meta name="description" content="Odběr potvrzen. Vítej ve smečce!">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #050308;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #B3B3B3;
+            --divider: #2A2A2A;
+            --accent-neon: #FF00FF;
+            --accent-hover: #FF66FF;
+            --white: #FFFFFF;
+            --black: #000000;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 0, 255, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: gradientShift 20s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-10%, -10%); }
+        }
+        
+        .container {
+            max-width: 600px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emoji {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: celebrate 1s ease;
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(-10deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .highlight {
+            color: var(--accent-neon);
+            font-weight: 700;
+        }
+        
+        .welcome-box {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(255, 0, 255, 0.05));
+            border: 1px solid var(--accent-neon);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .welcome-box h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--accent-neon);
+        }
+        
+        .welcome-box p {
+            color: var(--text-secondary);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 50px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            border-color: var(--accent-neon);
+            color: var(--accent-neon);
+            transform: translateY(-2px);
+        }
+        
+        .social-link span {
+            font-size: 1.25rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent-neon);
+            border: 2px solid var(--accent-neon);
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            color: var(--accent-neon);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+        }
+        
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-neon);
+            animation: confettiFall 3s ease-out forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti" id="confetti"></div>
+    
+    <div class="container">
+        <div class="emoji">🎉🐱</div>
+        <h1>Jsi v tom se mnou!</h1>
+        <p class="subtitle">
+            Odběr potvrzen. Oficiálně patříš do <span class="highlight">smečky Podrážděné číči</span>.<br>
+            Brzy ti přistanou první kouřové signály do inboxu.
+        </p>
+        
+        <div class="welcome-box">
+            <h2>Co tě čeká?</h2>
+            <p>
+                Pátečičiny, zákulisí z ateliéru na Veselé, pozvánky na akce 
+                a věci, které se na sociální sítě nikdy nedostanou. 
+                Bez spamu, s láskou a občasným drápnutím.
+            </p>
+        </div>
+        
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Zatím mě můžeš sledovat i jinde:</p>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" class="social-link">
+                <span>📷</span> Instagram
+            </a>
+            <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" class="social-link">
+                <span>💼</span> LinkedIn
+            </a>
+        </div>
+        
+        <a href="/" class="btn">Prozkoumat web</a>
+    </div>
+    
+    <script>
+        // Create confetti effect
+        const confettiContainer = document.getElementById('confetti');
+        const colors = ['#FF00FF', '#FF66FF', '#FF99FF', '#CC00CC', '#FFFFFF'];
+        
+        for (let i = 0; i < 50; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDelay = Math.random() * 2 + 's';
+            piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confettiContainer.appendChild(piece);
+        }
+    </script>
+</body>
+</html>
