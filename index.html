@@ -781,6 +781,15 @@
             cursor: pointer;
         }
         
+        .checkbox-group label a {
+            color: var(--accent-neon);
+            text-decoration: underline;
+        }
+        
+        .checkbox-group label a:hover {
+            color: var(--accent-hover);
+        }
+        
         .form-message {
             display: none;
             padding: 1rem;
@@ -1511,7 +1520,7 @@
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="consentCheckbox" required>
-                        <label for="consentCheckbox">Souhlasím, že mi bude číča lézt do inboxu.</label>
+                        <label for="consentCheckbox">Souhlasím se <a href="/podminky" target="_blank">zpracováním osobních údajů</a> a s tím, že mi bude číča lézt do inboxu.</label>
                     </div>
                     <button type="submit" class="btn-primary">Pošli mi to hezký</button>
                     <div class="form-message" id="formMessage"></div>
@@ -1583,8 +1592,8 @@
                 © <span id="currentYear"></span> Podrážděná číča
             </div>
             <div class="footer-links">
-                <a href="#">Cookies</a>
-                <a href="#">Podmínky</a>
+                <a href="/podminky">Cookies</a>
+                <a href="/podminky">Podmínky</a>
             </div>
             <div class="footer-tagline">
                 Nech si mě v hlavě. Mňau.
