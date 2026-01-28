@@ -1648,21 +1648,50 @@
             });
         });
         
-        // Newsletter form
+        // Newsletter form - Ecomail integration
         const newsletterForm = document.getElementById('newsletterForm');
         const formMessage = document.getElementById('formMessage');
         
-        newsletterForm.addEventListener('submit', (e) => {
+        newsletterForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const email = document.getElementById('emailInput').value;
             const consent = document.getElementById('consentCheckbox').checked;
+            const submitBtn = newsletterForm.querySelector('button[type="submit"]');
             
             if (email && consent) {
-                // Zde v budoucnu přidat API call na Mailchimp/Mailerlite
-                formMessage.textContent = 'Díky! Brzy ti něco pošlu. 💌';
-                formMessage.classList.add('show');
-                newsletterForm.reset();
+                // Disable button during request
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Odesílám...';
+                
+                try {
+                    const response = await fetch('https://podrazdenacica.ecomailapp.cz/public/subscribe/2/2bb287d15897fe2f9d89c882af9a3a8b', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'email': email
+                        })
+                    });
+                    
+                    if (response.ok || response.status === 200 || response.status === 302) {
+                        formMessage.textContent = 'Díky! Koukni do mailu a potvrď odběr. 💌🐱';
+                        formMessage.style.color = '#FF00FF';
+                        formMessage.classList.add('show');
+                        newsletterForm.reset();
+                    } else {
+                        throw new Error('Chyba při odesílání');
+                    }
+                } catch (error) {
+                    formMessage.textContent = 'Něco se pokazilo. Zkus to prosím znovu. 😿';
+                    formMessage.style.color = '#ff6b6b';
+                    formMessage.classList.add('show');
+                }
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Pošli mi to hezký';
                 
                 setTimeout(() => {
                     formMessage.classList.remove('show');
