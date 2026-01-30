@@ -20,12 +20,15 @@
     <link rel="manifest" href="/podrazdenacica/my-favicon/site.webmanifest" />
     
     <!-- Preload critical images -->
-    <link rel="preload" as="image" href="images/hero.webp" type="image/webp">
+    <link rel="preload" as="image" href="images/hero-sm.webp" type="image/webp" media="(max-width: 600px)">
+    <link rel="preload" as="image" href="images/hero.webp" type="image/webp" media="(min-width: 601px)">
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts - non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
     
     <!-- Google Analytics - loads only after consent -->
     <script>
@@ -1406,7 +1409,17 @@
                 </div>
                 <div class="hero-visual">
                     <div class="hero-image">
-                        <img src="images/hero.webp" alt="Podrážděná číča" loading="eager" width="724" height="1287" fetchpriority="high">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="images/hero-sm.webp" width="400" height="711">
+                            <source media="(min-width: 601px)" srcset="images/hero.webp" width="724" height="1287">
+                            <img 
+                                src="images/hero-sm.webp" 
+                                alt="Podrážděná číča" 
+                                loading="eager" 
+                                width="400" 
+                                height="711" 
+                                fetchpriority="high">
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -1439,7 +1452,16 @@
                     </ul>
                 </div>
                 <div class="about-image">
-                    <img src="images/about.webp" alt="Portrét umělkyně" loading="lazy" width="800" height="1066">
+                    <picture>
+                        <source media="(max-width: 600px)" srcset="images/about-sm.webp" width="400" height="533">
+                        <source media="(min-width: 601px)" srcset="images/about.webp" width="800" height="1066">
+                        <img 
+                            src="images/about-sm.webp" 
+                            alt="Portrét umělkyně" 
+                            loading="lazy" 
+                            width="400" 
+                            height="533">
+                    </picture>
                 </div>
             </div>
         </div>
@@ -1457,7 +1479,7 @@
             <div class="gallery-grid">
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-1.webp" alt="Bohyně smrti a sexu" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-1.webp" srcset="images/gallery-1-sm.webp 300w, images/gallery-1.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Bohyně smrti a sexu" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Bohyně smrti a sexu</h4>
@@ -1466,7 +1488,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-2.webp" alt="Dámská společnost" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-2.webp" srcset="images/gallery-2-sm.webp 300w, images/gallery-2.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Dámská společnost" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Dámská společnost</h4>
@@ -1475,7 +1497,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="200">
                     <div class="gallery-image">
-                        <img src="images/gallery-3.webp" alt="Mironna" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-3.webp" srcset="images/gallery-3-sm.webp 300w, images/gallery-3.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Mironna" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Mironna</h4>
@@ -1484,7 +1506,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-4.webp" alt="Kominík" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-4.webp" srcset="images/gallery-4-sm.webp 300w, images/gallery-4.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Kominík" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Kominík</h4>
@@ -1493,7 +1515,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-5.webp" alt="Ema mele salát" loading="lazy" width="600" height="1066">
+                        <img src="images/gallery-5.webp" srcset="images/gallery-5-sm.webp 300w, images/gallery-5.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Ema mele salát" loading="lazy" width="600" height="1066">
                     </div>
                     <div class="gallery-info">
                         <h4>Ema mele salát</h4>
@@ -1502,7 +1524,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="200">
                     <div class="gallery-image">
-                        <img src="images/gallery-6.webp" alt="Číčíví" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-6.webp" srcset="images/gallery-6-sm.webp 300w, images/gallery-6.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Číčíví" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Číčíví</h4>
@@ -1511,7 +1533,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-7.webp" alt="The Nun" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-7.webp" srcset="images/gallery-7-sm.webp 300w, images/gallery-7.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="The Nun" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>The Nun</h4>
@@ -1520,7 +1542,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-8.webp" alt="Dročit Fest" loading="lazy" width="600" height="800">
+                        <img src="images/gallery-8.webp" srcset="images/gallery-8-sm.webp 300w, images/gallery-8.webp 600w" sizes="(max-width: 600px) 300px, 600px" alt="Dročit Fest" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Dročit Fest</h4>
@@ -1772,6 +1794,8 @@
     </div>
     
     <script>
+        // Defer non-critical JS to after first paint
+        requestAnimationFrame(() => {
         // Mobile menu toggle
         const burger = document.querySelector('.burger');
         const mobileMenu = document.querySelector('.mobile-menu');
@@ -1838,24 +1862,22 @@
             // Form will submit normally to Ecomail
         });
         
-        // Scroll reveal animation
+        // Scroll reveal animation using IntersectionObserver (better performance)
         const reveals = document.querySelectorAll('.reveal');
         
-        const revealOnScroll = () => {
-            const windowHeight = window.innerHeight;
-            
-            reveals.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const revealPoint = 100;
-                
-                if (elementTop < windowHeight - revealPoint) {
-                    element.classList.add('active');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    revealObserver.unobserve(entry.target); // Stop observing once revealed
                 }
             });
-        };
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
         
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Initial check
+        reveals.forEach(element => revealObserver.observe(element));
         
         // Gallery lightbox with navigation
         const galleryItems = document.querySelectorAll('.gallery-item');
@@ -1951,6 +1973,7 @@
                 e.preventDefault();
             });
         });
+        }); // End requestAnimationFrame
     </script>
     
     <!-- Cookie Banner -->
