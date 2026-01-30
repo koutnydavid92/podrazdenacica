@@ -24,6 +24,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <!-- Google Analytics - loads only after consent -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        function loadGA() {
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-R06FFJPHLK';
+            document.head.appendChild(script);
+            gtag('js', new Date());
+            gtag('config', 'G-R06FFJPHLK');
+        }
+        
+        // Check if consent already given
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+            loadGA();
+        }
+    </script>
+    
     <style>
         :root {
             --bg-primary: #050308;
@@ -1907,6 +1927,10 @@
             acceptCookies.addEventListener('click', () => {
                 localStorage.setItem('cookieConsent', 'accepted');
                 cookieBanner.classList.remove('show');
+                // Activate Google Analytics
+                if (typeof loadGA === 'function') {
+                    loadGA();
+                }
             });
             
             declineCookies.addEventListener('click', () => {
