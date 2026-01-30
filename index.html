@@ -20,6 +20,7 @@
     <link rel="manifest" href="/podrazdenacica/my-favicon/site.webmanifest" />
     
     <!-- Preload critical images -->
+    <link rel="preload" as="image" href="images/logo.webp" type="image/webp">
     <link rel="preload" as="image" href="images/hero-sm.webp" type="image/webp" media="(max-width: 600px)">
     <link rel="preload" as="image" href="images/hero.webp" type="image/webp" media="(min-width: 601px)">
     
@@ -1354,7 +1355,10 @@
     <header id="top">
         <div class="header-content">
             <a href="#top" class="logo-link">
-                <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image" width="845" height="769">
+                <picture>
+                    <source srcset="images/logo.webp" type="image/webp">
+                    <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140" fetchpriority="high">
+                </picture>
             </a>
             <nav>
                 <ul class="nav-links">
