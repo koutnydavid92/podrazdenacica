@@ -19,6 +19,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/podrazdenacica/my-favicon/site.webmanifest" />
     
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="images/hero.webp" type="image/webp">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1306,7 +1309,7 @@
     <header id="top">
         <div class="header-content">
             <a href="#top" class="logo-link">
-                <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image">
+                <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image" width="845" height="769">
             </a>
             <nav>
                 <ul class="nav-links">
@@ -1361,7 +1364,7 @@
                 </div>
                 <div class="hero-visual">
                     <div class="hero-image">
-                        <img src="images/hero.jpg" alt="Podrážděná číča" loading="eager">
+                        <img src="images/hero.webp" alt="Podrážděná číča" loading="eager" width="724" height="1287" fetchpriority="high">
                     </div>
                 </div>
             </div>
@@ -1394,7 +1397,7 @@
                     </ul>
                 </div>
                 <div class="about-image">
-                    <img src="images/about.jpg" alt="Portrét umělkyně" loading="lazy">
+                    <img src="images/about.webp" alt="Portrét umělkyně" loading="lazy" width="800" height="1066">
                 </div>
             </div>
         </div>
@@ -1412,7 +1415,7 @@
             <div class="gallery-grid">
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-1.jpg" alt="Bohyně smrti a sexu" loading="lazy">
+                        <img src="images/gallery-1.webp" alt="Bohyně smrti a sexu" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Bohyně smrti a sexu</h4>
@@ -1421,7 +1424,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-2.jpg" alt="Dámská společnost" loading="lazy">
+                        <img src="images/gallery-2.webp" alt="Dámská společnost" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Dámská společnost</h4>
@@ -1430,7 +1433,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="200">
                     <div class="gallery-image">
-                        <img src="images/gallery-3.jpg" alt="Mironna" loading="lazy">
+                        <img src="images/gallery-3.webp" alt="Mironna" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Mironna</h4>
@@ -1439,7 +1442,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-4.jpg" alt="Kominík" loading="lazy">
+                        <img src="images/gallery-4.webp" alt="Kominík" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Kominík</h4>
@@ -1448,7 +1451,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-5.jpg" alt="Ema mele salát" loading="lazy">
+                        <img src="images/gallery-5.webp" alt="Ema mele salát" loading="lazy" width="600" height="1066">
                     </div>
                     <div class="gallery-info">
                         <h4>Ema mele salát</h4>
@@ -1457,7 +1460,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="200">
                     <div class="gallery-image">
-                        <img src="images/gallery-6.jpg" alt="Číčíví" loading="lazy">
+                        <img src="images/gallery-6.webp" alt="Číčíví" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Číčíví</h4>
@@ -1466,7 +1469,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
-                        <img src="images/gallery-7.jpg" alt="The Nun" loading="lazy">
+                        <img src="images/gallery-7.webp" alt="The Nun" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>The Nun</h4>
@@ -1475,7 +1478,7 @@
                 </div>
                 <div class="gallery-item reveal" data-delay="100">
                     <div class="gallery-image">
-                        <img src="images/gallery-8.jpg" alt="Dročit Fest" loading="lazy">
+                        <img src="images/gallery-8.webp" alt="Dročit Fest" loading="lazy" width="600" height="800">
                     </div>
                     <div class="gallery-info">
                         <h4>Dročit Fest</h4>
