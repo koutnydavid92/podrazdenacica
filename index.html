@@ -52,7 +52,7 @@
             --bg-primary: #050308;
             --bg-card: #111111;
             --text-primary: #F5F5F5;
-            --text-secondary: #B3B3B3;
+            --text-secondary: #CCCCCC;
             --divider: #2A2A2A;
             --accent-neon: #FF00FF;
             --accent-hover: #FF66FF;
@@ -208,6 +208,14 @@
             gap: 5px;
             cursor: pointer;
             padding: 8px;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+        
+        .burger:focus-visible {
+            outline: 2px solid var(--accent-neon);
+            outline-offset: 2px;
         }
         
         .burger span {
@@ -1291,6 +1299,38 @@
             }
         }
         
+        /* Visually hidden but accessible to screen readers */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Skip to content link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-neon);
+            color: var(--black);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            z-index: 10000;
+            transition: top 0.3s ease;
+        }
+        
+        .skip-link:focus {
+            top: 10px;
+        }
+        
         /* Scroll reveal animation */
         .reveal {
             opacity: 0;
@@ -1305,6 +1345,8 @@
     </style>
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#hero" class="skip-link">Přeskočit na obsah</a>
     <!-- Header -->
     <header id="top">
         <div class="header-content">
@@ -1325,16 +1367,16 @@
                     <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" aria-label="LinkedIn">💼</a>
                 </div>
             </nav>
-            <div class="burger">
+            <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </header>
     
     <!-- Mobile Menu -->
-    <div class="mobile-menu">
+    <div class="mobile-menu" role="navigation" aria-label="Mobilní navigace">
         <ul>
             <li><a href="#about">Podrážděná číča</a></li>
             <li><a href="#art">Art</a></li>
@@ -1632,7 +1674,8 @@
                 </p>
                 <form class="newsletter-form reveal" id="newsletterForm" action="https://podrazdenacica.ecomailapp.cz/public/subscribe/2/2bb287d15897fe2f9d89c882af9a3a8b" method="POST">
                     <div class="form-group">
-                        <input type="email" id="emailInput" name="email" placeholder="tvuj@email.cz" required>
+                        <label for="emailInput" class="visually-hidden">E-mailová adresa</label>
+                        <input type="email" id="emailInput" name="email" placeholder="tvuj@email.cz" required aria-label="E-mailová adresa">
                     </div>
                     <div class="checkbox-group">
                         <input type="checkbox" id="consentCheckbox" required>
@@ -1682,20 +1725,20 @@
                             <small>Profesionální profil</small>
                         </div>
                     </a>
-                    <a href="#" class="social-link disabled">
+                    <span class="social-link disabled" aria-label="HeroHero - již brzy">
                         <span>🎙️</span>
                         <div>
                             <strong>HeroHero</strong><br>
                             <small>Brzy...</small>
                         </div>
-                    </a>
-                    <a href="#" class="social-link disabled">
+                    </span>
+                    <span class="social-link disabled" aria-label="Spotify - již brzy">
                         <span>🎵</span>
                         <div>
                             <strong>Spotify</strong><br>
                             <small>Brzy...</small>
                         </div>
-                    </a>
+                    </span>
                 </div>
             </div>
         </div>
@@ -1720,9 +1763,9 @@
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
         <div class="lightbox-content">
-            <button class="lightbox-close" id="lightboxClose">×</button>
-            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
-            <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+            <button class="lightbox-close" id="lightboxClose" aria-label="Zavřít galerii">×</button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Předchozí obrázek">‹</button>
+            <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Další obrázek">›</button>
             <img id="lightboxImage" src="" alt="">
             <div class="lightbox-title" id="lightboxTitle"></div>
         </div>
@@ -1737,12 +1780,17 @@
         burger.addEventListener('click', () => {
             burger.classList.toggle('active');
             mobileMenu.classList.toggle('active');
+            const isExpanded = burger.classList.contains('active');
+            burger.setAttribute('aria-expanded', isExpanded);
+            burger.setAttribute('aria-label', isExpanded ? 'Zavřít menu' : 'Otevřít menu');
         });
         
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 burger.classList.remove('active');
                 mobileMenu.classList.remove('active');
+                burger.setAttribute('aria-expanded', 'false');
+                burger.setAttribute('aria-label', 'Otevřít menu');
             });
         });
         
@@ -1753,6 +1801,8 @@
                 !burger.contains(e.target)) {
                 burger.classList.remove('active');
                 mobileMenu.classList.remove('active');
+                burger.setAttribute('aria-expanded', 'false');
+                burger.setAttribute('aria-label', 'Otevřít menu');
             }
         });
         
