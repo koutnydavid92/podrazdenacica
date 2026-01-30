@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 – Kočka se ztratila | Podrážděná číča</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #050308;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #B3B3B3;
+            --accent-neon: #FF00FF;
+            --accent-hover: #FF66FF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(4rem, 15vw, 8rem);
+            background: linear-gradient(135deg, var(--accent-neon), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Game Container */
+        .game-wrapper {
+            background: var(--bg-card);
+            border: 1px solid #2A2A2A;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+        
+        .score {
+            font-size: 1.2rem;
+            color: var(--accent-neon);
+            font-weight: 700;
+        }
+        
+        .high-score {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            margin: 0 auto;
+            border-radius: 16px;
+            background: #0a0a0a;
+            cursor: none;
+        }
+        
+        .game-instructions {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent-neon);
+            color: #000;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent-neon);
+            color: var(--accent-neon);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--accent-neon);
+            color: #000;
+        }
+        
+        .buttons {
+            margin-top: 1.5rem;
+        }
+        
+        .sound-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid #2A2A2A;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .sound-toggle:hover {
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+        
+        /* Game Over Overlay */
+        .game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(5, 3, 8, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--accent-neon);
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .game-over.show {
+            display: block;
+        }
+        
+        .game-over h3 {
+            font-family: 'Archivo Black', sans-serif;
+            color: var(--accent-neon);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .final-score {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .game-container {
+            position: relative;
+        }
+        
+        @media (max-width: 480px) {
+            #gameCanvas {
+                height: 250px;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="soundToggle" title="Zvuk zapnout/vypnout">🔊</button>
+    
+    <div class="container">
+        <h1>404</h1>
+        <p class="subtitle">Mňau! Tady nic není.</p>
+        <p class="description">Tahle stránka se zatoulala. Ale aspoň si můžeš pochytat myši!</p>
+        
+        <!-- Game -->
+        <div class="game-wrapper">
+            <div class="game-header">
+                <span class="score">Skóre: <span id="score">0</span></span>
+                <span class="high-score">Rekord: <span id="highScore">0</span></span>
+            </div>
+            <div class="game-container">
+                <canvas id="gameCanvas"></canvas>
+                <div class="game-over" id="gameOver">
+                    <h3>Game Over!</h3>
+                    <p class="final-score"><span id="finalScore">0</span> myší</p>
+                    <button class="btn" onclick="restartGame()">Znovu!</button>
+                </div>
+            </div>
+            <p class="game-instructions">Pohybuj kočkou a chytej myši 🐭 Pozor na okurky! 🥒</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="/" class="btn">Zpět domů</a>
+            <button class="btn btn-secondary" onclick="restartGame()">Hrát znovu</button>
+        </div>
+    </div>
+    
+    <script>
+        // Sound setup
+        let soundEnabled = true;
+        const soundToggle = document.getElementById('soundToggle');
+        
+        // Audio context for generating sounds
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playMeow() {
+            if (!soundEnabled || !audioCtx) return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Cat meow frequencies - louder and clearer
+            const now = audioCtx.currentTime;
+            oscillator.frequency.setValueAtTime(700, now);
+            oscillator.frequency.exponentialRampToValueAtTime(500, now + 0.15);
+            oscillator.frequency.exponentialRampToValueAtTime(600, now + 0.25);
+            oscillator.frequency.exponentialRampToValueAtTime(350, now + 0.4);
+            
+            gainNode.gain.setValueAtTime(0.5, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.3, now + 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+            
+            oscillator.type = 'sine';
+            oscillator.start(now);
+            oscillator.stop(now + 0.4);
+        }
+        
+        function playCatch() {
+            if (!soundEnabled || !audioCtx) return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            oscillator.frequency.setValueAtTime(800, now);
+            oscillator.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.25, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            
+            oscillator.type = 'square';
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+        }
+        
+        function playHiss() {
+            if (!soundEnabled || !audioCtx) return;
+            
+            const bufferSize = audioCtx.sampleRate * 0.3;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            const gainNode = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+            
+            noise.buffer = buffer;
+            filter.type = 'highpass';
+            filter.frequency.value = 3000;
+            
+            noise.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            gainNode.gain.setValueAtTime(0.5, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            
+            noise.start(now);
+        }
+        
+        soundToggle.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) {
+                initAudio();
+                playMeow();
+            }
+        });
+        
+        // Game setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const highScoreEl = document.getElementById('highScore');
+        const gameOverEl = document.getElementById('gameOver');
+        const finalScoreEl = document.getElementById('finalScore');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Game state
+        let score = 0;
+        let highScore = localStorage.getItem('catGameHighScore') || 0;
+        highScoreEl.textContent = highScore;
+        
+        let gameRunning = true;
+        let cat = { x: 200, y: 250, size: 40 };
+        let items = [];
+        let lastItemTime = 0;
+        let difficulty = 1;
+        
+        // Mouse/touch position
+        let mouseX = cat.x;
+        let mouseY = cat.y;
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.touches[0].clientX - rect.left;
+            mouseY = e.touches[0].clientY - rect.top;
+        });
+        
+        canvas.addEventListener('click', () => {
+            initAudio();
+        });
+        
+        canvas.addEventListener('touchstart', () => {
+            initAudio();
+        });
+        
+        // Init audio on first mouse move too
+        canvas.addEventListener('mousemove', function initOnMove() {
+            initAudio();
+            canvas.removeEventListener('mousemove', initOnMove);
+        });
+        
+        function spawnItem() {
+            const rect = canvas.getBoundingClientRect();
+            const isCucumber = Math.random() < 0.15; // 15% chance for cucumber
+            items.push({
+                x: Math.random() * (rect.width - 30) + 15,
+                y: -20,
+                type: isCucumber ? 'cucumber' : 'mouse',
+                speed: (2 + Math.random() * 2) * difficulty
+            });
+        }
+        
+        function drawCat(x, y, size) {
+            // Body
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.ellipse(x, y, size * 0.6, size * 0.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Head
+            ctx.beginPath();
+            ctx.arc(x, y - size * 0.3, size * 0.45, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Ears
+            ctx.beginPath();
+            ctx.moveTo(x - size * 0.35, y - size * 0.5);
+            ctx.lineTo(x - size * 0.2, y - size * 0.85);
+            ctx.lineTo(x - size * 0.05, y - size * 0.5);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(x + size * 0.35, y - size * 0.5);
+            ctx.lineTo(x + size * 0.2, y - size * 0.85);
+            ctx.lineTo(x + size * 0.05, y - size * 0.5);
+            ctx.fill();
+            
+            // Inner ears
+            ctx.fillStyle = '#FF00FF';
+            ctx.beginPath();
+            ctx.moveTo(x - size * 0.3, y - size * 0.5);
+            ctx.lineTo(x - size * 0.2, y - size * 0.75);
+            ctx.lineTo(x - size * 0.1, y - size * 0.5);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(x + size * 0.3, y - size * 0.5);
+            ctx.lineTo(x + size * 0.2, y - size * 0.75);
+            ctx.lineTo(x + size * 0.1, y - size * 0.5);
+            ctx.fill();
+            
+            // Eyes
+            ctx.fillStyle = '#FF00FF';
+            ctx.beginPath();
+            ctx.ellipse(x - size * 0.15, y - size * 0.35, size * 0.1, size * 0.12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(x + size * 0.15, y - size * 0.35, size * 0.1, size * 0.12, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Pupils
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(x - size * 0.15, y - size * 0.35, size * 0.04, size * 0.08, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(x + size * 0.15, y - size * 0.35, size * 0.04, size * 0.08, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Nose
+            ctx.fillStyle = '#FF66FF';
+            ctx.beginPath();
+            ctx.moveTo(x, y - size * 0.2);
+            ctx.lineTo(x - size * 0.06, y - size * 0.12);
+            ctx.lineTo(x + size * 0.06, y - size * 0.12);
+            ctx.fill();
+            
+            // Whiskers
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            for (let i = -1; i <= 1; i += 1) {
+                ctx.beginPath();
+                ctx.moveTo(x - size * 0.15, y - size * 0.15 + i * 5);
+                ctx.lineTo(x - size * 0.5, y - size * 0.2 + i * 8);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + size * 0.15, y - size * 0.15 + i * 5);
+                ctx.lineTo(x + size * 0.5, y - size * 0.2 + i * 8);
+                ctx.stroke();
+            }
+        }
+        
+        function drawMouse(x, y) {
+            // Body
+            ctx.fillStyle = '#888';
+            ctx.beginPath();
+            ctx.ellipse(x, y, 12, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Head
+            ctx.beginPath();
+            ctx.ellipse(x + 10, y, 6, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Ears
+            ctx.fillStyle = '#FFB6C1';
+            ctx.beginPath();
+            ctx.arc(x + 8, y - 6, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x + 12, y - 5, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eye
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(x + 13, y - 1, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Tail
+            ctx.strokeStyle = '#FFB6C1';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x - 12, y);
+            ctx.quadraticCurveTo(x - 20, y - 10, x - 25, y);
+            ctx.stroke();
+        }
+        
+        function drawCucumber(x, y) {
+            ctx.fillStyle = '#228B22';
+            ctx.beginPath();
+            ctx.ellipse(x, y, 8, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Darker stripes
+            ctx.fillStyle = '#006400';
+            ctx.beginPath();
+            ctx.ellipse(x - 3, y, 1, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(x + 3, y, 1, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Bumps
+            ctx.fillStyle = '#228B22';
+            for (let i = -15; i < 15; i += 6) {
+                ctx.beginPath();
+                ctx.arc(x + 6, y + i, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function checkCollision(item) {
+            const dx = cat.x - item.x;
+            const dy = cat.y - item.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < cat.size * 0.6 + 15;
+        }
+        
+        function gameOver() {
+            gameRunning = false;
+            playHiss();
+            
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('catGameHighScore', highScore);
+                highScoreEl.textContent = highScore;
+            }
+            
+            finalScoreEl.textContent = score;
+            gameOverEl.classList.add('show');
+        }
+        
+        function restartGame() {
+            score = 0;
+            scoreEl.textContent = score;
+            items = [];
+            difficulty = 1;
+            gameRunning = true;
+            gameOverEl.classList.remove('show');
+            playMeow();
+        }
+        
+        function gameLoop(timestamp) {
+            const rect = canvas.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
+            
+            if (gameRunning) {
+                // Smooth cat movement
+                cat.x += (mouseX - cat.x) * 0.15;
+                cat.y += (mouseY - cat.y) * 0.15;
+                
+                // Keep cat in bounds
+                cat.x = Math.max(cat.size, Math.min(rect.width - cat.size, cat.x));
+                cat.y = Math.max(cat.size, Math.min(rect.height - cat.size, cat.y));
+                
+                // Spawn items
+                if (timestamp - lastItemTime > 800 / difficulty) {
+                    spawnItem();
+                    lastItemTime = timestamp;
+                }
+                
+                // Update items
+                for (let i = items.length - 1; i >= 0; i--) {
+                    items[i].y += items[i].speed;
+                    
+                    // Check collision
+                    if (checkCollision(items[i])) {
+                        if (items[i].type === 'cucumber') {
+                            gameOver();
+                            break;
+                        } else {
+                            score++;
+                            scoreEl.textContent = score;
+                            playCatch();
+                            // Every 5 mice - meow and speed up
+                            if (score > 0 && score % 5 === 0) {
+                                setTimeout(() => playMeow(), 100);
+                                difficulty = Math.min(difficulty + 0.15, 2.5);
+                            }
+                            items.splice(i, 1);
+                        }
+                    }
+                    // Remove if off screen
+                    else if (items[i].y > rect.height + 30) {
+                        items.splice(i, 1);
+                    }
+                }
+            }
+            
+            // Draw items
+            items.forEach(item => {
+                if (item.type === 'cucumber') {
+                    drawCucumber(item.x, item.y);
+                } else {
+                    drawMouse(item.x, item.y);
+                }
+            });
+            
+            // Draw cat
+            drawCat(cat.x, cat.y, cat.size);
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Start game
+        requestAnimationFrame(gameLoop);
+        
+        // Initial meow after user interaction
+        let initialMeowPlayed = false;
+        function tryInitialMeow() {
+            if (!initialMeowPlayed && audioCtx && soundEnabled) {
+                playMeow();
+                initialMeowPlayed = true;
+            }
+        }
+        
+        // Try meow after canvas interaction
+        canvas.addEventListener('mouseenter', tryInitialMeow);
+    </script>
+</body>
+</html>
