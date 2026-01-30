@@ -1878,40 +1878,42 @@
                 e.preventDefault();
             });
         });
-        
-        // Cookie Banner
-        const cookieBanner = document.getElementById('cookieBanner');
-        const acceptCookies = document.getElementById('acceptCookies');
-        const declineCookies = document.getElementById('declineCookies');
-        
-        // Check if user already made a choice
-        if (!localStorage.getItem('cookieConsent')) {
-            cookieBanner.classList.add('show');
-        }
-        
-        acceptCookies.addEventListener('click', () => {
-            localStorage.setItem('cookieConsent', 'accepted');
-            cookieBanner.classList.remove('show');
-        });
-        
-        declineCookies.addEventListener('click', () => {
-            localStorage.setItem('cookieConsent', 'declined');
-            cookieBanner.classList.remove('show');
-        });
     </script>
     
     <!-- Cookie Banner -->
     <div class="cookie-banner" id="cookieBanner">
         <div class="cookie-content">
             <p class="cookie-text">
-                🍪 Tento web používá cookies pro zajištění základní funkčnosti a anonymní analytiku. 
-                Více informací najdeš v <a href="/podminky">Zásadách zpracování osobních údajů</a>.
+                🐱 Používám cookies, aby tohle všechno fungovalo, věděla, kdo sem chodí, a mohla ti servírovat obsah na míru. Souhlas můžeš kdykoliv změnit. Více v <a href="/podminky">Podmínkách ochrany osobních údajů</a>.
             </p>
             <div class="cookie-buttons">
-                <button class="cookie-btn cookie-btn-accept" id="acceptCookies">Rozumím</button>
+                <button class="cookie-btn cookie-btn-accept" id="acceptCookies">Přijmout vše</button>
                 <button class="cookie-btn cookie-btn-decline" id="declineCookies">Odmítnout</button>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Cookie Banner
+        (function() {
+            const cookieBanner = document.getElementById('cookieBanner');
+            const acceptCookies = document.getElementById('acceptCookies');
+            const declineCookies = document.getElementById('declineCookies');
+            
+            if (!localStorage.getItem('cookieConsent')) {
+                cookieBanner.classList.add('show');
+            }
+            
+            acceptCookies.addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'accepted');
+                cookieBanner.classList.remove('show');
+            });
+            
+            declineCookies.addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'declined');
+                cookieBanner.classList.remove('show');
+            });
+        })();
+    </script>
 </body>
 </html>
