@@ -684,16 +684,22 @@
             border-radius: 12px;
         }
 
+        .platform-section-title {
+            font-size: 1.3rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
         .platform-links {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
         }
 
         .platform-link {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.2rem;
             background: var(--bg-card);
             padding: 1.5rem 2rem;
             border-radius: 16px;
@@ -707,21 +713,32 @@
             box-shadow: 0 10px 40px rgba(255, 0, 255, 0.15);
         }
 
-        .platform-link .platform-icon {
-            font-size: 2rem;
+        .platform-link .platform-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
             flex-shrink: 0;
+        }
+
+        .platform-link .platform-logo--herohero {
+            background: #1a1a2e;
+            color: #6c63ff;
+        }
+
+        .platform-link .platform-logo--forendors {
+            background: #0d1b2a;
+            color: #00b4d8;
         }
 
         .platform-link .platform-name {
             color: var(--white);
             font-weight: 700;
             font-size: 1.1rem;
-        }
-
-        .platform-link .platform-desc {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
         }
         
         /* Collaboration Section */
@@ -1680,20 +1697,15 @@
                 <h3>🎵 Podcast na Spotify</h3>
                 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5OmY5EzGyAAPtRzKUtXZsV?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
+            <h3 class="platform-section-title reveal">Přispěj číče na žrádlo. A drogy.</h3>
             <div class="platform-links reveal">
                 <a href="https://herohero.co/podrazdenacica" target="_blank" class="platform-link">
-                    <span class="platform-icon">🎙️</span>
-                    <div>
-                        <div class="platform-name">HeroHero</div>
-                        <div class="platform-desc">Exkluzivní obsah a podpora</div>
-                    </div>
+                    <div class="platform-logo platform-logo--herohero">H</div>
+                    <div class="platform-name">HeroHero</div>
                 </a>
                 <a href="https://www.forendors.cz/podrazdena_cica" target="_blank" class="platform-link">
-                    <span class="platform-icon">🤝</span>
-                    <div>
-                        <div class="platform-name">Forendors</div>
-                        <div class="platform-desc">Spolupráce a endorsement</div>
-                    </div>
+                    <div class="platform-logo platform-logo--forendors">F</div>
+                    <div class="platform-name">Forendors</div>
                 </a>
             </div>
         </div>
@@ -1830,21 +1842,21 @@
                         <span>🎙️</span>
                         <div>
                             <strong>HeroHero</strong><br>
-                            <small>Exkluzivní obsah</small>
+                            <small>Exkluzivní obsah v eurech</small>
                         </div>
                     </a>
                     <a href="https://open.spotify.com/show/5OmY5EzGyAAPtRzKUtXZsV" target="_blank" class="social-link">
                         <span>🎵</span>
                         <div>
                             <strong>Spotify</strong><br>
-                            <small>Podcast</small>
+                            <small>Dílna Podrážděné číči</small>
                         </div>
                     </a>
                     <a href="https://www.forendors.cz/podrazdena_cica" target="_blank" class="social-link">
                         <span>🤝</span>
                         <div>
                             <strong>Forendors</strong><br>
-                            <small>Spolupráce</small>
+                            <small>Exkluzivní obsah v korunách</small>
                         </div>
                     </a>
                 </div>
