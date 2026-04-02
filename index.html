@@ -670,6 +670,20 @@
             color: var(--accent-hover);
         }
         
+        .spotify-embed {
+            margin-bottom: 2rem;
+        }
+
+        .spotify-embed h3 {
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .spotify-embed iframe {
+            border-radius: 12px;
+        }
+
         .coming-soon {
             background: rgba(17, 17, 17, 0.5);
             padding: 2rem;
@@ -677,19 +691,19 @@
             border: 1px dashed var(--divider);
             text-align: center;
         }
-        
+
         .coming-soon h3 {
             color: var(--text-secondary);
             margin-bottom: 1rem;
         }
-        
+
         .coming-soon-icons {
             display: flex;
             gap: 2rem;
             justify-content: center;
             margin-top: 1.5rem;
         }
-        
+
         .coming-soon-icons span {
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -1647,11 +1661,14 @@
                     <a href="https://www.instagram.com/p/DMPounLsYhr/" target="_blank">Číst celý příběh →</a>
                 </div>
             </div>
+            <div class="spotify-embed reveal">
+                <h3>🎵 Podcast na Spotify</h3>
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5OmY5EzGyAAPtRzKUtXZsV?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
             <div class="coming-soon reveal">
                 <h3>Chystám víc obsahu</h3>
                 <div class="coming-soon-icons">
                     <span>🎙️ HeroHero</span>
-                    <span>🎵 Spotify</span>
                 </div>
             </div>
         </div>
