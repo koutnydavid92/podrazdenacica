@@ -716,23 +716,12 @@
         .platform-link .platform-logo {
             width: 36px;
             height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.2rem;
             flex-shrink: 0;
         }
 
-        .platform-link .platform-logo--herohero {
-            background: #1a1a2e;
-            color: #6c63ff;
-        }
-
-        .platform-link .platform-logo--forendors {
-            background: #0d1b2a;
-            color: #00b4d8;
+        .platform-link .platform-logo svg {
+            width: 36px;
+            height: 36px;
         }
 
         .platform-link .platform-name {
@@ -1700,11 +1689,33 @@
             <h3 class="platform-section-title reveal">Přispěj číče na žrádlo. A drogy.</h3>
             <div class="platform-links reveal">
                 <a href="https://herohero.co/podrazdenacica" target="_blank" class="platform-link">
-                    <div class="platform-logo platform-logo--herohero">H</div>
+                    <div class="platform-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="hh-grad" x1="0" y1="1" x2="0" y2="0">
+                                    <stop offset="0%" stop-color="#e81d1d"/>
+                                    <stop offset="50%" stop-color="#f06d1f"/>
+                                    <stop offset="100%" stop-color="#f8a71b"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M30 95 C30 95 15 80 15 60 C15 40 30 35 30 35 C30 35 20 50 25 65 C28 72 35 68 38 58 C42 45 50 25 50 15 C50 15 55 5 60 5 C60 5 50 30 55 50 C58 60 65 55 68 45 C72 32 80 15 85 10 C85 10 80 30 75 45 C70 60 60 70 55 75 C45 88 38 95 30 95Z" fill="url(#hh-grad)"/>
+                        </svg>
+                    </div>
                     <div class="platform-name">HeroHero</div>
                 </a>
                 <a href="https://www.forendors.cz/podrazdena_cica" target="_blank" class="platform-link">
-                    <div class="platform-logo platform-logo--forendors">F</div>
+                    <div class="platform-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="fe-grad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#7b68ee"/>
+                                    <stop offset="100%" stop-color="#e87da0"/>
+                                </linearGradient>
+                            </defs>
+                            <ellipse cx="50" cy="52" rx="42" ry="44" fill="url(#fe-grad)"/>
+                            <path d="M30 55 C30 55 38 72 50 72 C62 72 70 55 70 55" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
+                        </svg>
+                    </div>
                     <div class="platform-name">Forendors</div>
                 </a>
             </div>
