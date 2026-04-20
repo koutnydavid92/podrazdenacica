@@ -2101,6 +2101,25 @@
                 e.preventDefault();
             });
         });
+        // Spotify embed interaction tracking (Meta Pixel custom event)
+        (function() {
+            var spotifyIframe = document.querySelector('#podcast iframe');
+            if (!spotifyIframe) return;
+            var tracked = false;
+            window.addEventListener('blur', function() {
+                if (tracked) return;
+                if (document.activeElement === spotifyIframe) {
+                    tracked = true;
+                    if (typeof fbq === 'function') {
+                        fbq('trackCustom', 'SpotifyPodcastPlay', {
+                            content_name: 'Dílna Podrážděné číči',
+                            content_type: 'podcast'
+                        });
+                    }
+                }
+            });
+        })();
+
         }); // End requestAnimationFrame
     </script>
     
