@@ -2152,11 +2152,19 @@
                 if (typeof loadGA === 'function') {
                     loadGA();
                 }
+                // Inform GTM
+                if (typeof window.updateConsent === 'function') {
+                    window.updateConsent('granted');
+                }
             });
-            
+
             declineCookies.addEventListener('click', () => {
                 localStorage.setItem('cookieConsent', 'declined');
                 cookieBanner.classList.remove('show');
+                // Inform GTM
+                if (typeof window.updateConsent === 'function') {
+                    window.updateConsent('denied');
+                }
             });
         })();
     </script>
