@@ -13,13 +13,57 @@
     <meta name="facebook-domain-verification" content="3mrz0u1ks3xajz36mj3w59r4qbwx8h" />
     <title>Hravé nudesky – obraz z tvojí nude fotky | Podrážděná číča</title>
     <meta name="description" content="Hravé nudesky – moneyfestační obraz podle tvojí nude fotky s magnetickými doplňky. Pošli fotku, nebo přijď na workshop s focením do ateliéru v Brně.">
+    <link rel="canonical" href="https://www.podrazdenacica.cz/hrave-nudesky">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Hravé nudesky – obraz z tvojí nude fotky">
     <meta property="og:description" content="Tvoje nahota v neon růžové. Obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.podrazdenacica.cz/hrave-nudesky">
-    <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-image.jpg">
+    <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-nudesky.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hravé nudesky – obraz z tvojí nude fotky">
+    <meta name="twitter:description" content="Tvoje nahota v neon růžové. Obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
+    <meta name="twitter:image" content="https://www.podrazdenacica.cz/images/og-nudesky.jpg">
+
+    <!-- Strukturovaná data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Hravé nudesky",
+      "description": "Moneyfestační obraz namalovaný podle tvojí nude fotky, podlepený magnetickou fólií s vyměnitelnými magnetickými doplňky. Zaslaná fotka, nebo workshop s focením v ateliéru v Brně.",
+      "url": "https://www.podrazdenacica.cz/hrave-nudesky",
+      "image": "https://www.podrazdenacica.cz/images/og-nudesky.jpg",
+      "provider": {
+        "@type": "Person",
+        "name": "Kristýna Mlynář Koutná",
+        "alternateName": "Podrážděná číča",
+        "url": "https://www.podrazdenacica.cz/"
+      },
+      "areaServed": "CZ",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Pošli fotku – obraz na dálku",
+          "price": "16969",
+          "priceCurrency": "CZK",
+          "availability": "https://schema.org/InStock"
+        },
+        {
+          "@type": "Offer",
+          "name": "Workshop s focením v ateliéru (cca 6 hodin)",
+          "price": "24420",
+          "priceCurrency": "CZK",
+          "availability": "https://schema.org/InStock"
+        }
+      ]
+    }
+    </script>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
@@ -89,8 +133,8 @@
                     <li><a href="/#contact">Kontakt</a></li>
                 </ul>
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" aria-label="Instagram">📷</a>
-                    <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" aria-label="LinkedIn">💼</a>
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+                    <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
                 </div>
             </nav>
             <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
@@ -117,8 +161,8 @@
 
     <!-- Poletující magnetky (desktop) -->
     <div class="magnet-field" aria-hidden="true">
-        <div class="magnet" data-speed="0.18" style="top: 9%; right: 4vw; --w: 200px; --r: 8deg; --d: 0s;">
-            <img src="/images/magnety/kacenka.webp" alt="" loading="lazy" width="385" height="480">
+        <div class="magnet" data-speed="0.18" style="top: 190px; right: 6vw; --w: 230px; --r: 8deg; --d: 0s;">
+            <img src="/images/magnety/kacenka.webp" alt="" loading="eager" width="385" height="480">
         </div>
         <div class="magnet" data-speed="0.10" style="top: 21%; left: 2vw; --w: 150px; --r: -10deg; --d: -2s;">
             <img src="/images/magnety/pouta.webp" alt="" loading="lazy" width="262" height="480">
@@ -414,7 +458,7 @@
                 </p>
                 <div class="hero-buttons" style="justify-content: center;">
                     <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky" class="btn-primary">Napsat číče</a>
-                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" class="btn-secondary">Napsat do DM</a>
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" class="btn-secondary">Napsat do DM</a>
                 </div>
             </div>
         </div>
@@ -508,9 +552,14 @@
         // Current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Video ukázky – přehrávají se jen ve viewportu (šetří baterku i data)
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Video ukázky – přehrávají se jen ve viewportu (šetří baterku i data).
+        // Při zapnutém "omezit pohyb" se nespouští samy, místo toho dostanou ovládání.
         const nudeskaVideos = document.querySelectorAll('.nudeska-media video');
-        if (nudeskaVideos.length) {
+        if (nudeskaVideos.length && reducedMotion) {
+            nudeskaVideos.forEach(v => v.setAttribute('controls', ''));
+        } else if (nudeskaVideos.length) {
             const videoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const video = entry.target;
@@ -524,9 +573,21 @@
             nudeskaVideos.forEach(v => videoObserver.observe(v));
         }
 
+        // Měření CTA kliknutí do GTM (mailto + Instagram DM)
+        document.querySelectorAll('a[href^="mailto:"], a[href*="instagram.com"]').forEach(a => {
+            a.addEventListener('click', () => {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({
+                    event: 'cta_click',
+                    cta_text: a.textContent.trim().substring(0, 60),
+                    cta_type: a.href.startsWith('mailto:') ? 'mailto' : 'instagram',
+                    cta_page: window.location.pathname
+                });
+            });
+        });
+
         // Parallax poletujících magnetek (jen desktop, respektuje reduced motion)
         const magnets = document.querySelectorAll('.magnet');
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (magnets.length && !reducedMotion) {
             let parallaxTicking = false;
             const updateParallax = () => {
