@@ -21,8 +21,17 @@ Desktop.ini
 *.tmp
 *.bak
 
+# Tajné klíče - NIKDY necommitovat
+.env
+.env.*
+!.env.example
+
 # Lokální nástroje
 .claude/
 
 # Dočasně mimo produkci (další fáze)
 obrazy-k-prodeji.html
+
+# Node
+node_modules/
+.vercel
