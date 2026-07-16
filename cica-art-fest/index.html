@@ -85,7 +85,7 @@
         "price": "666",
         "priceCurrency": "CZK",
         "url": "https://www.podrazdenacica.cz/cica-art-fest",
-        "availability": "https://schema.org/PreOrder"
+        "availability": "https://schema.org/InStock"
       }
     }
     </script>
@@ -301,7 +301,7 @@
                 </picture>
                 <picture>
                     <source srcset="/images/napis-podrazdenacica.webp" type="image/webp">
-                    <img src="/images/napis-podrazdenacica.png" alt="" class="logo-lettering" width="348" height="200">
+                    <img src="/images/napis-podrazdenacica.png" alt="" class="logo-lettering" width="972" height="160">
                 </picture>
             </a>
             <nav>
@@ -437,7 +437,7 @@
                         <p>
                             Časy, jména a pár překvapení budeme odhalovat postupně.
                             Sleduj <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" style="color: var(--accent-neon);">Instagram</a>
-                            nebo si nech <a href="/newsletter" style="color: var(--accent-neon);">poslat novinky mailem</a>,
+                            nebo si nech <a href="/#newsletter" style="color: var(--accent-neon);">poslat novinky mailem</a>,
                             ať ti nic neuteče.
                         </p>
                     </div>
@@ -467,12 +467,12 @@
                         <li>budeš součástí legendárního guest listu</li>
                         <li>welcome drink ofc</li>
                     </ul>
-                    <button class="btn-primary" id="buyButton" type="button">Prodej odpálíme brzy</button>
+                    <button class="btn-primary" id="buyButton" type="button">Chci lupen</button>
                 </div>
             </div>
             <p class="tickets-note reveal">
-                Prodej ještě neodstartoval. Chceš vědět jako první, až to bouchne?
-                <a href="/newsletter" style="color: var(--accent-neon);">Nech mi na sebe mail.</a>
+                Platba kartou, Apple Pay nebo Google Pay. Vstupenka s QR kódem
+                ti přistane v mailu hned po zaplacení.
             </p>
         </div>
     </section>
@@ -494,9 +494,8 @@
             </div>
             <div class="guestlist-empty reveal" id="guestlistEmpty">
                 <p>
-                    Zatím prázdno. Logicky, prodej jsme ještě nespustili.
-                    Až to začne, tady poroste seznam lidí, kvůli kterým budeš
-                    litovat, že váháš.
+                    Zatím prázdno. Buď první jméno, vedle kterého budou
+                    ostatní chtít stát s drinkem v ruce.
                 </p>
             </div>
         </div>
@@ -702,7 +701,7 @@
 
         // Tlačítko nákupu. SALE_OPEN = false: prodej nespuštěn, vede na newsletter.
         // Spuštění prodeje = přepnout SALE_OPEN na true (a nasadit web).
-        const SALE_OPEN = false;
+        const SALE_OPEN = true;
         const buyButton = document.getElementById('buyButton');
         if (SALE_OPEN) {
             buyButton.textContent = 'Chci lupen';
@@ -716,7 +715,7 @@
                 cta_page: window.location.pathname
             });
             if (!SALE_OPEN) {
-                window.location.href = '/newsletter';
+                window.location.href = '/#newsletter';
                 return;
             }
             buyButton.disabled = true;
