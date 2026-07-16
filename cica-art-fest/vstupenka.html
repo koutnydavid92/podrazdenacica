@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Vstupenka – Číča Art Fest | Podrážděná číča</title>
+    <meta name="description" content="Vstupenka na Číča Art Fest.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .ticket-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+        }
+        .ticket-card {
+            max-width: 420px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+        }
+        .ticket-card .logo-image {
+            width: 80px;
+            height: auto;
+            margin-bottom: 12px;
+        }
+        .ticket-tag {
+            display: inline-block;
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+            border-radius: 999px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .ticket-card h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+        .ticket-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .ticket-qr {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 0 auto 16px;
+            max-width: 280px;
+        }
+        .ticket-qr img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .ticket-note {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .ticket-status-bad {
+            color: var(--accent-neon);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="ticket-wrap">
+        <div class="ticket-card">
+            <a href="/cica-art-fest">
+                <picture>
+                    <source srcset="/images/logo.webp" type="image/webp">
+                    <img src="/images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140">
+                </picture>
+            </a>
+
+            <div id="loadingView">
+                <p class="ticket-note">Hledáme tvoji vstupenku…</p>
+            </div>
+
+            <div id="ticketView" hidden>
+                <div class="ticket-tag" id="ticketType">Vstupenka</div>
+                <h1>Číča Art Fest</h1>
+                <p class="ticket-meta">
+                    28. 8. 2026, 15:30–22:00 · co.labs_park, Kounicova 20, Brno<br>
+                    <span id="ticketName"></span>
+                </p>
+                <div class="ticket-qr">
+                    <img id="qrImage" src="" alt="QR kód vstupenky" width="280" height="280">
+                </div>
+                <p class="ticket-note">
+                    Tenhle QR kód ukážeš u vchodu. Dostaneš pásku
+                    a zbytek večera je na tobě. Mňau ₍^. .^₎⟆
+                </p>
+            </div>
+
+            <div id="errorView" hidden>
+                <div class="ticket-tag">Hmm</div>
+                <h1>Vstupenku jsme nenašli.</h1>
+                <p class="ticket-note">
+                    Zkontroluj odkaz z e-mailu. Kdyby nefungoval dál,
+                    <a href="mailto:jsem@podrazdenacica.cz?subject=Vstupenka%20nefunguje" style="color: var(--accent-neon);">napiš nám</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/cica-art-fest/config.js"></script>
+    <script>
+        const token = (new URLSearchParams(window.location.search).get('t') || '').trim();
+        const views = ['loadingView', 'ticketView', 'errorView'];
+        function show(id) {
+            views.forEach(v => document.getElementById(v).hidden = (v !== id));
+        }
+
+        async function init() {
+            if (!/^[0-9a-f-]{36}$/i.test(token)) { show('errorView'); return; }
+            try {
+                const cfg = window.CICA_CONFIG;
+                const res = await fetch(cfg.SUPABASE_URL + '/rest/v1/rpc/get_ticket', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': cfg.SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + cfg.SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ p_qr_token: token })
+                });
+                const ticket = await res.json();
+                if (!ticket) { show('errorView'); return; }
+                document.getElementById('ticketType').textContent =
+                    ticket.type === 'vip' ? 'VIP vstupenka' : 'Vstupenka';
+                document.getElementById('ticketName').textContent = ticket.name || '';
+                document.getElementById('qrImage').src = '/api/qr?token=' + token;
+                show('ticketView');
+            } catch (e) {
+                show('errorView');
+            }
+        }
+        init();
+    </script>
+</body>
+</html>

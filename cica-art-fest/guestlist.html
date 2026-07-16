@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP).
+         dataLayer žije hned, eventy se frontují a GTM je po načtení zpracuje. -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    (function() {
+        var loaded = false;
+        function loadGtm() {
+            if (loaded) return;
+            loaded = true;
+            var j = document.createElement('script');
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PBTC7F4W';
+            document.head.appendChild(j);
+        }
+        if (document.readyState === 'complete') {
+            setTimeout(loadGtm, 2500);
+        } else {
+            window.addEventListener('load', function() { setTimeout(loadGtm, 2500); });
+        }
+        ['scroll', 'touchstart', 'mousedown', 'keydown'].forEach(function(ev) {
+            window.addEventListener(ev, loadGtm, { once: true, passive: true });
+        });
+        setTimeout(loadGtm, 6000);
+    })();
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TODO: před spuštěním prodeje smazat noindex -->
+    <meta name="robots" content="noindex">
+    <title>Guestlist – Číča Art Fest | Podrážděná číča</title>
+    <meta name="description" content="Kdo už je uvnitř na Číča Art Festu. Veřejný guestlist hostů, kteří se nestydí.">
+    <link rel="canonical" href="https://www.podrazdenacica.cz/cica-art-fest/guestlist">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <!-- Google Fonts - non-blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .guestlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .guest-card {
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .guest-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+        .guest-card .guest-role {
+            color: var(--accent-neon);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .guest-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .guestlist-empty {
+            text-align: center;
+            color: var(--text-secondary);
+            border: 1px dashed var(--divider);
+            border-radius: 12px;
+            padding: 40px 24px;
+            margin-top: 32px;
+        }
+        .guestlist-count {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .guestlist-count strong {
+            color: var(--accent-neon);
+            font-size: 1.4rem;
+        }
+        .guestlist-cta {
+            text-align: center;
+            margin-top: 48px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBTC7F4W"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <a href="#main-content" class="skip-link">Přeskočit na obsah</a>
+    <!-- Header -->
+    <header id="top">
+        <div class="header-content">
+            <a href="/" class="logo-link">
+                <picture>
+                    <source srcset="/images/logo.webp" type="image/webp">
+                    <img src="/images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140" fetchpriority="high">
+                </picture>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/#about">Podrážděná číča</a></li>
+                    <li><a href="/#art">Art</a></li>
+                    <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
+                    <li><a href="/#words">Slova</a></li>
+                    <li><a href="/#podcast">Podcast</a></li>
+                    <li><a href="/#collab">Spolupráce</a></li>
+                    <li><a href="/#newsletter">News</a></li>
+                    <li><a href="/#contact">Kontakt</a></li>
+                </ul>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+                    <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
+                </div>
+            </nav>
+            <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" role="navigation" aria-label="Mobilní navigace">
+        <ul>
+            <li><a href="/#about">Podrážděná číča</a></li>
+            <li><a href="/#art">Art</a></li>
+            <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
+            <li><a href="/#words">Slova</a></li>
+            <li><a href="/#podcast">Podcast</a></li>
+            <li><a href="/#collab">Spolupráce</a></li>
+            <li><a href="/#newsletter">News</a></li>
+            <li><a href="/#contact">Kontakt</a></li>
+        </ul>
+    </div>
+
+    <main id="main-content">
+
+    <section id="guestlist-full" class="page-hero">
+        <div class="container">
+            <div class="hero-text">
+                <div class="hero-label">Číča Art Fest · 28. 8. 2026 · co.labs_park, Brno</div>
+                <h1 class="hero-title">Kdo už je uvnitř</h1>
+                <p class="hero-description">
+                    Veřejný guestlist Číča Art Festu. Jsou tady všichni, kdo potvrdili
+                    účast a rozhodli se nestydět. Přidej se k nim, ať tady nevisíš
+                    jen jako čtenář.
+                </p>
+            </div>
+            <p class="guestlist-count" id="guestlistCount" hidden>
+                Uvnitř už je <strong id="guestlistTotal">0</strong> lidí. Tihle se nestydí:
+            </p>
+            <div class="guestlist-grid" id="guestlistGrid" hidden></div>
+            <div class="guestlist-empty" id="guestlistEmpty">
+                <p>
+                    Zatím prázdno. Prodej jsme ještě nespustili, ale až to začne,
+                    tenhle seznam poroste rychle.
+                </p>
+            </div>
+            <div class="guestlist-cta">
+                <a href="/cica-art-fest#vstupenky" class="btn-primary">Chci tam být taky</a>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © <span id="currentYear"></span> Podrážděná číča
+            </div>
+            <div class="footer-links">
+                <a href="/podminky">Cookies</a>
+                <a href="/podminky">Podmínky</a>
+            </div>
+            <div class="footer-tagline">
+                Nech si mě v hlavě. Mňau.
+            </div>
+        </div>
+    </footer>
+
+    <script src="/cica-art-fest/config.js"></script>
+    <script>
+        // Mobile menu toggle
+        const burger = document.querySelector('.burger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            const isExpanded = burger.classList.contains('active');
+            burger.setAttribute('aria-expanded', isExpanded);
+            burger.setAttribute('aria-label', isExpanded ? 'Zavřít menu' : 'Otevřít menu');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('active') &&
+                !mobileMenu.contains(e.target) &&
+                !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                burger.setAttribute('aria-expanded', 'false');
+                burger.setAttribute('aria-label', 'Otevřít menu');
+            }
+        });
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Celý guestlist: živá data ze Supabase (?demo=1 ukáže ukázková data).
+        const escapeHtml = s => String(s).replace(/[&<>"']/g,
+            c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+        function renderGuestlist(guests, total) {
+            if (!total || !guests) return;
+            const grid = document.getElementById('guestlistGrid');
+            grid.innerHTML = guests.map(g => `
+                <div class="guest-card">
+                    <h3>${escapeHtml(g.name)}</h3>
+                    ${g.role ? `<div class="guest-role">${escapeHtml(g.role)}</div>` : ''}
+                    ${g.bio ? `<p>${escapeHtml(g.bio)}</p>` : ''}
+                </div>`).join('');
+            const verb = (total >= 2 && total <= 4) ? 'jsou' : 'je';
+            const noun = total === 1 ? 'člověk' : (total <= 4 ? 'lidi' : 'lidí');
+            document.getElementById('guestlistCount').innerHTML =
+                `Uvnitř už ${verb} <strong>${total}</strong> ${noun}. Tihle se nestydí:`;
+            document.getElementById('guestlistCount').hidden = false;
+            grid.hidden = false;
+            document.getElementById('guestlistEmpty').hidden = true;
+        }
+
+        if (new URLSearchParams(window.location.search).get('demo') === '1') {
+            renderGuestlist([
+                { name: 'Katka Ukázková', role: 'CEO, Fiktivní studio', bio: 'Sbírám umění a lidi, co se nebojí. Uvidíme se u dražby.' },
+                { name: 'Jan Vzorek', role: 'Fotograf na volné noze', bio: 'Jdu kvůli přehlídce. A kvůli baru. V tomhle pořadí.' },
+                { name: 'Lucie Demo', role: 'Marketing, Brno', bio: '' },
+                { name: 'Petra Placeholder', role: 'Galeristka', bio: 'Královny Brno-venkov musím vidět dřív než všichni ostatní.' },
+                { name: 'Bára Vzorová', role: 'Architektka', bio: 'Přijdu kvůli dražbě, zůstanu kvůli DJkám.' },
+                { name: 'Tomáš Testovací', role: 'Founder, Appka', bio: '' }
+            ], 137);
+        } else if (window.CICA_CONFIG) {
+            const cfg = window.CICA_CONFIG;
+            const rpc = (fn) => fetch(cfg.SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+                method: 'POST',
+                headers: {
+                    'apikey': cfg.SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + cfg.SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            }).then(r => r.json());
+            Promise.all([rpc('get_guestlist'), rpc('get_guest_count')])
+                .then(([guests, total]) => renderGuestlist(guests, total))
+                .catch(() => {});
+        }
+    </script>
+</body>
+</html>

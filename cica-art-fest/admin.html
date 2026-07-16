@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin – Číča Art Fest</title>
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0D0D0D;
+            --card: #111111;
+            --divider: #2A2A2A;
+            --text: #F5F5F5;
+            --muted: #CCCCCC;
+            --pink: #FE45E8;
+            --ok: #2ECC71;
+            --bad: #E74C3C;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px 16px 60px;
+        }
+        .wrap { max-width: 960px; margin: 0 auto; }
+        h1 { font-size: 1.4rem; margin: 8px 0 20px; }
+        h1 span { color: var(--pink); }
+        h2 { font-size: 1.05rem; margin: 26px 0 12px; color: var(--pink); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 18px;
+        }
+        input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 12px 14px;
+        }
+        input:focus { outline: none; border-color: var(--pink); }
+        .btn {
+            border: none;
+            border-radius: 999px;
+            background: var(--pink);
+            color: #0D0D0D;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 22px;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .btn.secondary {
+            background: transparent;
+            color: var(--pink);
+            border: 1px solid var(--pink);
+        }
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        .tile {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .tile .num { font-size: 1.8rem; font-weight: 700; color: var(--pink); }
+        .tile .label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--divider); vertical-align: top; }
+        th { color: var(--muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        .table-scroll { overflow-x: auto; }
+        .pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            border: 1px solid var(--divider);
+            color: var(--muted);
+        }
+        .pill.ok { border-color: var(--ok); color: var(--ok); }
+        .pill.bad { border-color: var(--bad); color: var(--bad); }
+        .pill.pink { border-color: var(--pink); color: var(--pink); }
+        .rowbtn {
+            border: 1px solid var(--pink);
+            background: transparent;
+            color: var(--pink);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+        .muted { color: var(--muted); font-size: 0.9rem; }
+        .invite-link {
+            background: var(--bg);
+            border: 1px dashed var(--pink);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Admin <span>Číča Art Fest</span></h1>
+
+        <div class="card" id="pinView" style="max-width: 420px;">
+            <p class="muted" style="margin-bottom: 10px;">Zadej admin PIN.</p>
+            <input type="password" id="pinInput" autocomplete="off" placeholder="PIN">
+            <button class="btn" id="pinButton" type="button">Odemknout</button>
+            <p class="muted" id="pinError" style="color: var(--bad); margin-top: 8px;" hidden>Špatný PIN.</p>
+        </div>
+
+        <div id="dashView" hidden>
+            <div class="tiles" id="tiles"></div>
+
+            <h2>Nová VIP pozvánka</h2>
+            <div class="card">
+                <div class="grid2">
+                    <input type="text" id="invName" placeholder="Celé jméno (Katka Nováková)">
+                    <input type="text" id="invGreeting" placeholder="Oslovení v 5. pádě (Katko)">
+                    <input type="text" id="invEmail" placeholder="E-mail (nepovinný)">
+                </div>
+                <button class="btn" id="invButton" type="button">Vytvořit pozvánku</button>
+                <div class="invite-link" id="invResult" hidden></div>
+            </div>
+
+            <h2>VIP pozvánky</h2>
+            <div class="card table-scroll"><table id="invitesTable"></table></div>
+
+            <h2>Guestlist</h2>
+            <div class="card table-scroll"><table id="guestlistTable"></table></div>
+
+            <h2>Vstupenky</h2>
+            <div class="card table-scroll">
+                <button class="btn secondary" id="csvButton" type="button" style="margin: 0 0 12px;">Stáhnout CSV (záloha pro vchod)</button>
+                <table id="ticketsTable"></table>
+            </div>
+
+            <p class="muted" style="margin-top: 20px;">
+                Data se načítají při otevření. <button class="rowbtn" id="reloadButton" type="button">Obnovit</button>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let pin = sessionStorage.getItem('adminPin') || '';
+        let data = null;
+        const el = id => document.getElementById(id);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        async function api(payload) {
+            const res = await fetch('/api/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ pin }, payload))
+            });
+            if (res.status === 401) throw new Error('bad_pin');
+            if (!res.ok) throw new Error('server');
+            return res.json();
+        }
+
+        function fmtDate(d) {
+            return d ? new Date(d).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        }
+
+        function render() {
+            const s = data.stats;
+            el('tiles').innerHTML = [
+                [s.sold + ' / ' + s.capacity, 'prodáno vstupenek'],
+                [s.revenue.toLocaleString('cs-CZ') + ' Kč', 'tržba'],
+                [s.vip_confirmed, 'VIP potvrzeno'],
+                [s.vip_pending, 'VIP mlčí'],
+                [s.checked_in, 'odbaveno u vchodu'],
+                [s.guestlist_visible, 'na guestlistu'],
+                [s.newsletter_optins, 'souhlasy s maily']
+            ].map(t => `<div class="tile"><div class="num">${t[0]}</div><div class="label">${t[1]}</div></div>`).join('');
+
+            el('invitesTable').innerHTML =
+                '<tr><th>Jméno</th><th>Kód / odkaz</th><th>Stav</th><th></th></tr>'
+                + data.invites.map(i => {
+                    const link = 'https://www.podrazdenacica.cz/cica-art-fest/vip?kod=' + i.code;
+                    const pill = i.status === 'confirmed' ? '<span class="pill ok">přijde</span>'
+                        : i.status === 'declined' ? '<span class="pill bad">nedá to</span>'
+                        : '<span class="pill">mlčí</span>';
+                    return `<tr><td>${esc(i.full_name)}<br><span class="muted">${esc(i.email || '')}</span></td>`
+                        + `<td>${esc(i.code)}</td><td>${pill}<br><span class="muted">${fmtDate(i.responded_at)}</span></td>`
+                        + `<td><button class="rowbtn" data-copy="${esc(link)}" type="button">Kopírovat odkaz</button></td></tr>`;
+                }).join('');
+
+            el('guestlistTable').innerHTML =
+                '<tr><th>Jméno</th><th>Kde působí</th><th>Bio</th><th>Stav</th><th></th></tr>'
+                + (data.guestlist.length ? data.guestlist.map(g =>
+                    `<tr><td>${esc(g.name)}</td><td>${esc(g.role)}</td><td>${esc(g.bio)}</td>`
+                    + `<td>${g.visible ? '<span class="pill ok">vidět</span>' : '<span class="pill bad">skrytý</span>'}`
+                    + `${g.newsletter ? ' <span class="pill pink">mail ok</span>' : ''}</td>`
+                    + `<td><button class="rowbtn" data-toggle="${g.id}" type="button">${g.visible ? 'Skrýt' : 'Ukázat'}</button></td></tr>`
+                ).join('') : '<tr><td colspan="5" class="muted">Zatím prázdno.</td></tr>');
+
+            el('ticketsTable').innerHTML =
+                '<tr><th>Jméno</th><th>E-mail</th><th>Typ</th><th>Stav</th><th>Koupeno</th></tr>'
+                + (data.tickets.length ? data.tickets.map(t =>
+                    `<tr><td>${esc(t.name)}</td><td>${esc(t.email)}</td>`
+                    + `<td>${t.type === 'vip' ? '<span class="pill pink">VIP</span>' : 'veřejná'}</td>`
+                    + `<td>${t.status === 'checked_in' ? '<span class="pill ok">odbavena ' + fmtDate(t.checked_in_at) + '</span>'
+                        : t.status === 'cancelled' ? '<span class="pill bad">zrušená</span>' : 'platná'}</td>`
+                    + `<td class="muted">${fmtDate(t.created_at)}</td></tr>`
+                ).join('') : '<tr><td colspan="5" class="muted">Zatím žádné.</td></tr>');
+
+            document.querySelectorAll('[data-copy]').forEach(b =>
+                b.addEventListener('click', () => {
+                    navigator.clipboard.writeText(b.dataset.copy);
+                    b.textContent = 'Zkopírováno!';
+                    setTimeout(() => b.textContent = 'Kopírovat odkaz', 1500);
+                }));
+            document.querySelectorAll('[data-toggle]').forEach(b =>
+                b.addEventListener('click', async () => {
+                    await api({ action: 'toggle_guestlist', id: b.dataset.toggle });
+                    await load();
+                }));
+        }
+
+        async function load() {
+            data = await api({ action: 'overview' });
+            render();
+        }
+
+        async function unlock() {
+            pin = el('pinInput').value.trim();
+            if (!pin) return;
+            try {
+                await load();
+                sessionStorage.setItem('adminPin', pin);
+                el('pinView').hidden = true;
+                el('dashView').hidden = false;
+            } catch (e) {
+                el('pinError').hidden = false;
+            }
+        }
+
+        el('pinButton').addEventListener('click', unlock);
+        el('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+        el('reloadButton').addEventListener('click', load);
+
+        el('invButton').addEventListener('click', async () => {
+            const full_name = el('invName').value.trim();
+            const greeting_name = el('invGreeting').value.trim();
+            const email = el('invEmail').value.trim();
+            if (!full_name || !greeting_name) {
+                alert('Vyplň jméno i oslovení v 5. pádě.');
+                return;
+            }
+            const r = await api({ action: 'create_invite', full_name, greeting_name, email });
+            if (r.ok) {
+                const link = 'https://www.podrazdenacica.cz/cica-art-fest/vip?kod=' + r.code;
+                el('invResult').hidden = false;
+                el('invResult').innerHTML = `Pozvánka pro ${esc(full_name)}: <strong>${esc(link)}</strong>`
+                    + ` <button class="rowbtn" data-copy="${esc(link)}" type="button" style="margin-left:8px;">Kopírovat</button>`;
+                el('invResult').querySelector('[data-copy]').addEventListener('click', (e) => {
+                    navigator.clipboard.writeText(e.target.dataset.copy);
+                    e.target.textContent = 'Zkopírováno!';
+                });
+                el('invName').value = el('invGreeting').value = el('invEmail').value = '';
+                await load();
+            } else {
+                alert('Pozvánku se nepovedlo vytvořit: ' + (r.error || 'neznámá chyba'));
+            }
+        });
+
+        el('csvButton').addEventListener('click', () => {
+            const rows = [['jmeno', 'email', 'typ', 'stav', 'poradi', 'koupeno']].concat(
+                data.tickets.map(t => [t.name || '', t.email || '', t.type, t.status, t.ticket_no, t.created_at]));
+            const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n');
+            const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'cica-art-fest-vstupenky.csv';
+            a.click();
+        });
+
+        if (pin) { el('pinInput').value = pin; unlock(); }
+    </script>
+</body>
+</html>

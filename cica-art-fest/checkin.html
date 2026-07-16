@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Check-in – Číča Art Fest</title>
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0D0D0D;
+            --card: #111111;
+            --divider: #2A2A2A;
+            --text: #F5F5F5;
+            --muted: #CCCCCC;
+            --pink: #FE45E8;
+            --ok: #2ECC71;
+            --bad: #E74C3C;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .wrap { max-width: 480px; margin: 0 auto; }
+        h1 { font-size: 1.2rem; margin: 8px 0 16px; text-align: center; }
+        h1 span { color: var(--pink); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1.05rem;
+            padding: 13px 14px;
+        }
+        input:focus { outline: none; border-color: var(--pink); }
+        .btn {
+            display: block;
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            background: var(--pink);
+            color: #0D0D0D;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 700;
+            padding: 14px;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .btn.secondary {
+            background: transparent;
+            color: var(--pink);
+            border: 1px solid var(--pink);
+        }
+        #reader { border-radius: 12px; overflow: hidden; }
+        .result {
+            border-radius: 12px;
+            padding: 28px 18px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .result.ok { background: var(--ok); color: #06300f; }
+        .result.bad { background: var(--bad); color: #3d0a05; }
+        .result .big { font-size: 1.7rem; font-weight: 700; line-height: 1.2; }
+        .result .name { font-size: 1.25rem; margin-top: 6px; }
+        .result .hint { font-size: 0.95rem; margin-top: 10px; }
+        .muted { color: var(--muted); font-size: 0.9rem; }
+        .match {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--divider);
+            padding: 10px 0;
+        }
+        .match:first-child { border-top: none; }
+        .match button {
+            border: 1px solid var(--pink);
+            background: transparent;
+            color: var(--pink);
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .match .who { font-size: 0.95rem; }
+        .match .who small { color: var(--muted); display: block; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Check-in <span>Číča Art Fest</span></h1>
+
+        <!-- PIN brána -->
+        <div class="card" id="pinView">
+            <p class="muted" style="margin-bottom: 10px;">Zadej PIN pro vpuštění do skenovačky.</p>
+            <input type="password" id="pinInput" inputmode="numeric" autocomplete="off" placeholder="PIN">
+            <button class="btn" id="pinButton" type="button">Odemknout</button>
+            <p class="muted" id="pinError" style="color: var(--bad); margin-top: 8px;" hidden>Špatný PIN, zkus to znovu.</p>
+        </div>
+
+        <!-- Skener -->
+        <div id="scanView" hidden>
+            <div id="resultBox" class="result" hidden></div>
+            <div class="card">
+                <div id="reader"></div>
+                <button class="btn" id="resumeButton" type="button" hidden>Skenovat dalšího</button>
+                <p class="muted" style="margin-top: 10px; text-align: center;" id="scanHint">Namiř foťák na QR kód vstupenky.</p>
+            </div>
+            <div class="card">
+                <p class="muted" style="margin-bottom: 10px;">Nefunguje QR? Najdi hosta ručně:</p>
+                <input type="text" id="searchInput" placeholder="Jméno nebo e-mail">
+                <button class="btn secondary" id="searchButton" type="button">Hledat</button>
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        let pin = sessionStorage.getItem('checkinPin') || '';
+        let scanner = null;
+        let scanning = false;
+
+        const el = id => document.getElementById(id);
+
+        async function api(payload) {
+            const res = await fetch('/api/checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ pin }, payload))
+            });
+            if (res.status === 401) throw new Error('bad_pin');
+            if (!res.ok) throw new Error('server');
+            return res.json();
+        }
+
+        function showResult(r) {
+            const box = el('resultBox');
+            box.hidden = false;
+            const typeLabel = r.type === 'vip' ? 'VIP páska' : 'Veřejná páska';
+            if (r.result === 'ok') {
+                box.className = 'result ok';
+                box.innerHTML = `<div class="big">✅ ${typeLabel}</div>`
+                    + `<div class="name">${escapeHtml(r.name || 'Bez jména')}</div>`;
+            } else if (r.result === 'already') {
+                const t = r.checked_in_at ? new Date(r.checked_in_at).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' }) : '';
+                box.className = 'result bad';
+                box.innerHTML = `<div class="big">⛔ Už odbaveno${t ? ' v ' + t : ''}</div>`
+                    + `<div class="name">${escapeHtml(r.name || '')}</div>`
+                    + `<div class="hint">Někdo tenhle QR už použil. Řeš u vchodu.</div>`;
+            } else if (r.result === 'cancelled') {
+                box.className = 'result bad';
+                box.innerHTML = `<div class="big">⛔ Zrušená vstupenka</div>`
+                    + `<div class="name">${escapeHtml(r.name || '')}</div>`;
+            } else {
+                box.className = 'result bad';
+                box.innerHTML = `<div class="big">⛔ Neznámý kód</div>`
+                    + `<div class="hint">Tohle není vstupenka na Číča Art Fest.</div>`;
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g,
+                c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        async function onScan(text) {
+            if (!scanning) return;
+            scanning = false;
+            try { await scanner.pause(true); } catch (e) {}
+            el('resumeButton').hidden = false;
+            try {
+                showResult(await api({ token: text.trim() }));
+            } catch (e) {
+                alert(e.message === 'bad_pin' ? 'PIN přestal platit, načti stránku znovu.' : 'Výpadek spojení, zkus to znovu.');
+                resume();
+            }
+        }
+
+        function resume() {
+            el('resultBox').hidden = true;
+            el('resumeButton').hidden = true;
+            try { scanner.resume(); } catch (e) {}
+            scanning = true;
+        }
+
+        async function startScanner() {
+            scanner = new Html5Qrcode('reader');
+            try {
+                await scanner.start(
+                    { facingMode: 'environment' },
+                    { fps: 8, qrbox: { width: 220, height: 220 } },
+                    onScan
+                );
+                scanning = true;
+            } catch (e) {
+                el('scanHint').textContent = 'Foťák se nepovedlo spustit. Povol kameru v prohlížeči, nebo hledej hosty ručně níž.';
+            }
+        }
+
+        async function unlock() {
+            pin = el('pinInput').value.trim();
+            if (!pin) return;
+            try {
+                await api({ search: '___overovaci_dotaz___' });
+                sessionStorage.setItem('checkinPin', pin);
+                el('pinView').hidden = true;
+                el('scanView').hidden = false;
+                startScanner();
+            } catch (e) {
+                el('pinError').hidden = false;
+            }
+        }
+
+        el('pinButton').addEventListener('click', unlock);
+        el('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+        el('resumeButton').addEventListener('click', resume);
+
+        el('searchButton').addEventListener('click', async () => {
+            const q = el('searchInput').value.trim();
+            if (q.length < 2) return;
+            try {
+                const r = await api({ search: q });
+                const box = el('searchResults');
+                if (!r.matches || !r.matches.length) {
+                    box.innerHTML = '<p class="muted" style="margin-top:10px;">Nikdo takový tady není.</p>';
+                    return;
+                }
+                box.innerHTML = r.matches.map(m => `
+                    <div class="match">
+                        <div class="who">${escapeHtml(m.name || 'Bez jména')} ${m.type === 'vip' ? '· VIP' : ''}
+                            <small>${escapeHtml(m.email || '')} ${m.status === 'checked_in' ? '· UŽ ODBAVENO' : ''}</small>
+                        </div>
+                        ${m.status === 'valid' ? `<button data-id="${m.id}" type="button">Odbavit</button>` : ''}
+                    </div>`).join('');
+                box.querySelectorAll('button[data-id]').forEach(b => {
+                    b.addEventListener('click', async () => {
+                        showResult(await api({ ticket_id: b.dataset.id }));
+                        el('resumeButton').hidden = false;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        el('searchResults').innerHTML = '';
+                        el('searchInput').value = '';
+                    });
+                });
+            } catch (e) {
+                alert('Výpadek spojení, zkus to znovu.');
+            }
+        });
+
+        // PIN z minulé návštěvy - rovnou odemknout
+        if (pin) {
+            el('pinInput').value = pin;
+            unlock();
+        }
+    </script>
+</body>
+</html>

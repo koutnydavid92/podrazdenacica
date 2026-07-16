@@ -1,0 +1,10 @@
+{
+  "name": "podrazdenacica-web",
+  "private": true,
+  "description": "podrazdenacica.cz - statický web + serverless API pro Číča Art Fest",
+  "dependencies": {
+    "pg": "^8.13.1",
+    "qrcode": "^1.5.4",
+    "stripe": "^18.0.0"
+  }
+}

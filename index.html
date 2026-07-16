@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PBTC7F4W');</script>
+    <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP).
+         dataLayer žije hned, eventy se frontují a GTM je po načtení zpracuje. -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    (function() {
+        var loaded = false;
+        function loadGtm() {
+            if (loaded) return;
+            loaded = true;
+            var j = document.createElement('script');
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PBTC7F4W';
+            document.head.appendChild(j);
+        }
+        if (document.readyState === 'complete') {
+            setTimeout(loadGtm, 2500);
+        } else {
+            window.addEventListener('load', function() { setTimeout(loadGtm, 2500); });
+        }
+        ['scroll', 'touchstart', 'mousedown', 'keydown'].forEach(function(ev) {
+            window.addEventListener(ev, loadGtm, { once: true, passive: true });
+        });
+        setTimeout(loadGtm, 6000);
+    })();
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,8 +84,8 @@
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="images/logo.webp" type="image/webp">
-    <link rel="preload" as="image" href="images/hero-sm.webp" type="image/webp" media="(max-width: 600px)">
-    <link rel="preload" as="image" href="images/hero.webp" type="image/webp" media="(min-width: 601px)">
+    <link rel="preload" as="image" href="images/hero-sm.webp" type="image/webp" media="(max-width: 600px)" fetchpriority="high">
+    <link rel="preload" as="image" href="images/hero.webp" type="image/webp" media="(min-width: 601px)" fetchpriority="high">
     
     <!-- Google Fonts - non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -118,6 +138,7 @@
                     <li><a href="#about">Podrážděná číča</a></li>
                     <li><a href="#art">Art</a></li>
                     <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
                     <li><a href="#words">Slova</a></li>
                     <li><a href="#podcast">Podcast</a></li>
                     <li><a href="#collab">Spolupráce</a></li>
@@ -143,6 +164,7 @@
             <li><a href="#about">Podrážděná číča</a></li>
             <li><a href="#art">Art</a></li>
             <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
             <li><a href="#words">Slova</a></li>
             <li><a href="#podcast">Podcast</a></li>
             <li><a href="#collab">Spolupráce</a></li>

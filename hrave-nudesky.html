@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PBTC7F4W');</script>
+    <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP).
+         dataLayer žije hned, eventy se frontují a GTM je po načtení zpracuje. -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    (function() {
+        var loaded = false;
+        function loadGtm() {
+            if (loaded) return;
+            loaded = true;
+            var j = document.createElement('script');
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PBTC7F4W';
+            document.head.appendChild(j);
+        }
+        if (document.readyState === 'complete') {
+            setTimeout(loadGtm, 2500);
+        } else {
+            window.addEventListener('load', function() { setTimeout(loadGtm, 2500); });
+        }
+        ['scroll', 'touchstart', 'mousedown', 'keydown'].forEach(function(ev) {
+            window.addEventListener(ev, loadGtm, { once: true, passive: true });
+        });
+        setTimeout(loadGtm, 6000);
+    })();
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,6 +146,7 @@
                     <li><a href="/#about">Podrážděná číča</a></li>
                     <li><a href="/#art">Art</a></li>
                     <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
                     <li><a href="/#words">Slova</a></li>
                     <li><a href="/#podcast">Podcast</a></li>
                     <li><a href="/#collab">Spolupráce</a></li>
@@ -151,6 +172,7 @@
             <li><a href="/#about">Podrážděná číča</a></li>
             <li><a href="/#art">Art</a></li>
             <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
             <li><a href="/#words">Slova</a></li>
             <li><a href="/#podcast">Podcast</a></li>
             <li><a href="/#collab">Spolupráce</a></li>
@@ -199,8 +221,8 @@
                     v negližé, druhý den bohyně bez. Obraz, který se svlíká a oblíká s tebou.
                 </p>
                 <div class="hero-buttons">
-                    <a href="#cenik" class="btn-primary">Chci nudesku</a>
-                    <a href="#jak-to-funguje" class="btn-secondary">Jak to funguje</a>
+                    <a href="#cenik" class="btn-primary" data-cta="nudesky_hero_chci_nudesku">Chci nudesku</a>
+                    <a href="#jak-to-funguje" class="btn-secondary" data-cta="nudesky_hero_jak_to_funguje">Jak to funguje</a>
                 </div>
             </div>
         </div>
@@ -375,7 +397,7 @@
                         <li>3 magnetické doplňky dle výběru v ceně</li>
                         <li>fotku po dokončení smažu – slovo číči</li>
                     </ul>
-                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky%20%E2%80%93%20po%C5%A1lu%20fotku" class="btn-secondary">Chci tohle</a>
+                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky%20%E2%80%93%20po%C5%A1lu%20fotku" class="btn-secondary" data-cta="nudesky_cenik_posli_fotku">Chci tohle</a>
                 </div>
                 <div class="pricing-card featured reveal" data-delay="100">
                     <div class="pricing-badge">Zážitek na celý život</div>
@@ -393,7 +415,7 @@
                         <li>3 magnetické doplňky dle výběru v ceně</li>
                         <li>fotky po dokončení smažu – slovo číči</li>
                     </ul>
-                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky%20%E2%80%93%20workshop%20s%20focen%C3%ADm" class="btn-primary">Chci tohle</a>
+                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky%20%E2%80%93%20workshop%20s%20focen%C3%ADm" class="btn-primary" data-cta="nudesky_cenik_workshop">Chci tohle</a>
                 </div>
             </div>
         </div>
@@ -458,8 +480,8 @@
                     Neváhej a piš. Bo čím budu slavnější, tím to bude dražší, kotě. Mňau.
                 </p>
                 <div class="hero-buttons" style="justify-content: center;">
-                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky" class="btn-primary">Napsat číče</a>
-                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" class="btn-secondary">Napsat do DM</a>
+                    <a href="mailto:jsem@podrazdenacica.cz?subject=Hrav%C3%A9%20nudesky" class="btn-primary" data-cta="nudesky_zaver_mail">Napsat číče</a>
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" class="btn-secondary" data-cta="nudesky_zaver_dm">Napsat do DM</a>
                 </div>
             </div>
         </div>
@@ -574,15 +596,55 @@
             nudeskaVideos.forEach(v => videoObserver.observe(v));
         }
 
-        // Měření CTA kliknutí do GTM (mailto + Instagram DM)
-        document.querySelectorAll('a[href^="mailto:"], a[href*="instagram.com"]').forEach(a => {
+        // ---- Event tracking do GTM (dataLayer) ----
+        const track = (event, params) => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign({ event }, params));
+        };
+
+        // CTA kliknutí: označená tlačítka (data-cta) + všechny mailto/IG odkazy.
+        // Stejný prvek se započítá jen jednou (querySelectorAll vrací unikátní uzly).
+        document.querySelectorAll('a[data-cta], a[href^="mailto:"], a[href*="instagram.com"]').forEach(a => {
             a.addEventListener('click', () => {
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({
-                    event: 'cta_click',
+                track('cta_click', {
+                    cta_id: a.dataset.cta || (a.href.startsWith('mailto:') ? 'mailto_ostatni' : 'instagram_ostatni'),
                     cta_text: a.textContent.trim().substring(0, 60),
-                    cta_type: a.href.startsWith('mailto:') ? 'mailto' : 'instagram',
+                    cta_type: a.href.startsWith('mailto:') ? 'mailto'
+                        : (a.href.includes('instagram.com') ? 'instagram' : 'interni'),
                     cta_page: window.location.pathname
+                });
+            });
+        });
+
+        // Doscrollování k sekcím (jednou za návštěvu stránky) - trychtýř:
+        // co jsou nudesky -> galerie -> jak to probíhá -> ceník -> diskrétnost -> kontakt
+        const trackedSections = ['co-jsou-nudesky', 'nudesky-galerie', 'jak-to-funguje', 'cenik', 'diskretnost', 'nudesky-kontakt'];
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    track('section_view', {
+                        section: entry.target.id,
+                        section_page: window.location.pathname
+                    });
+                    sectionObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        trackedSections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) sectionObserver.observe(el);
+        });
+
+        // První přehrání každého ukázkového videa
+        document.querySelectorAll('.nudeska-media video').forEach(v => {
+            let played = false;
+            v.addEventListener('play', () => {
+                if (played) return;
+                played = true;
+                const source = v.querySelector('source');
+                track('video_play', {
+                    video: source ? source.src.split('/').pop() : 'nezname',
+                    video_page: window.location.pathname
                 });
             });
         });
