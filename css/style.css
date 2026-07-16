@@ -97,6 +97,17 @@ header {
     filter: brightness(0) invert(1) drop-shadow(0 0 10px var(--accent-neon));
 }
 
+.logo-lettering {
+    height: 42px;
+    width: auto;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+}
+
+.logo-link:hover .logo-lettering {
+    filter: drop-shadow(0 0 10px var(--accent-neon));
+}
+
 nav {
     display: flex;
     align-items: center;
@@ -1297,6 +1308,11 @@ footer {
     
     .logo-image {
         height: 40px;
+    }
+
+    .logo-lettering {
+        height: 32px;
+        margin-left: 8px;
     }
 }
 
