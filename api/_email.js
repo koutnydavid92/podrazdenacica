@@ -65,8 +65,9 @@ function ticketEmailHtml({ greetingName, tickets, isVip }) {
         </p>
         ${ticketBlocks}
         <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:20px 0 0;">
-            Vernisáž kolekce Královny Brno-venkov, módní přehlídka, hudba z ženských prsou,
-            standup a dražba, u které se budeš bát zvednout ruku. Program postupně odhalujeme
+            Hot kocs všude. Na plátně i na mole. Možná i na mol. Hudba z ženských prsou,
+            stand-up i dražba, u který budou ruce hore jak když se babi zeptá, kdo chce
+            přidat. Program postupně odhalujeme
             na <a href="${BASE_URL}/cica-art-fest" style="color:#FE45E8;">webu</a>
             a <a href="https://www.instagram.com/podrazdena_cica/" style="color:#FE45E8;">Instagramu</a>.
         </p>
