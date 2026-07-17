@@ -231,6 +231,21 @@
             text-align: center;
             padding: 12px;
         }
+        .partner-slot.partner-logo {
+            background: #F5F5F5;
+            border: 1px solid #F5F5F5;
+            padding: 18px 22px;
+            transition: box-shadow 0.3s ease;
+        }
+        .partner-slot.partner-logo:hover {
+            box-shadow: 0 0 20px rgba(254, 69, 232, 0.35);
+        }
+        .partner-slot.partner-logo img {
+            max-width: 100%;
+            max-height: 52px;
+            width: auto;
+            height: auto;
+        }
         .partner-cta {
             text-align: center;
             margin-top: 40px;
@@ -507,14 +522,15 @@
             <h2 class="section-title reveal">Parťáci ČAF</h2>
             <p class="art-intro reveal">
                 Posíláme vděčnost všem bláznivým a odvážným, kteří v tom jedou
-                s náma. Jména a loga odhalíme, až zaschne inkoust na smlouvách.
+                s náma. Další jména a loga odhalíme, až zaschne inkoust na smlouvách.
             </p>
             <div class="partner-group reveal">
                 <h3>Partneři</h3>
                 <div class="partner-grid">
-                    <div class="partner-slot">brzy 🤫</div>
-                    <div class="partner-slot">brzy 🤫</div>
-                    <div class="partner-slot">tady může být tvoje logo</div>
+                    <a class="partner-slot partner-logo" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-label="Hůlkárna.cz">
+                        <img src="/images/partneri/hulkarna.png" alt="Hůlkárna.cz" loading="lazy" width="1021" height="216">
+                    </a>
+                    <div class="partner-slot">tady může být i vaše logo</div>
                 </div>
             </div>
             <div class="partner-group reveal">
