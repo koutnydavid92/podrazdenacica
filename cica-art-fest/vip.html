@@ -228,9 +228,15 @@
                 <div class="vip-tag">Potvrzeno</div>
                 <h1 class="vip-success-title">Jsi uvnitř. 🖤</h1>
                 <p class="vip-intro">
-                    Vstupenku s QR kódem ti pošleme na mail. U vchodu ji ukážeš,
-                    dostaneš VIP pásku a zbytek večera už je na tobě.
+                    Napiš, kam ti máme poslat vstupenku s QR kódem. U vchodu ji
+                    ukážeš, dostaneš VIP pásku a zbytek večera už je na tobě.
                 </p>
+                <form class="vip-form" id="ticketEmailForm" style="margin-top: 0; border-top: none; padding-top: 0;">
+                    <label for="glEmail">E-mail pro vstupenku</label>
+                    <input type="email" id="glEmail" name="email" autocomplete="email" placeholder="tvuj@mail.cz" required>
+                    <button class="btn-primary" type="submit">Poslat mi vstupenku</button>
+                    <p class="form-hint" id="ticketStatus" hidden style="margin-top: 12px; margin-bottom: 0;"></p>
+                </form>
                 <form class="vip-form" id="guestlistForm">
                     <h2>Ukaž se na guestlistu</h2>
                     <p class="form-hint">
@@ -346,6 +352,8 @@
             document.getElementById('glName').value = invite.full_name || '';
             if (invite.status === 'confirmed') {
                 show('confirmedView');
+                // Vracející se host: e-mail jen předvyplníme, neposíláme znovu.
+                startTicketEmail(false);
             } else if (invite.status === 'declined') {
                 show('declinedView');
             } else {
@@ -360,14 +368,9 @@
                 const r = await rpc('rsvp_invite', { invite_code: code, attending });
                 if (r && r.ok) {
                     show(nextView);
-                    if (attending) {
-                        // Vstupenka e-mailem (server pošle jen jednou, opakování neškodí)
-                        fetch('/api/send-ticket', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ code })
-                        }).catch(() => {});
-                    }
+                    // Čerstvé potvrzení: pokud e-mail zadal admin, vstupenka
+                    // odletí sama; jinak si ho host doplní ve formuláři níž.
+                    if (attending) startTicketEmail(true);
                 } else { fail(); }
             } catch (e) { fail(); }
             button.disabled = false;
@@ -379,6 +382,66 @@
             answer(false, 'declinedView', e.target));
         document.getElementById('changeMindButton').addEventListener('click', (e) =>
             answer(true, 'confirmedView', e.target));
+
+        // --- Vstupenka s QR na e-mail ---
+        // E-mail buď zadal admin u pozvánky (get_invite ho vrací a my ho
+        // předvyplníme), nebo ho tady doplní host. Uloží se přes set_invite_email
+        // a /api/send-ticket pošle QR vstupenku (server hlídá, ať jen jednou).
+        function setTicketStatus(msg) {
+            const s = document.getElementById('ticketStatus');
+            s.hidden = !msg;
+            s.textContent = msg || '';
+        }
+
+        function startTicketEmail(autoSend) {
+            const input = document.getElementById('glEmail');
+            if (invite && invite.email) {
+                input.value = invite.email;
+                if (autoSend) sendTicket(invite.email);
+            } else if (autoSend) {
+                setTicketStatus('');
+                input.focus();
+            }
+        }
+
+        async function sendTicket(email) {
+            email = (email || '').trim();
+            if (!email || email.indexOf('@') === -1) {
+                setTicketStatus('Zkontroluj e-mail, něco tam chybí.');
+                return;
+            }
+            const btn = document.querySelector('#ticketEmailForm button[type="submit"]');
+            btn.disabled = true;
+            setTicketStatus('Posílám vstupenku…');
+            try {
+                const saved = await rpc('set_invite_email', { invite_code: code, p_email: email });
+                if (!saved || !saved.ok) {
+                    setTicketStatus('E-mail se nepovedlo uložit, zkus to prosím znovu.');
+                    btn.disabled = false;
+                    return;
+                }
+                invite.email = email;
+                const res = await fetch('/api/send-ticket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const out = await res.json().catch(() => ({}));
+                if (out && out.sent) {
+                    setTicketStatus('Hotovo, vstupenka letí na ' + email + '. Mrkni i do spamu.');
+                } else {
+                    setTicketStatus('Vstupenku už máš poslanou na ' + email + '. Kdyby nedorazila, napiš nám.');
+                }
+            } catch (e) {
+                setTicketStatus('Něco se pokazilo, zkus to prosím za chvíli znovu.');
+            }
+            btn.disabled = false;
+        }
+
+        document.getElementById('ticketEmailForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            sendTicket(document.getElementById('glEmail').value);
+        });
 
         const bio = document.getElementById('glBio');
         bio.addEventListener('input', () => {

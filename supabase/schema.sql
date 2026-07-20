@@ -70,6 +70,7 @@ as $$
     select json_build_object(
         'greeting_name', greeting_name,
         'full_name', full_name,
+        'email', email,
         'status', status
     )
     from vip_invites
@@ -104,6 +105,37 @@ begin
         update tickets set status = 'cancelled'
         where invite_id = inv.id and status = 'valid';
     end if;
+
+    return json_build_object('ok', true);
+end;
+$$;
+
+-- Doplnění / oprava e-mailu na vstupenku (host ho zadá po potvrzení,
+-- pokud ho admin nevyplnil u pozvánky). Zapíše se na pozvánku i na
+-- ještě neodeslanou vstupenku, aby ji /api/send-ticket mohl poslat.
+create or replace function set_invite_email(invite_code text, p_email text)
+returns json
+language plpgsql security definer set search_path = public
+as $$
+declare
+    inv vip_invites%rowtype;
+    clean_email text;
+begin
+    select * into inv from vip_invites
+    where upper(code) = upper(trim(invite_code));
+
+    if inv.id is null or inv.status <> 'confirmed' then
+        return json_build_object('ok', false, 'error', 'not_confirmed');
+    end if;
+
+    clean_email := nullif(trim(p_email), '');
+    if clean_email is null or position('@' in clean_email) = 0 then
+        return json_build_object('ok', false, 'error', 'invalid_email');
+    end if;
+
+    update vip_invites set email = clean_email where id = inv.id;
+    update tickets set email = clean_email
+    where invite_id = inv.id and status <> 'cancelled' and email_sent_at is null;
 
     return json_build_object('ok', true);
 end;
