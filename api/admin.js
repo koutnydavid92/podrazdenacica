@@ -5,6 +5,7 @@
 //   {pin, action: 'create_invite', full_name, greeting_name, email} - nová VIP pozvánka
 const crypto = require('crypto');
 const { withDb, CAPACITY, currentPriceCzk } = require('./_lib');
+const { sendTicketEmail } = require('./_email');
 
 function pinOk(pin) {
     return Boolean(pin) && Boolean(process.env.ADMIN_PIN) && pin === process.env.ADMIN_PIN;
@@ -62,6 +63,54 @@ module.exports = async (req, res) => {
                     }
                 }
                 return { ok: false, error: 'code_collision' };
+            }
+
+            if (body.action === 'set_invite_email') {
+                const invCode = String(body.code || '').trim();
+                const email = String(body.email || '').trim();
+                if (!invCode) return { ok: false, error: 'missing_code' };
+                if (!email || email.indexOf('@') === -1) return { ok: false, error: 'invalid_email' };
+
+                const { rows: invRows } = await c.query(
+                    'select id, status, full_name, greeting_name, email from vip_invites where upper(code) = upper($1)',
+                    [invCode]
+                );
+                if (!invRows.length) return { ok: false, error: 'not_found' };
+                const inv = invRows[0];
+                const changed = (inv.email || '') !== email;
+
+                await c.query('update vip_invites set email = $2 where id = $1', [inv.id, email]);
+                await c.query(
+                    "update tickets set email = $2 where invite_id = $1 and status <> 'cancelled'",
+                    [inv.id, email]
+                );
+
+                // Potvrzená pozvánka: pošli QR vstupenku hned. Znovu jen když
+                // admin e-mail opravil (jinak by opakovaný klik posílal duplicitně).
+                let sent = false;
+                if (inv.status === 'confirmed') {
+                    const { rows: tRows } = await c.query(
+                        `select id, qr_token, ticket_no, email_sent_at from tickets
+                         where invite_id = $1 and status <> 'cancelled'`,
+                        [inv.id]
+                    );
+                    const toSend = tRows.filter(t => !t.email_sent_at || changed);
+                    if (toSend.length) {
+                        await sendTicketEmail({
+                            to: email,
+                            name: inv.full_name,
+                            greetingName: inv.greeting_name,
+                            tickets: toSend,
+                            isVip: true
+                        });
+                        await c.query(
+                            'update tickets set email_sent_at = now() where id = any($1)',
+                            [toSend.map(r => r.id)]
+                        );
+                        sent = true;
+                    }
+                }
+                return { ok: true, sent, status: inv.status };
             }
 
             // overview (výchozí)

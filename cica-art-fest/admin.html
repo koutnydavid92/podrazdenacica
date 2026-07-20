@@ -196,13 +196,17 @@
             ].map(t => `<div class="tile"><div class="num">${t[0]}</div><div class="label">${t[1]}</div></div>`).join('');
 
             el('invitesTable').innerHTML =
-                '<tr><th>Jméno</th><th>Kód / odkaz</th><th>Stav</th><th></th></tr>'
+                '<tr><th>Jméno</th><th>E-mail (vstupenka)</th><th>Kód / odkaz</th><th>Stav</th><th></th></tr>'
                 + data.invites.map(i => {
                     const link = 'https://www.podrazdenacica.cz/cica-art-fest/vip?kod=' + i.code;
                     const pill = i.status === 'confirmed' ? '<span class="pill ok">přijde</span>'
                         : i.status === 'declined' ? '<span class="pill bad">nedá to</span>'
                         : '<span class="pill">mlčí</span>';
-                    return `<tr><td>${esc(i.full_name)}<br><span class="muted">${esc(i.email || '')}</span></td>`
+                    const sendLabel = i.status === 'confirmed' ? 'Uložit a poslat' : 'Uložit';
+                    return `<tr><td>${esc(i.full_name)}</td>`
+                        + `<td><input type="email" class="inv-email" data-code="${esc(i.code)}" value="${esc(i.email || '')}" placeholder="doplnit e-mail" style="min-width:170px;padding:6px 8px;font-size:0.85rem;">`
+                        + `<div style="margin-top:6px;"><button class="rowbtn inv-email-save" data-code="${esc(i.code)}" type="button">${sendLabel}</button></div>`
+                        + `<div class="muted inv-email-msg" data-msgfor="${esc(i.code)}" style="font-size:0.75rem;margin-top:4px;"></div></td>`
                         + `<td>${esc(i.code)}</td><td>${pill}<br><span class="muted">${fmtDate(i.responded_at)}</span></td>`
                         + `<td><button class="rowbtn" data-copy="${esc(link)}" type="button">Kopírovat odkaz</button></td></tr>`;
                 }).join('');
@@ -236,6 +240,29 @@
                 b.addEventListener('click', async () => {
                     await api({ action: 'toggle_guestlist', id: b.dataset.toggle });
                     await load();
+                }));
+            document.querySelectorAll('.inv-email-save').forEach(b =>
+                b.addEventListener('click', async () => {
+                    const code = b.dataset.code;
+                    const input = document.querySelector('.inv-email[data-code="' + CSS.escape(code) + '"]');
+                    const msg = document.querySelector('.inv-email-msg[data-msgfor="' + CSS.escape(code) + '"]');
+                    const email = input.value.trim();
+                    if (!email || email.indexOf('@') === -1) { msg.textContent = 'Neplatný e-mail.'; return; }
+                    b.disabled = true;
+                    msg.textContent = 'Ukládám…';
+                    try {
+                        const r = await api({ action: 'set_invite_email', code, email });
+                        if (r.ok) {
+                            msg.textContent = r.sent ? 'Uloženo, vstupenka odeslána. 🖤'
+                                : r.status === 'confirmed' ? 'Uloženo. Vstupenka už byla odeslána dřív.'
+                                : 'Uloženo. Vstupenka odejde, až host potvrdí.';
+                        } else {
+                            msg.textContent = 'Chyba: ' + (r.error || 'neznámá');
+                        }
+                    } catch (e) {
+                        msg.textContent = 'Chyba serveru, zkus to znovu.';
+                    }
+                    b.disabled = false;
                 }));
         }
 
