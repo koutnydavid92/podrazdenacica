@@ -119,6 +119,7 @@ module.exports = async (req, res) => {
                 capacity: CAPACITY,
                 price: currentPriceCzk(),
                 sold: (await one("select count(*)::int as n from tickets where type='public' and status <> 'cancelled'")).n,
+                occupied: (await one("select count(*)::int as n from tickets where status <> 'cancelled'")).n,
                 vip_confirmed: (await one("select count(*)::int as n from vip_invites where status='confirmed'")).n,
                 vip_declined: (await one("select count(*)::int as n from vip_invites where status='declined'")).n,
                 vip_pending: (await one("select count(*)::int as n from vip_invites where status='invited'")).n,

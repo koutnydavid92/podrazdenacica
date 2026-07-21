@@ -2,7 +2,7 @@
 // Vercel nevystavuje jako endpointy).
 const { Client } = require('pg');
 
-const CAPACITY = 200;
+const CAPACITY = 250;
 const PRICE_CZK = 666;          // early bird
 const PRICE_LATE_CZK = 777;     // od 15. 8. 2026
 const EARLY_BIRD_UNTIL = new Date('2026-08-15T00:00:00+02:00');
@@ -25,12 +25,12 @@ async function withDb(fn) {
     }
 }
 
-// Kolik veřejných vstupenek je ještě volných
+// Kolik míst zbývá z celkové kapacity (VIP i veřejné dohromady)
 async function remainingPublic(client) {
     const { rows } = await client.query(
-        "select count(*)::int as sold from tickets where type = 'public' and status <> 'cancelled'"
+        "select count(*)::int as taken from tickets where status <> 'cancelled'"
     );
-    return CAPACITY - rows[0].sold;
+    return CAPACITY - rows[0].taken;
 }
 
 // Vytvoří vstupenky po zaplacení. Idempotentní: když už pro session

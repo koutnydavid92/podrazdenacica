@@ -186,7 +186,8 @@
         function render() {
             const s = data.stats;
             el('tiles').innerHTML = [
-                [s.sold + ' / ' + s.capacity, 'prodáno vstupenek'],
+                [s.occupied + ' / ' + s.capacity, 'obsazená místa (VIP + prodej)'],
+                [s.sold, 'prodané vstupenky'],
                 [s.revenue.toLocaleString('cs-CZ') + ' Kč', 'tržba'],
                 [s.vip_confirmed, 'VIP potvrzeno'],
                 [s.vip_pending, 'VIP mlčí'],

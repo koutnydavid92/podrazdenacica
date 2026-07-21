@@ -37,7 +37,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Číča Art Fest – umění, power bitches a jedna divoká noc">
-    <meta property="og:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně. Vstupenka za 666 Kč, jen 200 kusů.">
+    <meta property="og:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně. Vstupenka za 666 Kč, jen 250 míst.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.podrazdenacica.cz/cica-art-fest">
     <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-image.jpg">
@@ -468,7 +468,7 @@
             <h2 class="section-title reveal">Vstupenky</h2>
             <div class="pricing-grid">
                 <div class="pricing-card featured reveal" data-delay="0">
-                    <div class="pricing-badge" id="remainingBadge">Zbývá 200 kusů</div>
+                    <div class="pricing-badge" id="remainingBadge">Zbývá 250 kusů</div>
                     <h3>Vstupenka na Číča Art Fest</h3>
                     <p class="pricing-tagline">
                         Vstup do světa bohyň, ze kterého se ti nebude chtít odejít.
@@ -595,7 +595,7 @@
                     <h3>Můžu koupit vstupenky pro celou smečku?</h3>
                     <p>
                         Jasně. Každá vstupenka má vlastní QR kód, takže klidně kup
-                        čtyři a rozdej je. Jen pozor, je jich celkem 200 a víc nebude.
+                        čtyři a rozdej je. Jen pozor, míst je celkem 250 a víc nebude.
                     </p>
                 </div>
                 <div class="faq-item reveal">
@@ -739,7 +739,7 @@
             try {
                 const res = await fetch('/api/checkout', { method: 'POST' });
                 if (res.status === 409) {
-                    buyButton.textContent = 'Vyprodáno. 200 lidí bylo rychlejších.';
+                    buyButton.textContent = 'Vyprodáno. 250 lidí bylo rychlejších.';
                     return;
                 }
                 const data = await res.json();

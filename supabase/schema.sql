@@ -272,11 +272,10 @@ as $$
     where qr_token = p_qr_token;
 $$;
 
--- Kolik veřejných vstupenek zbývá (pro počítadlo na webu)
+-- Kolik míst zbývá z celkové kapacity 250 (VIP i veřejné dohromady)
 create or replace function get_tickets_remaining()
 returns integer
 language sql security definer set search_path = public
 as $$
-    select 200 - count(*)::integer from tickets
-    where type = 'public' and status <> 'cancelled';
+    select 250 - count(*)::integer from tickets where status <> 'cancelled';
 $$;
