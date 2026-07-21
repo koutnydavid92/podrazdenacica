@@ -38,6 +38,7 @@ module.exports = async (req, res) => {
                 }
             }],
             metadata: { event: 'cica-art-fest' },
+            allow_promotion_codes: true,
             success_url: origin + '/cica-art-fest/dekuji?session_id={CHECKOUT_SESSION_ID}',
             cancel_url: origin + '/cica-art-fest#vstupenky'
         });
