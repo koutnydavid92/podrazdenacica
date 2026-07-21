@@ -170,7 +170,7 @@
                 </p>
             </div>
             <p class="guestlist-count" id="guestlistCount" hidden>
-                Uvnitř už je <strong id="guestlistTotal">0</strong> lidí. Tihle se nestydí:
+                Uvnitř už je <strong id="guestlistTotal">0</strong> lidí. Tihle jsou rádi na očích:
             </p>
             <div class="guestlist-grid" id="guestlistGrid" hidden></div>
             <div class="guestlist-empty" id="guestlistEmpty">
@@ -245,7 +245,7 @@
             const verb = (total >= 2 && total <= 4) ? 'jsou' : 'je';
             const noun = total === 1 ? 'člověk' : (total <= 4 ? 'lidi' : 'lidí');
             document.getElementById('guestlistCount').innerHTML =
-                `Uvnitř už ${verb} <strong>${total}</strong> ${noun}. Tihle se nestydí:`;
+                `Uvnitř už ${verb} <strong>${total}</strong> ${noun}. Tihle jsou rádi na očích:`;
             document.getElementById('guestlistCount').hidden = false;
             grid.hidden = false;
             document.getElementById('guestlistEmpty').hidden = true;

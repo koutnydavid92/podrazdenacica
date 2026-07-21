@@ -250,6 +250,29 @@
             text-align: center;
             margin-top: 40px;
         }
+        #festMap {
+            height: 420px;
+            max-width: 920px;
+            margin: 32px auto 0;
+            border: 1px solid var(--divider);
+            border-radius: 16px;
+            background: var(--bg-card);
+        }
+        #festMap .leaflet-popup-content-wrapper,
+        #festMap .leaflet-popup-tip {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        .cica-marker {
+            filter: drop-shadow(0 0 12px rgba(254, 69, 232, 0.8));
+        }
+        .map-cta {
+            text-align: center;
+            margin-top: 28px;
+        }
+        @media (max-width: 600px) {
+            #festMap { height: 320px; }
+        }
         .guestlist-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -501,7 +524,7 @@
                 Ať víš, s kým počítat na baru a parketu.
             </p>
             <p class="guestlist-count reveal" id="guestlistCount" hidden>
-                Uvnitř už je <strong id="guestlistTotal">0</strong> lidí. Tihle se nestydí:
+                Uvnitř už je <strong id="guestlistTotal">0</strong> lidí. Tihle jsou rádi na očích:
             </p>
             <div class="guestlist-grid" id="guestlistGrid" hidden></div>
             <div class="guestlist-more" id="guestlistMore" hidden>
@@ -605,6 +628,21 @@
                         prodej kámošce, QR kód platí bez ohledu na jméno.
                     </p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mapa -->
+    <section id="mapa">
+        <div class="container">
+            <h2 class="section-title reveal">Kde to celý vypukne</h2>
+            <p class="art-intro reveal">
+                CO.LABS, sokolský stadion, vchod z Kounicovy 20. Číča na mapě
+                ukazuje přesně tam, kde 28. 8. povede každý rozumný krok.
+            </p>
+            <div id="festMap" class="reveal" aria-label="Mapa s vyznačeným místem konání CO.LABS"></div>
+            <div class="map-cta reveal">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=49.20295,16.60075" target="_blank" rel="noopener" class="btn-primary">Navigovat k číče</a>
             </div>
         </div>
     </section>
@@ -793,7 +831,7 @@
             const verb = (total >= 2 && total <= 4) ? 'jsou' : 'je';
             const noun = total === 1 ? 'člověk' : (total <= 4 ? 'lidi' : 'lidí');
             document.getElementById('guestlistCount').innerHTML =
-                `Uvnitř už ${verb} <strong>${total}</strong> ${noun}. Tihle se nestydí:`;
+                `Uvnitř už ${verb} <strong>${total}</strong> ${noun}. Tihle jsou rádi na očích:`;
             document.getElementById('guestlistCount').hidden = false;
             grid.hidden = false;
             document.getElementById('guestlistEmpty').hidden = true;
@@ -837,6 +875,53 @@
                 }
             }).catch(() => {});
         }
+        })();
+    </script>
+
+    <script>
+        // Mapa: Leaflet (OpenStreetMap) se načte líně, až když se k sekci
+        // uživatel blíží - nezpomaluje načtení stránky.
+        (function() {
+            var mapReady = false;
+            function initMap() {
+                if (mapReady) return;
+                mapReady = true;
+                var css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+                document.head.appendChild(css);
+                var js = document.createElement('script');
+                js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                js.onload = function() {
+                    var poloha = [49.20295, 16.60075];
+                    var map = L.map('festMap', { scrollWheelZoom: false }).setView(poloha, 16);
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                        maxZoom: 19
+                    }).addTo(map);
+                    var cica = L.icon({
+                        iconUrl: '/images/logo.png',
+                        iconSize: [77, 70],
+                        iconAnchor: [38, 66],
+                        popupAnchor: [0, -66],
+                        className: 'cica-marker'
+                    });
+                    L.marker(poloha, { icon: cica }).addTo(map)
+                        .bindPopup('<strong>CO.LABS · co.labs_park</strong><br>vchod z Kounicovy 20, Brno');
+                };
+                document.head.appendChild(js);
+            }
+            var mapSection = document.getElementById('mapa');
+            if ('IntersectionObserver' in window && mapSection) {
+                var obs = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(e) {
+                        if (e.isIntersecting) { initMap(); obs.disconnect(); }
+                    });
+                }, { rootMargin: '400px' });
+                obs.observe(mapSection);
+            } else {
+                initMap();
+            }
         })();
     </script>
 
