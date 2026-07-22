@@ -65,6 +65,32 @@ module.exports = async (req, res) => {
                 return { ok: false, error: 'code_collision' };
             }
 
+            if (body.action === 'update_invite') {
+                const invCode = String(body.code || '').trim();
+                const fullName = String(body.full_name || '').trim();
+                const greeting = String(body.greeting_name || '').trim();
+                if (!invCode) return { ok: false, error: 'missing_code' };
+                if (!fullName || !greeting) return { ok: false, error: 'missing_fields' };
+
+                const { rows } = await c.query(
+                    'select id from vip_invites where upper(code) = upper($1)',
+                    [invCode]
+                );
+                if (!rows.length) return { ok: false, error: 'not_found' };
+
+                await c.query(
+                    'update vip_invites set full_name = $2, greeting_name = $3 where id = $1',
+                    [rows[0].id, fullName, greeting]
+                );
+                // jméno se propíše i na případnou vstupenku (guestlist nechávám,
+                // ten si host vyplňuje sám)
+                await c.query(
+                    "update tickets set name = $2 where invite_id = $1 and status <> 'cancelled'",
+                    [rows[0].id, fullName]
+                );
+                return { ok: true };
+            }
+
             if (body.action === 'set_invite_email') {
                 const invCode = String(body.code || '').trim();
                 const email = String(body.email || '').trim();

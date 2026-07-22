@@ -204,7 +204,10 @@
                         : i.status === 'declined' ? '<span class="pill bad">nedá to</span>'
                         : '<span class="pill">mlčí</span>';
                     const sendLabel = i.status === 'confirmed' ? 'Uložit a poslat' : 'Uložit';
-                    return `<tr><td>${esc(i.full_name)}</td>`
+                    return `<tr><td><input type="text" class="inv-name" data-code="${esc(i.code)}" value="${esc(i.full_name)}" placeholder="celé jméno" style="min-width:150px;padding:6px 8px;font-size:0.85rem;">`
+                        + `<input type="text" class="inv-greeting" data-code="${esc(i.code)}" value="${esc(i.greeting_name || '')}" placeholder="oslovení (5. pád)" style="min-width:150px;padding:6px 8px;font-size:0.85rem;margin-top:6px;">`
+                        + `<div style="margin-top:6px;"><button class="rowbtn inv-name-save" data-code="${esc(i.code)}" type="button">Uložit jméno</button></div>`
+                        + `<div class="muted inv-name-msg" data-namemsgfor="${esc(i.code)}" style="font-size:0.75rem;margin-top:4px;"></div></td>`
                         + `<td><input type="email" class="inv-email" data-code="${esc(i.code)}" value="${esc(i.email || '')}" placeholder="doplnit e-mail" style="min-width:170px;padding:6px 8px;font-size:0.85rem;">`
                         + `<div style="margin-top:6px;"><button class="rowbtn inv-email-save" data-code="${esc(i.code)}" type="button">${sendLabel}</button></div>`
                         + `<div class="muted inv-email-msg" data-msgfor="${esc(i.code)}" style="font-size:0.75rem;margin-top:4px;"></div></td>`
@@ -241,6 +244,25 @@
                 b.addEventListener('click', async () => {
                     await api({ action: 'toggle_guestlist', id: b.dataset.toggle });
                     await load();
+                }));
+            document.querySelectorAll('.inv-name-save').forEach(b =>
+                b.addEventListener('click', async () => {
+                    const code = b.dataset.code;
+                    const nameInput = document.querySelector('.inv-name[data-code="' + CSS.escape(code) + '"]');
+                    const greetInput = document.querySelector('.inv-greeting[data-code="' + CSS.escape(code) + '"]');
+                    const msg = document.querySelector('.inv-name-msg[data-namemsgfor="' + CSS.escape(code) + '"]');
+                    const full_name = nameInput.value.trim();
+                    const greeting_name = greetInput.value.trim();
+                    if (!full_name || !greeting_name) { msg.textContent = 'Vyplň jméno i oslovení.'; return; }
+                    b.disabled = true;
+                    msg.textContent = 'Ukládám…';
+                    try {
+                        const r = await api({ action: 'update_invite', code, full_name, greeting_name });
+                        msg.textContent = r.ok ? 'Jméno upraveno. 🖤' : 'Chyba: ' + (r.error || 'neznámá');
+                    } catch (e) {
+                        msg.textContent = 'Výpadek spojení, zkus to znovu.';
+                    }
+                    b.disabled = false;
                 }));
             document.querySelectorAll('.inv-email-save').forEach(b =>
                 b.addEventListener('click', async () => {
