@@ -246,6 +246,13 @@
             width: auto;
             height: auto;
         }
+        /* čtvercová loga potřebují víc výšky, jinak zaniknou */
+        .partner-slot.partner-logo.logo-square {
+            padding: 8px 22px;
+        }
+        .partner-slot.partner-logo.logo-square img {
+            max-height: 76px;
+        }
         .partner-cta {
             text-align: center;
             margin-top: 40px;
@@ -552,6 +559,9 @@
                 <div class="partner-grid">
                     <a class="partner-slot partner-logo" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-label="Hůlkárna.cz">
                         <img src="/images/partneri/hulkarna.png" alt="Hůlkárna.cz" loading="lazy" width="1021" height="216">
+                    </a>
+                    <a class="partner-slot partner-logo logo-square" href="https://www.rozkosss.cz" target="_blank" rel="noopener" aria-label="Rozkoššš">
+                        <img src="/images/partneri/rozkosss.png" alt="Rozkoššš" loading="lazy" width="397" height="600">
                     </a>
                     <div class="partner-slot">tady může být i vaše logo</div>
                 </div>
