@@ -217,6 +217,13 @@
                     <span>📍 co.labs_park, Brno</span>
                     <span>🎟️ VIP vstup zdarma</span>
                 </div>
+                <div class="vip-form" id="inviteEmailWrap" hidden style="margin-top: 0; border-top: none; padding-top: 0; margin-bottom: 22px;">
+                    <label for="inviteEmail">E-mail, kam ti pošleme vstupenku s QR kódem</label>
+                    <input type="email" id="inviteEmail" name="email" autocomplete="email" placeholder="tvuj@mail.cz">
+                    <p class="form-hint" id="inviteEmailHint" hidden style="color: var(--accent-neon); margin-top: 8px; margin-bottom: 0;">
+                        Bez e-mailu ti nemáme jak poslat vstupenku. Doplň ho prosím.
+                    </p>
+                </div>
                 <div class="vip-buttons">
                     <button class="btn-primary" id="confirmButton" type="button" style="border: none; cursor: pointer; font-size: 1rem;">Jasně že přijdu</button>
                 </div>
@@ -357,20 +364,42 @@
             } else if (invite.status === 'declined') {
                 show('declinedView');
             } else {
+                // E-mail je povinný: bez něj nemá jak dorazit vstupenka.
+                // Pole ukazujeme jen hostům, u kterých e-mail ještě neznáme.
+                if (!invite.email) {
+                    document.getElementById('inviteEmailWrap').hidden = false;
+                }
                 show('inviteView');
             }
         }
         init();
 
         async function answer(attending, nextView, button) {
+            // Potvrzení bez známého e-mailu neprojde - vstupenka by neměla kam dojít.
+            let freshEmail = '';
+            if (attending && invite && !invite.email) {
+                const input = document.getElementById('inviteEmail');
+                const hint = document.getElementById('inviteEmailHint');
+                freshEmail = (input ? input.value : '').trim();
+                if (!freshEmail || freshEmail.indexOf('@') === -1 || freshEmail.indexOf('.') === -1) {
+                    if (hint) hint.hidden = false;
+                    if (input) input.focus();
+                    return;
+                }
+                if (hint) hint.hidden = true;
+            }
             button.disabled = true;
             try {
                 const r = await rpc('rsvp_invite', { invite_code: code, attending });
                 if (r && r.ok) {
                     show(nextView);
-                    // Čerstvé potvrzení: pokud e-mail zadal admin, vstupenka
-                    // odletí sama; jinak si ho host doplní ve formuláři níž.
-                    if (attending) startTicketEmail(true);
+                    if (attending && freshEmail) {
+                        // host právě zadal e-mail: uložit a rovnou poslat vstupenku
+                        sendTicket(freshEmail);
+                    } else if (attending) {
+                        // e-mail známe od admina: vstupenka odletí sama
+                        startTicketEmail(true);
+                    }
                 } else { fail(); }
             } catch (e) { fail(); }
             button.disabled = false;
