@@ -31,13 +31,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="facebook-domain-verification" content="3mrz0u1ks3xajz36mj3w59r4qbwx8h" />
-    <title>Hravé nudesky – obraz z tvojí nude fotky | Podrážděná číča</title>
-    <meta name="description" content="Hravé nudesky – moneyfestační obraz podle tvojí nude fotky s magnetickými doplňky. Pošli fotku, nebo přijď na workshop s focením do ateliéru v Brně.">
+    <title>Hravé nudesky: tvoje nude fotka jako drzý obraz | Podrážděná číča</title>
+    <meta name="description" content="Tvoje nahota jako moneyfestační obraz s magnetickými doplňky, které si přecvakneš podle nálady. Pošli fotku, nebo přijď na focení do ateliéru v Brně. Mňau.">
     <link rel="canonical" href="https://www.podrazdenacica.cz/hrave-nudesky">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Hravé nudesky – obraz z tvojí nude fotky">
-    <meta property="og:description" content="Tvoje nahota v neon růžové. Obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
+    <meta property="og:description" content="Tvoje nahota jako obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.podrazdenacica.cz/hrave-nudesky">
     <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-nudesky.jpg">
@@ -47,7 +47,7 @@
     <!-- Twitter/X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Hravé nudesky – obraz z tvojí nude fotky">
-    <meta name="twitter:description" content="Tvoje nahota v neon růžové. Obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
+    <meta name="twitter:description" content="Tvoje nahota jako obraz s magnetickou fólií a doplňky, které si přecvakáváš podle nálady.">
     <meta name="twitter:image" content="https://www.podrazdenacica.cz/images/og-nudesky.jpg">
 
     <!-- Strukturovaná data -->
@@ -598,10 +598,14 @@
             nudeskaVideos.forEach(v => videoObserver.observe(v));
         }
 
-        // ---- Event tracking do GTM (dataLayer) ----
+        // ---- Event tracking do GTM (dataLayer) i přímo do GA4 (gtag) ----
+        // gtag pošle event do GA4 nezávisle na konfiguraci GTM (po souhlasu
+        // s cookies). Kdyby se v GTM přidal tag přeposílající stejný event
+        // do GA4, počítal by se dvakrát - v GTM ho nechávat jen pro pixely.
         const track = (event, params) => {
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push(Object.assign({ event }, params));
+            if (typeof gtag === 'function') gtag('event', event, params);
         };
 
         // CTA kliknutí: označená tlačítka (data-cta) + všechny mailto/IG odkazy.

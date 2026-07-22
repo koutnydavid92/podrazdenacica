@@ -773,13 +773,17 @@
             buyButton.textContent = 'Chci lupen';
         }
         buyButton.addEventListener('click', async () => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                event: 'cta_click',
+            // Event jde do GTM (dataLayer) i přímo do GA4 (gtag), aby se
+            // neztratil, když v GTM chybí přeposílací tag. Nepřidávat ho
+            // tedy do GTM podruhé - počítal by se dvakrát.
+            const ctaParams = {
                 cta_text: buyButton.textContent.trim(),
                 cta_type: SALE_OPEN ? 'fest_buy' : 'fest_buy_soon',
                 cta_page: window.location.pathname
-            });
+            };
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign({ event: 'cta_click' }, ctaParams));
+            if (typeof gtag === 'function') gtag('event', 'cta_click', ctaParams);
             if (!SALE_OPEN) {
                 window.location.href = '/#newsletter';
                 return;
@@ -805,16 +809,17 @@
             }
         });
 
-        // Měření CTA kliknutí do GTM (mailto + Instagram DM)
+        // Měření CTA kliknutí (mailto + Instagram DM) do GTM i přímo do GA4
         document.querySelectorAll('a[href^="mailto:"], a[href*="instagram.com"]').forEach(a => {
             a.addEventListener('click', () => {
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({
-                    event: 'cta_click',
+                const linkParams = {
                     cta_text: a.textContent.trim().substring(0, 60),
                     cta_type: a.href.startsWith('mailto:') ? 'mailto' : 'instagram',
                     cta_page: window.location.pathname
-                });
+                };
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push(Object.assign({ event: 'cta_click' }, linkParams));
+                if (typeof gtag === 'function') gtag('event', 'cta_click', linkParams);
             });
         });
         }); // End requestAnimationFrame
