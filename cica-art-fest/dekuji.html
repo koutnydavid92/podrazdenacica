@@ -34,6 +34,21 @@
     <title>Máš to! – Číča Art Fest | Podrážděná číča</title>
     <meta name="description" content="Potvrzení nákupu vstupenky na Číča Art Fest.">
 
+    <!-- Google Analytics - loads only after consent (stejně jako ostatní stránky) -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+            var gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-R06FFJPHLK';
+            document.head.appendChild(gaScript);
+            gtag('js', new Date());
+            gtag('config', 'G-R06FFJPHLK');
+        }
+    </script>
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
@@ -292,8 +307,24 @@
                             'U vchodu je ukážete, dostanete pásky a zbytek večera je na vás.';
                     }
                     show('paidView');
+                    // purchase_complete jde do GTM (pixely), standardní purchase
+                    // přímo do GA4 - transaction_id = Stripe session, takže GA4
+                    // stejný nákup nezapočítá dvakrát ani po obnovení stránky.
+                    const TICKET_PRICE = 666; // Kč, drž v souladu s ceníkem na /cica-art-fest
                     window.dataLayer = window.dataLayer || [];
                     window.dataLayer.push({ event: 'purchase_complete', tickets: info.count });
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'purchase', {
+                            transaction_id: sessionId,
+                            value: TICKET_PRICE * info.count,
+                            currency: 'CZK',
+                            items: [{
+                                item_name: 'Vstupenka Číča Art Fest',
+                                price: TICKET_PRICE,
+                                quantity: info.count
+                            }]
+                        });
+                    }
                     return;
                 }
                 await new Promise(r => setTimeout(r, 2000));
