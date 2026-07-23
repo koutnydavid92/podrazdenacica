@@ -175,6 +175,7 @@
                 body: JSON.stringify(Object.assign({ pin }, payload))
             });
             if (res.status === 401) throw new Error('bad_pin');
+            if (res.status === 429) throw new Error('rate_limited');
             if (!res.ok) throw new Error('server');
             return res.json();
         }
@@ -304,6 +305,9 @@
                 el('pinView').hidden = true;
                 el('dashView').hidden = false;
             } catch (e) {
+                el('pinError').textContent = e.message === 'rate_limited'
+                    ? 'Moc pokusů. Počkej 15 minut a zkus to znovu.'
+                    : 'Špatný PIN.';
                 el('pinError').hidden = false;
             }
         }

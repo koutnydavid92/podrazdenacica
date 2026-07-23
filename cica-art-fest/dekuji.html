@@ -45,7 +45,10 @@
             gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-R06FFJPHLK';
             document.head.appendChild(gaScript);
             gtag('js', new Date());
-            gtag('config', 'G-R06FFJPHLK');
+            // page_location bez query stringu - session_id nesmí do analytiky
+            gtag('config', 'G-R06FFJPHLK', {
+                page_location: window.location.origin + window.location.pathname
+            });
         }
     </script>
 
@@ -259,8 +262,18 @@
 
     <script src="/cica-art-fest/config.js"></script>
     <script>
+        // session_id nepatří do adresy (jde přes něj dohledat jméno a e-mail
+        // kupujícího) - hned ho schováme do sessionStorage a z URL smažeme,
+        // ať se nedostane do historie ani do analytiky. Obnovení stránky
+        // funguje dál, ID se vezme ze sessionStorage.
         const params = new URLSearchParams(window.location.search);
-        const sessionId = (params.get('session_id') || '').trim();
+        let sessionId = (params.get('session_id') || '').trim();
+        if (sessionId) {
+            try { sessionStorage.setItem('cafSessionId', sessionId); } catch (e) {}
+            history.replaceState(null, '', window.location.pathname);
+        } else {
+            try { sessionId = (sessionStorage.getItem('cafSessionId') || '').trim(); } catch (e) {}
+        }
 
         const views = ['loadingView', 'paidView', 'doneView', 'pendingView'];
         function show(id) {

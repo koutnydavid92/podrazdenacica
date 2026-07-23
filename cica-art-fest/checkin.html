@@ -147,6 +147,7 @@
                 body: JSON.stringify(Object.assign({ pin }, payload))
             });
             if (res.status === 401) throw new Error('bad_pin');
+            if (res.status === 429) throw new Error('rate_limited');
             if (!res.ok) throw new Error('server');
             return res.json();
         }
@@ -189,7 +190,9 @@
             try {
                 showResult(await api({ token: text.trim() }));
             } catch (e) {
-                alert(e.message === 'bad_pin' ? 'PIN přestal platit, načti stránku znovu.' : 'Výpadek spojení, zkus to znovu.');
+                alert(e.message === 'bad_pin' ? 'PIN přestal platit, načti stránku znovu.'
+                    : e.message === 'rate_limited' ? 'Moc pokusů o PIN, počkej 15 minut.'
+                    : 'Výpadek spojení, zkus to znovu.');
                 resume();
             }
         }
@@ -225,6 +228,9 @@
                 el('scanView').hidden = false;
                 startScanner();
             } catch (e) {
+                el('pinError').textContent = e.message === 'rate_limited'
+                    ? 'Moc pokusů. Počkej 15 minut a zkus to znovu.'
+                    : 'Špatný PIN.';
                 el('pinError').hidden = false;
             }
         }

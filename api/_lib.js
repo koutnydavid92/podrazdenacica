@@ -1,5 +1,6 @@
 // Sdílená logika pro Číča Art Fest API (soubory s podtržítkem
 // Vercel nevystavuje jako endpointy).
+const crypto = require('crypto');
 const { Client } = require('pg');
 
 const CAPACITY = 250;
@@ -57,4 +58,40 @@ async function fulfillSession(client, session, quantity) {
     return { created: quantity, already: 0 };
 }
 
-module.exports = { CAPACITY, PRICE_CZK, PRICE_LATE_CZK, currentPriceCzk, withDb, remainingPublic, fulfillSession };
+// Porovnání PINu v konstantním čase (žádné měření odezvy nenapoví délku ani obsah)
+function pinEquals(given, expected) {
+    const a = Buffer.from(String(given || ''));
+    const b = Buffer.from(String(expected || ''));
+    return a.length === b.length && a.length > 0 && crypto.timingSafeEqual(a, b);
+}
+
+function clientIp(req) {
+    const fwd = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    return fwd || (req.socket && req.socket.remoteAddress) || 'unknown';
+}
+
+// Rate limit hádání PINu: PIN může být krátký (brigádníci u vchodu),
+// brute force zastaví limity - 8 neúspěchů z jedné IP za 15 minut,
+// globální pojistka 100 neúspěchů za hodinu (proti rotaci IP adres).
+async function pinRateLimited(client, ip) {
+    const { rows } = await client.query(
+        `select
+            (select count(*)::int from pin_attempts
+              where ip = $1 and attempted_at > now() - interval '15 minutes') as from_ip,
+            (select count(*)::int from pin_attempts
+              where attempted_at > now() - interval '1 hour') as global`,
+        [ip]
+    );
+    return rows[0].from_ip >= 8 || rows[0].global >= 100;
+}
+
+async function recordPinFailure(client, ip, endpoint) {
+    await client.query('insert into pin_attempts (ip, endpoint) values ($1, $2)', [ip, endpoint]);
+    // úklid, ať tabulka neroste donekonečna
+    await client.query("delete from pin_attempts where attempted_at < now() - interval '2 days'");
+}
+
+module.exports = {
+    CAPACITY, PRICE_CZK, PRICE_LATE_CZK, currentPriceCzk, withDb, remainingPublic,
+    fulfillSession, pinEquals, clientIp, pinRateLimited, recordPinFailure
+};

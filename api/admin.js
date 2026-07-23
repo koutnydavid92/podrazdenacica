@@ -4,11 +4,11 @@
 //   {pin, action: 'toggle_guestlist', id}            - skrýt/ukázat záznam guestlistu
 //   {pin, action: 'create_invite', full_name, greeting_name, email} - nová VIP pozvánka
 const crypto = require('crypto');
-const { withDb, CAPACITY, currentPriceCzk } = require('./_lib');
+const { withDb, CAPACITY, currentPriceCzk, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
 const { sendTicketEmail } = require('./_email');
 
 function pinOk(pin) {
-    return Boolean(pin) && Boolean(process.env.ADMIN_PIN) && pin === process.env.ADMIN_PIN;
+    return pinEquals(pin, process.env.ADMIN_PIN);
 }
 
 // Kód pozvánky: KATKA-X7QF (jméno + náhodný ocásek, bez matoucích znaků)
@@ -30,12 +30,15 @@ module.exports = async (req, res) => {
         return;
     }
     const body = req.body || {};
-    if (!pinOk(body.pin)) {
-        res.status(401).json({ error: 'bad_pin' });
-        return;
-    }
+    const ip = clientIp(req);
     try {
         const out = await withDb(async (c) => {
+            // Rate limit před ověřením PINu - krátký PIN chrání počítadlo pokusů
+            if (await pinRateLimited(c, ip)) return { __status: 429, error: 'rate_limited' };
+            if (!pinOk(body.pin)) {
+                await recordPinFailure(c, ip, 'admin');
+                return { __status: 401, error: 'bad_pin' };
+            }
             if (body.action === 'toggle_guestlist') {
                 const { rows } = await c.query(
                     'update guestlist set visible = not visible where id = $1 returning id, visible',
@@ -173,7 +176,9 @@ module.exports = async (req, res) => {
 
             return { ok: true, stats, invites, guestlist, tickets };
         });
-        res.status(200).json(out);
+        const status = out.__status || 200;
+        delete out.__status;
+        res.status(status).json(out);
     } catch (e) {
         console.error('admin error:', e.message);
         res.status(500).json({ error: 'server_error' });

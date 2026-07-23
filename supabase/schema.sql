@@ -279,3 +279,16 @@ language sql security definer set search_path = public
 as $$
     select 250 - count(*)::integer from tickets where status <> 'cancelled';
 $$;
+
+-- Rate limit hádání PINu (/api/admin, /api/checkin). Zapisuje jen backend
+-- přes přímé DB připojení; RLS bez policy = anon klíč se k tabulce nedostane.
+-- Aplikováno na produkci 23. 7. 2026 (záloha dat: Web/zalohy-db/2026-07-23).
+create table if not exists pin_attempts (
+    id bigint generated always as identity primary key,
+    ip text not null,
+    endpoint text not null,
+    attempted_at timestamptz not null default now()
+);
+create index if not exists pin_attempts_ip_time on pin_attempts (ip, attempted_at);
+create index if not exists pin_attempts_time on pin_attempts (attempted_at);
+alter table pin_attempts enable row level security;

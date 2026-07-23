@@ -4,13 +4,13 @@
 //   {pin, token}     - sken QR: označí vstupenku jako odbavenou
 //   {pin, ticket_id} - ruční odbavení (z vyhledávání)
 //   {pin, search}    - hledání podle jména/e-mailu (mrtvý QR apod.)
-const { withDb } = require('./_lib');
+const { withDb, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function pinOk(pin) {
-    return Boolean(pin) && [process.env.CHECKIN_PIN, process.env.ADMIN_PIN]
-        .filter(Boolean).includes(pin);
+    return [process.env.CHECKIN_PIN, process.env.ADMIN_PIN]
+        .filter(Boolean).some(p => pinEquals(pin, p));
 }
 
 async function checkInBy(client, whereSql, value) {
@@ -37,12 +37,15 @@ module.exports = async (req, res) => {
         return;
     }
     const body = req.body || {};
-    if (!pinOk(body.pin)) {
-        res.status(401).json({ error: 'bad_pin' });
-        return;
-    }
+    const ip = clientIp(req);
     try {
         const out = await withDb(async (c) => {
+            // Rate limit před ověřením PINu - krátký PIN chrání počítadlo pokusů
+            if (await pinRateLimited(c, ip)) return { __status: 429, error: 'rate_limited' };
+            if (!pinOk(body.pin)) {
+                await recordPinFailure(c, ip, 'checkin');
+                return { __status: 401, error: 'bad_pin' };
+            }
             if (body.token) {
                 if (!UUID_RE.test(String(body.token).trim())) return { result: 'not_found' };
                 return checkInBy(c, 'qr_token = $1', String(body.token).trim());
@@ -63,7 +66,9 @@ module.exports = async (req, res) => {
             }
             return { result: 'bad_request' };
         });
-        res.status(200).json(out);
+        const status = out.__status || 200;
+        delete out.__status;
+        res.status(status).json(out);
     } catch (e) {
         console.error('checkin error:', e.message);
         res.status(500).json({ error: 'server_error' });
