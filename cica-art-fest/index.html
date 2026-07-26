@@ -79,11 +79,19 @@
         "alternateName": "Podrážděná číča",
         "url": "https://www.podrazdenacica.cz/"
       },
-      "performer": {
-        "@type": "Person",
-        "name": "Tereza Bonaventurová",
-        "description": "Moderátorka večera a stand-up komička"
-      },
+      "performer": [
+        {
+          "@type": "Person",
+          "name": "Tereza Bonaventurová",
+          "description": "Moderátorka večera a stand-up komička"
+        },
+        {
+          "@type": "Person",
+          "name": "Miss Petty",
+          "description": "Drag queen a zpěvačka, grande finale večera",
+          "url": "https://www.misspetty.cz/"
+        }
+      ],
       "offers": {
         "@type": "Offer",
         "name": "Vstupenka",
@@ -235,6 +243,23 @@
         .fest-host-text .btn-secondary {
             margin-top: 18px;
         }
+        .fest-host-lead strong.fest-host-title {
+            display: block;
+            color: var(--text-primary);
+            font-size: 1.35rem;
+            margin-bottom: 2px;
+        }
+        .fest-host-lead strong.fest-host-name {
+            display: block;
+            color: var(--accent-neon);
+            font-size: 1.35rem;
+            margin-bottom: 10px;
+        }
+        .fest-host-note {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
         .fest-host-player {
             flex-basis: 100%;
             aspect-ratio: 16 / 9;
@@ -261,6 +286,11 @@
             .fest-host img {
                 width: 100%;
                 max-width: 100%;
+            }
+            .fest-host--petty img {
+                width: 220px;
+                max-width: 65%;
+                margin: 0 auto;
             }
         }
         .partner-group {
@@ -556,6 +586,28 @@
                             jinde neseženeš. Zvedni ruku a odnes si domů kus číči.
                         </p>
                     </div>
+                </div>
+                <div class="fest-host fest-host--petty reveal">
+                    <img src="/images/performeri/miss-petty.webp"
+                         srcset="/images/performeri/miss-petty-sm.webp 450w, /images/performeri/miss-petty.webp 900w"
+                         sizes="(max-width: 600px) 220px, 280px"
+                         alt="Miss Petty, drag queen a zpěvačka, grande finale Číča Art Festu"
+                         loading="lazy" width="900" height="1125">
+                    <div class="fest-host-text">
+                        <p class="fest-host-lead">
+                            <strong class="fest-host-title">Grande finale</strong>
+                            <strong class="fest-host-name">Miss Petty</strong>
+                            První drag queen v Česku, co si píše vlastní písničky
+                            a pak na ně v lodičkách koncertuje. Zpíval s Charli XCX
+                            v Roxy, s Kapitánem Demem v O2 aréně a rozsvítil Pohodu
+                            i Colours. Křiklavý barvy, energie za celou elektrárnu
+                            a sebeláska, co se rozdává i do zadních řad. Až to bude
+                            vypadat, že večer už nemá čím překvapit, přijde Miss Petty.
+                        </p>
+                        <button class="btn-secondary" id="pettyVideoBtn" type="button">▶ PUSSYCAT – hymna pro každou číču</button>
+                        <p class="fest-host-note">Naposlouchej si ji předem. Na místě se řve každý slovo, mňau.</p>
+                    </div>
+                    <div class="fest-host-player" id="pettyVideoPlayer" hidden></div>
                 </div>
                 <div class="program-item program-teaser reveal">
                     <div class="program-emoji" aria-hidden="true">🤫</div>
@@ -909,6 +961,21 @@
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push(Object.assign({ event: 'video_play' }, videoParams));
             if (typeof gtag === 'function') gtag('event', 'video_play', videoParams);
+        });
+
+        // Videoklip Miss Petty (grande finale): stejný princip, YouTube až po kliknutí
+        const pettyVideoBtn = document.getElementById('pettyVideoBtn');
+        pettyVideoBtn.addEventListener('click', () => {
+            const player = document.getElementById('pettyVideoPlayer');
+            player.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/cx7A-JMKmqA?autoplay=1" ' +
+                'title="Miss Petty ft. Chi Chi Tornado: PUSSYCAT" ' +
+                'allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+            player.hidden = false;
+            pettyVideoBtn.hidden = true;
+            const pettyParams = { video_title: 'Miss Petty: PUSSYCAT', cta_page: window.location.pathname };
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign({ event: 'video_play' }, pettyParams));
+            if (typeof gtag === 'function') gtag('event', 'video_play', pettyParams);
         });
 
         // Měření CTA kliknutí (mailto + Instagram DM) do GTM i přímo do GA4
