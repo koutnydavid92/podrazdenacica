@@ -1046,11 +1046,10 @@
     <script>
         // Guestlist: živá data ze Supabase (?demo=1 ukáže ukázková data).
         // Běží hned při načtení, nečeká na první vykreslení stránky.
-        // Na hlavní stránce jen ochutnávka; od GUESTLIST_LINK_FROM lidí se
-        // objeví tlačítko na celý guestlist (samostatná podstránka).
+        // Na hlavní stránce jen ochutnávka; jakmile se někdo do náhledu
+        // nevejde, objeví se tlačítko na celý guestlist (samostatná podstránka).
         (function() {
-        const GUESTLIST_PREVIEW_MAX = 12;
-        const GUESTLIST_LINK_FROM = 100;
+        const GUESTLIST_PREVIEW_MAX = 16;
         const escapeHtml = s => String(s).replace(/[&<>"']/g,
             c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -1070,7 +1069,7 @@
             document.getElementById('guestlistCount').hidden = false;
             grid.hidden = false;
             document.getElementById('guestlistEmpty').hidden = true;
-            document.getElementById('guestlistMore').hidden = total < GUESTLIST_LINK_FROM;
+            document.getElementById('guestlistMore').hidden = guests.length <= GUESTLIST_PREVIEW_MAX;
         }
 
         if (new URLSearchParams(window.location.search).get('demo') === '1') {
