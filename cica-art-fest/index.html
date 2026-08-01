@@ -577,6 +577,18 @@
                     </div>
                 </div>
                 <div class="program-item reveal">
+                    <div class="program-emoji" aria-hidden="true">🎙️</div>
+                    <div>
+                        <h3>Performerka<br><span style="color: var(--accent-neon);">Krupicafaja</span></h3>
+                        <p>
+                            Valašská lidová rapperka, co má texty ostré jak štamprla
+                            stodolovej gořalky!
+                        </p>
+                        <button class="btn-secondary" id="krupicaVideoBtn" type="button" style="margin-top: 14px;">▶ Ochutnávka hýr</button>
+                        <div class="fest-host-player" id="krupicaVideoPlayer" hidden style="margin-top: 14px;"></div>
+                    </div>
+                </div>
+                <div class="program-item reveal">
                     <div class="program-emoji" aria-hidden="true">🪡</div>
                     <div>
                         <h3>Tatérka<br><span style="color: var(--accent-neon);">Breberka Tattoo</span></h3>
@@ -1028,6 +1040,21 @@
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push(Object.assign({ event: 'video_play' }, videoParams));
             if (typeof gtag === 'function') gtag('event', 'video_play', videoParams);
+        });
+
+        // Ochutnávka Krupicafaji: stejný princip, YouTube až po kliknutí
+        const krupicaVideoBtn = document.getElementById('krupicaVideoBtn');
+        krupicaVideoBtn.addEventListener('click', () => {
+            const player = document.getElementById('krupicaVideoPlayer');
+            player.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/CU7fSvZXJzo?autoplay=1" ' +
+                'title="Krupicafaja: Koncert v obýváku (Folklor &amp; city)" ' +
+                'allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+            player.hidden = false;
+            krupicaVideoBtn.hidden = true;
+            const krupicaParams = { video_title: 'Krupicafaja: Ochutnávka hýr', cta_page: window.location.pathname };
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign({ event: 'video_play' }, krupicaParams));
+            if (typeof gtag === 'function') gtag('event', 'video_play', krupicaParams);
         });
 
         // Videoklip Miss Petty (grande finale): stejný princip, YouTube až po kliknutí
