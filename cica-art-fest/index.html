@@ -200,6 +200,14 @@
         .program-item p {
             color: var(--text-secondary);
         }
+        .program-item .program-photo {
+            width: 150px;
+            height: auto;
+            border-radius: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            margin-left: auto;
+        }
         .program-item.program-teaser {
             border-style: dashed;
         }
@@ -277,6 +285,9 @@
                 flex-direction: column;
                 gap: 12px;
                 padding: 22px;
+            }
+            .program-item .program-photo {
+                margin: 0 auto;
             }
             .fest-host {
                 flex-direction: column;
@@ -587,6 +598,8 @@
                         <button class="btn-secondary" id="krupicaVideoBtn" type="button" style="margin-top: 14px;">▶ Ochutnávka hýr</button>
                         <div class="fest-host-player" id="krupicaVideoPlayer" hidden style="margin-top: 14px;"></div>
                     </div>
+                    <img class="program-photo" src="/images/performeri/krupicafaja.webp"
+                         alt="Krupicafaja, valašská lidová rapperka" loading="lazy" width="400" height="359">
                 </div>
                 <div class="program-item reveal">
                     <div class="program-emoji" aria-hidden="true">🪡</div>
