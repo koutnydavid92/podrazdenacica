@@ -210,7 +210,12 @@ create or replace function get_session_tickets(p_session_id text)
 returns json
 language sql security definer set search_path = public
 as $$
-    select json_build_object('name', min(name), 'email', min(email), 'count', count(*))
+    select json_build_object(
+        'name', min(name),
+        'email', min(email),
+        'count', count(*),
+        'value', coalesce(sum(price_czk), 0)   -- skutečně zaplaceno (po slevách)
+    )
     from tickets
     where stripe_session_id = p_session_id and status <> 'cancelled'
     having count(*) > 0;
