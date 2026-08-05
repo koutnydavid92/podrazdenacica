@@ -1136,6 +1136,22 @@
         if (SALE_OPEN) {
             buyButton.textContent = 'Chci lupen';
         }
+        // GA4 si své identifikátory drží ve vlastních cookies. Když kupující
+        // souhlas nedal, cookies neexistují a pošleme prázdno: server pak nákup
+        // nahlásí anonymně, takže tržba sedí a nikoho nesledujeme.
+        function gaIdsForCheckout() {
+            try {
+                const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+                const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.(\d+)/);
+                return {
+                    ga_client_id: ga ? ga[1] : null,
+                    ga_session_id: gs ? gs[1] : null
+                };
+            } catch (e) {
+                return {};
+            }
+        }
+
         buyButton.addEventListener('click', async () => {
             // Event jde do GTM (dataLayer) i přímo do GA4 (gtag), aby se
             // neztratil, když v GTM chybí přeposílací tag. Nepřidávat ho
@@ -1155,7 +1171,14 @@
             buyButton.disabled = true;
             buyButton.textContent = 'Moment, chystáme pokladnu…';
             try {
-                const res = await fetch('/api/checkout', { method: 'POST' });
+                const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // Nákup do GA4 hlásí až Stripe webhook (klientský gtag se
+                    // nespustí, když kupující odmítne cookies nebo se ze Stripu
+                    // nevrátí). Tyhle dvě ID mu řeknou, do čí návštěvy nákup patří.
+                    body: JSON.stringify(gaIdsForCheckout())
+                });
                 if (res.status === 409) {
                     buyButton.textContent = 'Vyprodáno. 250 lidí bylo rychlejších.';
                     return;

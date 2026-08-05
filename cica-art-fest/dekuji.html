@@ -345,20 +345,11 @@
                 tickets: count
             });
 
-            // GA4 napřímo (běží po souhlasu s cookies); duplicitu řeší transaction_id
-            if (typeof gtag === 'function') {
-                gtag('event', 'purchase', {
-                    transaction_id: sessionId,
-                    value: value,
-                    currency: 'CZK',
-                    items: [{
-                        item_id: 'cica-art-fest-vstupenka',
-                        item_name: 'Vstupenka Číča Art Fest',
-                        price: unit,
-                        quantity: count
-                    }]
-                });
-            }
+            // Do GA4 se odsud nákup ZÁMĚRNĚ neposílá. Hlásí ho Stripe webhook
+            // přes Measurement Protocol (api/_ga.js), protože tahle stránka se
+            // nespustí, když kupující odmítne cookies nebo se ze Stripu nevrátí.
+            // Kdyby se poslal i odsud, měl by GA4 každý nákup dvakrát.
+            // Push do dataLayer výše zůstává: na něm visí Meta Pixel v GTM.
         }
 
         // Webhook ze Stripe může dorazit o pár vteřin později než ty,

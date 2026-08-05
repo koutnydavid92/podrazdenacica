@@ -4,6 +4,7 @@
 const Stripe = require('stripe');
 const { withDb, fulfillSession } = require('./_lib');
 const { sendTicketEmail } = require('./_email');
+const { trackPurchase } = require('./_ga');
 
 module.exports.config = { api: { bodyParser: false } };
 
@@ -46,6 +47,18 @@ module.exports = async (req, res) => {
                 const quantity = items.data.reduce((s, i) => s + (i.quantity || 0), 0) || 1;
                 const result = await withDb(c => fulfillSession(c, session, quantity));
                 console.log('fulfilled', session.id, JSON.stringify(result));
+
+                // Nákup do GA4. Posíláme jen když vstupenky teď opravdu vznikly,
+                // takže opakované doručení téhle události tržbu nezdvojí.
+                if (result.created > 0) {
+                    await trackPurchase({
+                        transactionId: session.id,
+                        value: session.amount_total ? session.amount_total / 100 : 0,
+                        quantity: quantity,
+                        clientId: session.metadata.ga_client_id || null,
+                        sessionId: session.metadata.ga_session_id || null
+                    });
+                }
 
                 // E-mail se vstupenkami: jen pro dosud neodeslané (retry-safe)
                 await withDb(async (c) => {
