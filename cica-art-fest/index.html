@@ -247,6 +247,24 @@
             text-decoration: underline;
             word-break: break-word;
         }
+        /* Vedle sebe: karty stejně vysoké a odkazy zarovnané na spodní hranu,
+           ať nekloužou nahoru u kratších popisků. */
+        @media (min-width: 601px) {
+            .panel-person {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .panel-person > div {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+            }
+            .panel-person .panel-link {
+                margin-top: auto;
+                padding-top: 8px;
+            }
+        }
         .program-item.program-teaser {
             border-style: dashed;
         }
