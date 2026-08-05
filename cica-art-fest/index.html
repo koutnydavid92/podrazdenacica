@@ -389,6 +389,13 @@
             gap: 16px;
             margin-top: 32px;
         }
+        /* Na širokých displejích držíme 4 sloupce, ať náhled (16 karet)
+           vyjde na čtyři plné řádky a nikdo nezůstane sám na konci. */
+        @media (min-width: 1080px) {
+            .guestlist-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
         .guest-card {
             background: var(--bg-card);
             border: 1px solid var(--divider);
