@@ -3,7 +3,7 @@
 // Podpis se ověřuje proti STRIPE_WEBHOOK_SECRET, proto surové tělo requestu.
 const Stripe = require('stripe');
 const { withDb, fulfillSession } = require('./_lib');
-const { sendTicketEmail } = require('./_email');
+const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
 const { trackPurchase } = require('./_ga');
 
 module.exports.config = { api: { bodyParser: false } };
@@ -80,6 +80,12 @@ module.exports = async (req, res) => {
                         [session.id]
                     );
                     console.log('ticket email sent', session.id, rows.length);
+                    // Kupující patří mezi účastníky, ať mu dojdou info k festu
+                    await subscribeToEventListSafe({
+                        email: rows[0].email,
+                        name: rows[0].name,
+                        isVip: false
+                    });
                 });
             }
         }

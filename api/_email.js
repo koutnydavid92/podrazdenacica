@@ -4,7 +4,11 @@ const BASE_URL = 'https://www.podrazdenacica.cz';
 const FROM_EMAIL = 'jsem@cicoviny.podrazdenacica.cz';
 const REPLY_TO = 'jsem@podrazdenacica.cz';
 const FROM_NAME = 'Podrážděná číča';
-const ECOMAIL_LIST_ID = 2; // "Newsletter Číča"
+const ECOMAIL_LIST_ID = 2; // "Newsletter Číča" - marketing, jen se souhlasem
+// "ČAF 2026 - účastníci" - provozní info k akci (kde, kdy, změna programu).
+// Není to newsletter: chodí sem každý, kdo drží vstupenku, protože informace
+// k akci patří ke koupené/přijaté vstupence. Marketing zůstává na listu 2.
+const ECOMAIL_EVENT_LIST_ID = 3;
 
 async function ecomail(path, payload) {
     const res = await fetch('https://api2.ecomailapp.cz' + path, {
@@ -125,4 +129,42 @@ async function subscribeToNewsletter({ email, name }) {
     });
 }
 
-module.exports = { sendTicketEmail, subscribeToNewsletter };
+// Zapíše držitele vstupenky do účastnického listu. Bez potvrzovacího mailu
+// (skip_confirmation) - jde o provozní kanál k zakoupené vstupence, ne
+// o marketingový newsletter. Volá se při vydání vstupenky, ne z guestlistu:
+// dřív se do Ecomailu dostal jen ten, kdo navíc zaškrtl souhlas, takže
+// polovina VIP hostů zůstala mimo dosah informací k festu.
+async function subscribeToEventList({ email, name, isVip }) {
+    const parts = String(name || '').trim().split(/\s+/);
+    return ecomail(`/lists/${ECOMAIL_EVENT_LIST_ID}/subscribe`, {
+        subscriber_data: {
+            email,
+            name: parts[0] || '',
+            surname: parts.slice(1).join(' ') || '',
+            tags: ['caf-2026-ucastnik', isVip ? 'caf-vip' : 'caf-kupujici']
+        },
+        trigger_autoresponders: false,
+        trigger_notification: false,
+        update_existing: true,
+        resubscribe: false,
+        skip_confirmation: true
+    });
+}
+
+// Zápis do Ecomailu nesmí shodit odeslání vstupenky - vstupenka je důležitější.
+// Selhání ale musí být vidět v logu, ať se neztratí potichu jako dřív.
+async function subscribeToEventListSafe({ email, name, isVip }) {
+    if (!email) return false;
+    try {
+        await subscribeToEventList({ email, name, isVip });
+        return true;
+    } catch (e) {
+        console.error('event list subscribe failed for', email, '->', e.message);
+        return false;
+    }
+}
+
+module.exports = {
+    sendTicketEmail, subscribeToNewsletter,
+    subscribeToEventList, subscribeToEventListSafe
+};

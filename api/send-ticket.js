@@ -3,7 +3,7 @@
 // v databázi: kód musí existovat, být potvrzený a mít e-mail.
 // Odesílá se jen jednou (email_sent_at), opakované kliknutí nespamuje.
 const { withDb } = require('./_lib');
-const { sendTicketEmail } = require('./_email');
+const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
 
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
@@ -37,6 +37,12 @@ module.exports = async (req, res) => {
                 'update tickets set email_sent_at = now() where id = any($1)',
                 [rows.map(r => r.id)]
             );
+            // VIP host patří mezi účastníky, ať mu dojdou info k festu
+            await subscribeToEventListSafe({
+                email: rows[0].email,
+                name: rows[0].full_name,
+                isVip: true
+            });
             return { sent: true };
         });
         res.status(200).json({ ok: true, ...result });

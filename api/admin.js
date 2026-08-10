@@ -5,7 +5,7 @@
 //   {pin, action: 'create_invite', full_name, greeting_name, email} - nová VIP pozvánka
 const crypto = require('crypto');
 const { withDb, CAPACITY, currentPriceCzk, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
-const { sendTicketEmail } = require('./_email');
+const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
 
 function pinOk(pin) {
     return pinEquals(pin, process.env.ADMIN_PIN);
@@ -136,6 +136,9 @@ module.exports = async (req, res) => {
                             'update tickets set email_sent_at = now() where id = any($1)',
                             [toSend.map(r => r.id)]
                         );
+                        await subscribeToEventListSafe({
+                            email, name: inv.full_name, isVip: true
+                        });
                         sent = true;
                     }
                 }
