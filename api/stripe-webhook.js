@@ -5,6 +5,7 @@ const Stripe = require('stripe');
 const { withDb, fulfillSession } = require('./_lib');
 const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
 const { trackPurchase } = require('./_ga');
+const { trackPurchase: trackPurchaseMeta } = require('./_meta');
 
 module.exports.config = { api: { bodyParser: false } };
 
@@ -51,12 +52,23 @@ module.exports = async (req, res) => {
                 // Nákup do GA4. Posíláme jen když vstupenky teď opravdu vznikly,
                 // takže opakované doručení téhle události tržbu nezdvojí.
                 if (result.created > 0) {
+                    const value = session.amount_total ? session.amount_total / 100 : 0;
                     await trackPurchase({
                         transactionId: session.id,
-                        value: session.amount_total ? session.amount_total / 100 : 0,
+                        value: value,
                         quantity: quantity,
                         clientId: session.metadata.ga_client_id || null,
                         sessionId: session.metadata.ga_session_id || null
+                    });
+                    // Totéž do Mety. Pixel z děkovací stránky posílá stejné
+                    // event_id, takže se nákup nezapočítá dvakrát.
+                    await trackPurchaseMeta({
+                        transactionId: session.id,
+                        value: value,
+                        quantity: quantity,
+                        fbp: session.metadata.fbp || null,
+                        fbc: session.metadata.fbc || null,
+                        email: (session.customer_details && session.customer_details.email) || null
                     });
                 }
 

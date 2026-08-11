@@ -1132,6 +1132,12 @@
         // Current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
+        // Cena vstupenky podle data - musí sedět s currentPriceCzk() v api/_lib.js.
+        // Používá se jen pro hodnotu v měření, skutečnou cenu určuje server.
+        function ticketPriceCzk() {
+            return new Date() < new Date('2026-08-15T00:00:00+02:00') ? 666 : 777;
+        }
+
         // Tlačítko nákupu. SALE_OPEN = false: prodej nespuštěn, vede na newsletter.
         // Spuštění prodeje = přepnout SALE_OPEN na true (a nasadit web).
         const SALE_OPEN = true;
@@ -1139,16 +1145,25 @@
         if (SALE_OPEN) {
             buyButton.textContent = 'Chci lupen';
         }
-        // GA4 si své identifikátory drží ve vlastních cookies. Když kupující
-        // souhlas nedal, cookies neexistují a pošleme prázdno: server pak nákup
-        // nahlásí anonymně, takže tržba sedí a nikoho nesledujeme.
+        // Identifikátory návštěvy pro GA4 i Metu, obojí si je měřicí systémy
+        // drží ve vlastních cookies:
+        //   _ga / _ga_<ID>  GA4. Bez souhlasu s cookies nevzniknou a pošleme
+        //                   prázdno: server pak nákup nahlásí anonymně, takže
+        //                   tržba sedí a nikoho nesledujeme.
+        //   _fbp / _fbc     Meta. Zakládá je pixel z GTM, takže bývají i tam,
+        //                   kde GA4 cookies chybí. _fbc nese ID prokliku
+        //                   z reklamy, díky němu Meta pozná, co nákup přineslo.
         function gaIdsForCheckout() {
             try {
                 const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
                 const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.(\d+)/);
+                const fbp = document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+                const fbc = document.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
                 return {
                     ga_client_id: ga ? ga[1] : null,
-                    ga_session_id: gs ? gs[1] : null
+                    ga_session_id: gs ? gs[1] : null,
+                    fbp: fbp ? decodeURIComponent(fbp[1]) : null,
+                    fbc: fbc ? decodeURIComponent(fbc[1]) : null
                 };
             } catch (e) {
                 return {};
@@ -1171,6 +1186,28 @@
                 window.location.href = '/#newsletter';
                 return;
             }
+
+            // Metě hlásíme zahájení nákupu (standardní událost InitiateCheckout).
+            // Reklamy se optimalizují na tuhle událost, ne na Purchase: nákupů je
+            // pár týdně a algoritmus se z nich nemá jak naučit, zatímco kliknutí
+            // na koupi je dost. Purchase zůstává na měření skutečné tržby.
+            //
+            // Posílá se rovnou odsud, ne z GTM. Kdyby se stejná událost přidala
+            // i do GTM, počítala by se dvakrát. (Vlastní událost ButtonClick,
+            // která v GTM visí na všech tlačítkách webu, je něco jiného
+            // a s InitiateCheckout se neplete.)
+            try {
+                if (typeof fbq === 'function') {
+                    fbq('track', 'InitiateCheckout', {
+                        value: ticketPriceCzk(),
+                        currency: 'CZK',
+                        content_type: 'product',
+                        content_name: 'Vstupenka Cica Art Fest',
+                        contents: [{ id: 'cica-art-fest-vstupenka', quantity: 1 }]
+                    });
+                }
+            } catch (e) { /* měření nesmí zabránit nákupu */ }
+
             buyButton.disabled = true;
             buyButton.textContent = 'Moment, chystáme pokladnu…';
             try {

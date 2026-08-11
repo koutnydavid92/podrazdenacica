@@ -26,6 +26,13 @@ function sanitizeGaSessionId(v) {
     return /^[0-9]{1,20}$/.test(s) ? s : null;
 }
 
+// Cookies Meta pixelu mají tvar "fb.1.<čas>.<hodnota>", u _fbc je na konci
+// ID prokliku z reklamy. Pouštíme dál jen tenhle tvar a rozumnou délku.
+function sanitizeFbCookie(v) {
+    const s = String(v || '').trim();
+    return /^fb\.[0-9]\.[0-9]{1,20}\.[A-Za-z0-9_-]{1,300}$/.test(s) ? s : null;
+}
+
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'method_not_allowed' });
@@ -40,6 +47,10 @@ module.exports = async (req, res) => {
         const body = await readJsonBody(req);
         const gaClientId = sanitizeGaClientId(body.ga_client_id);
         const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
+        // Totéž pro Metu: _fbp drží prohlížeč, _fbc proklik z reklamy.
+        // Díky nim webhook nahlásí nákup i reklamě, která ho přinesla.
+        const fbp = sanitizeFbCookie(body.fbp);
+        const fbc = sanitizeFbCookie(body.fbc);
 
         const remaining = await withDb(remainingPublic);
         if (remaining <= 0) {
@@ -70,7 +81,9 @@ module.exports = async (req, res) => {
             metadata: {
                 event: 'cica-art-fest',
                 ...(gaClientId ? { ga_client_id: gaClientId } : {}),
-                ...(gaSessionId ? { ga_session_id: gaSessionId } : {})
+                ...(gaSessionId ? { ga_session_id: gaSessionId } : {}),
+                ...(fbp ? { fbp: fbp } : {}),
+                ...(fbc ? { fbc: fbc } : {})
             },
             allow_promotion_codes: true,
             success_url: origin + '/cica-art-fest/dekuji?session_id={CHECKOUT_SESSION_ID}',
