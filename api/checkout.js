@@ -2,6 +2,7 @@
 // Hlídá kapacitu (200 veřejných vstupenek) ještě před přesměrováním na platbu.
 const Stripe = require('stripe');
 const { withDb, remainingPublic, currentPriceCzk } = require('./_lib');
+const { trackInitiateCheckout } = require('./_meta');
 
 // Tělo requestu: Vercel ho obvykle naparsuje sám, ale request bez těla
 // nebo bez hlavičky Content-Type sem dorazí jako undefined nebo jako řetězec.
@@ -33,6 +34,12 @@ function sanitizeFbCookie(v) {
     return /^fb\.[0-9]\.[0-9]{1,20}\.[A-Za-z0-9_-]{1,300}$/.test(s) ? s : null;
 }
 
+// ID, podle kterého Meta spáruje událost z prohlížeče se stejnou ze serveru.
+function sanitizeEventId(v) {
+    const s = String(v || '').trim();
+    return /^[A-Za-z0-9_.-]{6,80}$/.test(s) ? s : null;
+}
+
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'method_not_allowed' });
@@ -57,6 +64,18 @@ module.exports = async (req, res) => {
             res.status(409).json({ error: 'sold_out' });
             return;
         }
+
+        // Zahájení nákupu do Mety. Hlásí ho server, protože pixel v prohlížeči
+        // se načítá odloženě a blokují ho adblockery - klientská událost se tak
+        // často ztratí. Stejné event_id jako v prohlížeči, Meta si je spáruje.
+        // Nečekáme na odpověď, ať se kupujícímu neprodlouží cesta do pokladny.
+        trackInitiateCheckout({
+            eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
+            value: currentPriceCzk(),
+            quantity: 1,
+            fbp: fbp,
+            fbc: fbc
+        }).catch(() => {});
 
         const origin = req.headers.origin || 'https://www.podrazdenacica.cz';
         const session = await stripe.checkout.sessions.create({

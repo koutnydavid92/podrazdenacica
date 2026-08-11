@@ -1192,10 +1192,16 @@
             // pár týdně a algoritmus se z nich nemá jak naučit, zatímco kliknutí
             // na koupi je dost. Purchase zůstává na měření skutečné tržby.
             //
-            // Posílá se rovnou odsud, ne z GTM. Kdyby se stejná událost přidala
-            // i do GTM, počítala by se dvakrát. (Vlastní událost ButtonClick,
-            // která v GTM visí na všech tlačítkách webu, je něco jiného
-            // a s InitiateCheckout se neplete.)
+            // Posílá se dvakrát: odsud z prohlížeče a znovu ze serveru
+            // (api/checkout.js). Prohlížeč sám nestačí - pixel se načítá odloženě
+            // a blokují ho adblockery. Obě zprávy nesou stejné icEventId,
+            // takže si je Meta spáruje a událost započítá jen jednou.
+            //
+            // Do GTM tuhle událost nepřidávat, počítala by se navíc. (Vlastní
+            // událost ButtonClick, která v GTM visí na všech tlačítkách webu,
+            // je něco jiného a s InitiateCheckout se neplete.)
+            const icEventId = 'ic_' + Date.now() + '_'
+                + Math.random().toString(36).slice(2, 10);
             try {
                 if (typeof fbq === 'function') {
                     fbq('track', 'InitiateCheckout', {
@@ -1204,7 +1210,7 @@
                         content_type: 'product',
                         content_name: 'Vstupenka Cica Art Fest',
                         contents: [{ id: 'cica-art-fest-vstupenka', quantity: 1 }]
-                    });
+                    }, { eventID: icEventId });
                 }
             } catch (e) { /* měření nesmí zabránit nákupu */ }
 
@@ -1217,7 +1223,10 @@
                     // Nákup do GA4 hlásí až Stripe webhook (klientský gtag se
                     // nespustí, když kupující odmítne cookies nebo se ze Stripu
                     // nevrátí). Tyhle dvě ID mu řeknou, do čí návštěvy nákup patří.
-                    body: JSON.stringify(gaIdsForCheckout())
+                    body: JSON.stringify(Object.assign(
+                        { ic_event_id: icEventId },
+                        gaIdsForCheckout()
+                    ))
                 });
                 if (res.status === 409) {
                     buyButton.textContent = 'Vyprodáno. 250 lidí bylo rychlejších.';

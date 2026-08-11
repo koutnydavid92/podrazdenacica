@@ -25,29 +25,13 @@ function hashEmail(email) {
     return crypto.createHash('sha256').update(s).digest('hex');
 }
 
-/**
- * Pošle do Mety událost Purchase. Nikdy nevyhodí výjimku ani nezdrží
- * vyřízení objednávky - měření nesmí shodit prodej vstupenek.
- *
- * @param {object} o
- * @param {string} o.transactionId  Stripe session id (= eventID pixelu, kvůli párování)
- * @param {number} o.value          skutečně zaplaceno v Kč (po slevách)
- * @param {number} o.quantity       počet vstupenek
- * @param {string|null} o.fbp       cookie _fbp, když je
- * @param {string|null} o.fbc       cookie _fbc (proklik z reklamy), když je
- * @param {string|null} o.email     e-mail kupujícího (pošle se jen jako otisk)
- * @param {string} [o.eventSourceUrl] stránka, kde nákup vznikl
- * @returns {Promise<{sent: boolean, reason?: string}>}
- */
-async function trackPurchase(o) {
+// Společné odeslání jedné události do Mety. Nikdy nevyhodí výjimku.
+async function sendEvent(eventName, o) {
     const token = process.env.META_CAPI_TOKEN;
     if (!token) {
-        console.warn('Meta CAPI: chybí META_CAPI_TOKEN, nákup se do Mety neposílá');
+        console.warn('Meta CAPI: chybí META_CAPI_TOKEN,', eventName, 'se neposílá');
         return { sent: false, reason: 'no_token' };
     }
-
-    const quantity = Number(o.quantity) || 1;
-    const value = Number(o.value) || 0;
 
     // Meta zprávu bez jediného identifikátoru odmítne. Když nemáme ani cookies,
     // ani e-mail, nemá smysl posílat nic - stejně by to nešlo k nikomu přiřadit.
@@ -57,16 +41,19 @@ async function trackPurchase(o) {
     if (o.fbc) userData.fbc = String(o.fbc);
     if (emailHash) userData.em = [emailHash];
     if (!Object.keys(userData).length) {
-        console.warn('Meta CAPI: nákup', o.transactionId, 'nemá žádný identifikátor, neposílám');
+        console.warn('Meta CAPI:', eventName, o.eventId, 'nemá žádný identifikátor, neposílám');
         return { sent: false, reason: 'no_identifiers' };
     }
 
+    const quantity = Number(o.quantity) || 1;
+    const value = Number(o.value) || 0;
+
     const payload = {
         data: [{
-            event_name: 'Purchase',
+            event_name: eventName,
             event_time: Math.floor(Date.now() / 1000),
-            // Stejné ID jako u pixelu -> Meta nákup nezapočítá dvakrát
-            event_id: o.transactionId,
+            // Stejné ID jako u pixelu -> Meta událost nezapočítá dvakrát
+            event_id: o.eventId,
             event_source_url: o.eventSourceUrl || 'https://www.podrazdenacica.cz/cica-art-fest',
             action_source: 'website',
             user_data: userData,
@@ -92,7 +79,7 @@ async function trackPurchase(o) {
         + `?access_token=${encodeURIComponent(token)}`;
 
     try {
-        // Časový strop, ať se webhook nezasekne, kdyby Meta neodpovídala
+        // Časový strop, ať se nic nezasekne, kdyby Meta neodpovídala
         const abort = new AbortController();
         const timer = setTimeout(() => abort.abort(), 4000);
         let res;
@@ -108,17 +95,50 @@ async function trackPurchase(o) {
         }
         if (!res.ok) {
             const detail = await res.text().catch(() => '');
-            console.error('Meta CAPI: Purchase neodeslán, HTTP', res.status, detail.slice(0, 300));
+            console.error('Meta CAPI:', eventName, 'neodeslán, HTTP', res.status, detail.slice(0, 300));
             return { sent: false, reason: 'http_' + res.status };
         }
-        console.log('Meta CAPI: Purchase odeslán', o.transactionId, value, 'CZK',
+        console.log('Meta CAPI:', eventName, 'odeslán', o.eventId, value, 'CZK',
             '| fbp:', o.fbp ? 'ano' : 'ne', '| fbc:', o.fbc ? 'ano' : 'ne',
             '| e-mail:', emailHash ? 'ano' : 'ne');
         return { sent: true };
     } catch (e) {
-        console.error('Meta CAPI: Purchase neodeslán:', e.message);
+        console.error('Meta CAPI:', eventName, 'neodeslán:', e.message);
         return { sent: false, reason: 'exception' };
     }
 }
 
-module.exports = { trackPurchase };
+/**
+ * Zahájení nákupu (kliknutí na "Chci lupen"). Posílá se ze serveru, protože
+ * pixel v prohlížeči se načítá odloženě a blokují ho adblockery - klientská
+ * událost se tak často ztratí. Na tuhle událost se optimalizují reklamy.
+ *
+ * @param {object} o
+ * @param {string} o.eventId  stejné ID jako u pixelu (kvůli párování)
+ * @param {number} o.value    cena vstupenky v Kč
+ * @param {string|null} o.fbp cookie _fbp
+ * @param {string|null} o.fbc cookie _fbc (proklik z reklamy)
+ */
+function trackInitiateCheckout(o) {
+    return sendEvent('InitiateCheckout', o);
+}
+
+/**
+ * Pošle do Mety událost Purchase. Nikdy nevyhodí výjimku ani nezdrží
+ * vyřízení objednávky - měření nesmí shodit prodej vstupenek.
+ *
+ * @param {object} o
+ * @param {string} o.transactionId  Stripe session id (= eventID pixelu, kvůli párování)
+ * @param {number} o.value          skutečně zaplaceno v Kč (po slevách)
+ * @param {number} o.quantity       počet vstupenek
+ * @param {string|null} o.fbp       cookie _fbp, když je
+ * @param {string|null} o.fbc       cookie _fbc (proklik z reklamy), když je
+ * @param {string|null} o.email     e-mail kupujícího (pošle se jen jako otisk)
+ * @param {string} [o.eventSourceUrl] stránka, kde nákup vznikl
+ * @returns {Promise<{sent: boolean, reason?: string}>}
+ */
+function trackPurchase(o) {
+    return sendEvent('Purchase', Object.assign({ eventId: o.transactionId }, o));
+}
+
+module.exports = { trackPurchase, trackInitiateCheckout };
