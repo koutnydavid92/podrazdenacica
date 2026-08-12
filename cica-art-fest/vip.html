@@ -176,6 +176,14 @@
             color: var(--text-secondary);
         }
         .vip-check input { margin-top: 4px; accent-color: var(--accent-neon); }
+        /* Druhý řádek u souhlasu: co přijde a že se dá odejít */
+        .check-note {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.82rem;
+            opacity: 0.65;
+            line-height: 1.4;
+        }
         .vip-form .btn-primary {
             width: 100%;
             margin-top: 22px;
@@ -263,7 +271,10 @@
                     </div>
                     <div class="vip-check">
                         <input type="checkbox" id="glNews">
-                        <label for="glNews" style="margin: 0;">Chci od číči drzé maily i po festu</label>
+                        <label for="glNews" style="margin: 0;">
+                            Chci drzé maily a pozvánky na věci, co se na sítě nedostanou
+                            <span class="check-note">Jednou za čas, bez spamu. Odhlásit se dá jedním klikem.</span>
+                        </label>
                     </div>
                     <button class="btn-primary" type="submit">Uložit a těšit se</button>
                 </form>
