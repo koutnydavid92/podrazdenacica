@@ -68,14 +68,18 @@ module.exports = async (req, res) => {
         // Zahájení nákupu do Mety. Hlásí ho server, protože pixel v prohlížeči
         // se načítá odloženě a blokují ho adblockery - klientská událost se tak
         // často ztratí. Stejné event_id jako v prohlížeči, Meta si je spáruje.
-        // Nečekáme na odpověď, ať se kupujícímu neprodlouží cesta do pokladny.
-        trackInitiateCheckout({
+        //
+        // Pouštíme to souběžně se zakládáním platby a před odpovědí na obojí
+        // počkáme. Nedokončený požadavek by se totiž mohl ztratit ve chvíli,
+        // kdy serverless funkce po odeslání odpovědi skončí. Čekání nákup
+        // nezdrží: Meta odpoví dřív, než je hotová Stripe session.
+        const metaEvent = trackInitiateCheckout({
             eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
             value: currentPriceCzk(),
             quantity: 1,
             fbp: fbp,
             fbc: fbc
-        }).catch(() => {});
+        }).catch(() => { /* měření nesmí shodit prodej */ });
 
         const origin = req.headers.origin || 'https://www.podrazdenacica.cz';
         const session = await stripe.checkout.sessions.create({
@@ -108,6 +112,9 @@ module.exports = async (req, res) => {
             success_url: origin + '/cica-art-fest/dekuji?session_id={CHECKOUT_SESSION_ID}',
             cancel_url: origin + '/cica-art-fest#vstupenky'
         });
+
+        // Odpovíme až po doručení události do Mety (viz komentář výše).
+        await metaEvent;
 
         res.status(200).json({ url: session.url });
     } catch (e) {
