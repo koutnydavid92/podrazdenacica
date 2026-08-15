@@ -168,6 +168,18 @@
             color: var(--text-secondary);
         }
         .vip-check input { margin-top: 4px; accent-color: var(--accent-neon); }
+        /* Kolikátého hosta z objednávky zrovna zapisujeme */
+        .gl-progress {
+            display: inline-block;
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+            margin: 4px 0 0;
+        }
+        #glSkip { width: 100%; margin-top: 10px; }
         /* Druhý řádek u souhlasu: co přijde a že se dá odejít */
         .check-note {
             display: block;
@@ -215,11 +227,12 @@
                     dostaneš pásku a zbytek večera je na tobě.
                 </p>
                 <form class="vip-form" id="guestlistForm">
-                    <h2>Ukaž se na guestlistu</h2>
-                    <p class="form-hint">
+                    <h2 id="glHeading">Ukaž se na guestlistu</h2>
+                    <p class="form-hint" id="glIntro">
                         Na webu vedeme veřejný seznam hostů. Dobrovolný. Kdo jde,
                         toho je vidět. Chceš tam být?
                     </p>
+                    <p class="gl-progress" id="glProgress" hidden></p>
                     <label for="glName">Jméno</label>
                     <input type="text" id="glName" name="name" autocomplete="name">
                     <label for="glRole">Kde působíš (firma, projekt, role)</label>
@@ -229,16 +242,17 @@
                     <div class="char-count"><span id="bioCount">0</span>/140</div>
                     <div class="vip-check">
                         <input type="checkbox" id="glPublic" checked>
-                        <label for="glPublic" style="margin: 0;">Ukázat mě na veřejném guestlistu</label>
+                        <label for="glPublic" style="margin: 0;" id="glPublicLabel">Ukázat mě na veřejném guestlistu</label>
                     </div>
-                    <div class="vip-check">
+                    <div class="vip-check" id="glNewsWrap">
                         <input type="checkbox" id="glNews">
                         <label for="glNews" style="margin: 0;">
                             Chci drzé maily a pozvánky na věci, co se na sítě nedostanou
                             <span class="check-note">Jednou za čas, bez spamu. Odhlásit se dá jedním klikem.</span>
                         </label>
                     </div>
-                    <button class="btn-primary" type="submit">Uložit a těšit se</button>
+                    <button class="btn-primary" type="submit" id="glSubmit">Uložit a těšit se</button>
+                    <button class="btn-secondary" type="button" id="glSkip" hidden>Zbytek nechci zapisovat</button>
                 </form>
             </div>
 
@@ -363,6 +377,20 @@
             // Push do dataLayer výše zůstává: na něm visí Meta Pixel v GTM.
         }
 
+        const bio = document.getElementById('glBio');
+        bio.addEventListener('input', () => {
+            document.getElementById('bioCount').textContent = bio.value.length;
+        });
+
+        // Kdo koupil víc lupenů, může na guestlist zapsat i lidi, které bere
+        // s sebou - jednoho po druhém. Pořadí hosta (slot) říká databázi,
+        // ke které vstupence záznam patří. Deklarace musí být nad init(),
+        // ta si o vykreslení prvního kroku říká hned po načtení vstupenek.
+        const glProgress = document.getElementById('glProgress');
+        const glSkip = document.getElementById('glSkip');
+        let glSlot = 1;
+        let ticketCount = 1;
+
         // Webhook ze Stripe může dorazit o pár vteřin později než ty,
         // proto se na vstupenky ptáme opakovaně, než to vzdáme.
         async function init() {
@@ -374,6 +402,8 @@
                 } catch (e) { /* zkusíme znovu */ }
                 if (info && info.count) {
                     document.getElementById('glName').value = info.name || '';
+                    ticketCount = Number(info.count) || 1;
+                    renderGlStep();
                     if (info.count > 1) {
                         const word = info.count <= 4
                             ? `Všechny ${info.count} vstupenky`
@@ -392,14 +422,56 @@
         }
         init();
 
-        const bio = document.getElementById('glBio');
-        bio.addEventListener('input', () => {
-            document.getElementById('bioCount').textContent = bio.value.length;
-        });
+        function renderGlStep() {
+            const dalsi = glSlot > 1;
+            document.getElementById('glHeading').textContent =
+                dalsi ? 'A kdo jde s tebou?' : 'Ukaž se na guestlistu';
+            document.getElementById('glIntro').textContent = dalsi
+                ? 'Zapiš člověka, kterému dáš druhý lupen. Když nechceš, klidně to přeskoč.'
+                : 'Na webu vedeme veřejný seznam hostů. Dobrovolný. Kdo jde, toho je vidět. Chceš tam být?';
+            if (ticketCount > 1) {
+                glProgress.textContent = `Host ${glSlot} z ${ticketCount}`;
+                glProgress.hidden = false;
+            }
+            glSkip.hidden = !dalsi;
+            // Poslední host formulář zavírá, proto jiný slib na tlačítku
+            document.getElementById('glSubmit').textContent =
+                glSlot < ticketCount ? 'Uložit a pokračovat' : 'Uložit a těšit se';
+
+            // U dalších hostů se nemluví ke kupujícímu, ale o někom jiném.
+            // Rod neznáme, proto neutrální formulace.
+            document.querySelector('label[for="glRole"]').textContent =
+                dalsi ? 'Kde působí (firma, projekt, role)' : 'Kde působíš (firma, projekt, role)';
+            document.querySelector('label[for="glBio"]').textContent =
+                dalsi ? 'Pár slov (nepovinné)' : 'Pár slov o tobě (nepovinné)';
+            bio.placeholder = dalsi
+                ? 'Co mají vědět lidi, co půjdou taky?'
+                : 'Co o tobě mají vědět lidi, co půjdou taky?';
+            document.getElementById('glPublicLabel').textContent =
+                dalsi ? 'Ukázat na veřejném guestlistu' : 'Ukázat mě na veřejném guestlistu';
+            // Souhlas s maily může dát jen člověk sám za sebe, ne kupující
+            // za kamarádku - u dalších hostů se proto vůbec nenabízí.
+            document.getElementById('glNewsWrap').hidden = dalsi;
+        }
+
+        // Připraví prázdný formulář pro dalšího hosta
+        function nextGlStep() {
+            glSlot += 1;
+            document.getElementById('glName').value = '';
+            document.getElementById('glRole').value = '';
+            bio.value = '';
+            document.getElementById('bioCount').textContent = '0';
+            document.getElementById('glPublic').checked = true;
+            document.getElementById('glNews').checked = false;
+            renderGlStep();
+            document.getElementById('glName').focus();
+        }
+
+        glSkip.addEventListener('click', () => show('doneView'));
 
         document.getElementById('guestlistForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
+            const btn = document.getElementById('glSubmit');
             btn.disabled = true;
             try {
                 const r = await rpc('save_guestlist_public', {
@@ -408,17 +480,25 @@
                     p_role: document.getElementById('glRole').value,
                     p_bio: bio.value,
                     p_visible: document.getElementById('glPublic').checked,
-                    p_newsletter: document.getElementById('glNews').checked
+                    p_newsletter: document.getElementById('glNews').checked,
+                    p_slot: glSlot
                 });
                 if (r && r.ok) {
-                    show('doneView');
-                    if (document.getElementById('glNews').checked) {
+                    // Newsletter jen u kupujícího: souhlas dal za sebe, ne za
+                    // kamarádku, a v Ecomailu stejně visí mail z objednávky.
+                    if (glSlot === 1 && document.getElementById('glNews').checked) {
                         fetch('/api/newsletter', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ kind: 'public', ref: sessionId })
                         }).catch(() => {});
                     }
+                    if (r.remaining > 0) {
+                        btn.disabled = false;
+                        nextGlStep();
+                        return;
+                    }
+                    show('doneView');
                 } else { fail(); }
             } catch (err) { fail(); }
             btn.disabled = false;

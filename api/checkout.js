@@ -1,7 +1,9 @@
 // POST /api/checkout - založí Stripe Checkout Session pro nákup vstupenek.
 // Hlídá kapacitu (200 veřejných vstupenek) ještě před přesměrováním na platbu.
 const Stripe = require('stripe');
-const { withDb, remainingPublic, currentPriceCzk } = require('./_lib');
+const {
+    withDb, remainingPublic, unitPriceCzk, quantityDiscount, MAX_TICKETS_PER_ORDER
+} = require('./_lib');
 const { trackInitiateCheckout } = require('./_meta');
 
 // Tělo requestu: Vercel ho obvykle naparsuje sám, ale request bez těla
@@ -65,6 +67,17 @@ module.exports = async (req, res) => {
             return;
         }
 
+        // Kolik vstupenek si zvolil na webu. Od dvou kusů platí množstevní
+        // sleva, cenu za kus proto počítáme tady - klientovi se nevěří.
+        const wanted = parseInt(body.quantity, 10) || 1;
+        if (wanted > remaining) {
+            res.status(409).json({ error: 'not_enough_tickets', remaining });
+            return;
+        }
+        const quantity = Math.max(1, Math.min(wanted, MAX_TICKETS_PER_ORDER));
+        const unit = unitPriceCzk(quantity);
+        const discount = quantityDiscount(quantity);
+
         // Zahájení nákupu do Mety. Hlásí ho server, protože pixel v prohlížeči
         // se načítá odloženě a blokují ho adblockery - klientská událost se tak
         // často ztratí. Stejné event_id jako v prohlížeči, Meta si je spáruje.
@@ -75,8 +88,8 @@ module.exports = async (req, res) => {
         // nezdrží: Meta odpoví dřív, než je hotová Stripe session.
         const metaEvent = trackInitiateCheckout({
             eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
-            value: currentPriceCzk(),
-            quantity: 1,
+            value: unit * quantity,
+            quantity: quantity,
             fbp: fbp,
             fbc: fbc
         }).catch(() => { /* měření nesmí shodit prodej */ });
@@ -88,18 +101,14 @@ module.exports = async (req, res) => {
             line_items: [{
                 price_data: {
                     currency: 'czk',
-                    unit_amount: currentPriceCzk() * 100,
+                    unit_amount: unit * 100,
                     product_data: {
                         name: 'Vstupenka na Číča Art Fest',
                         description: '28. 8. 2026 · co.labs_park, Brno. Vstupenka s QR kódem dorazí na mail.'
+                            + (discount ? ` Množstevní sleva ${Math.round(discount * 100)} %.` : '')
                     }
                 },
-                quantity: 1,
-                adjustable_quantity: {
-                    enabled: true,
-                    minimum: 1,
-                    maximum: Math.min(6, remaining)
-                }
+                quantity: quantity
             }],
             metadata: {
                 event: 'cica-art-fest',

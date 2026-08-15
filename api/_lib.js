@@ -13,6 +13,23 @@ function currentPriceCzk() {
     return new Date() < EARLY_BIRD_UNTIL ? PRICE_CZK : PRICE_LATE_CZK;
 }
 
+// Množstevní sleva: od 2 vstupenek výš 10 % z každé (i u 5 a 10 kusů).
+// Počet se volí na webu, ne v pokladně - kdyby ho šlo měnit ve Stripu,
+// kupující by si navolil dva kusy za zlevněnou cenu a stáhl to na jeden.
+const QUANTITY_DISCOUNT = 0.10;
+const QUANTITY_DISCOUNT_FROM = 2;
+const MAX_TICKETS_PER_ORDER = 10;
+
+function quantityDiscount(quantity) {
+    const q = Math.max(1, parseInt(quantity, 10) || 1);
+    return q >= QUANTITY_DISCOUNT_FROM ? QUANTITY_DISCOUNT : 0;
+}
+
+// Cena za kus po množstevní slevě, zaokrouhlená na celé koruny
+function unitPriceCzk(quantity) {
+    return Math.round(currentPriceCzk() * (1 - quantityDiscount(quantity)));
+}
+
 async function withDb(fn) {
     const client = new Client({
         connectionString: process.env.SUPABASE_DB_URL,
@@ -93,5 +110,7 @@ async function recordPinFailure(client, ip, endpoint) {
 
 module.exports = {
     CAPACITY, PRICE_CZK, PRICE_LATE_CZK, currentPriceCzk, withDb, remainingPublic,
-    fulfillSession, pinEquals, clientIp, pinRateLimited, recordPinFailure
+    fulfillSession, pinEquals, clientIp, pinRateLimited, recordPinFailure,
+    QUANTITY_DISCOUNT, QUANTITY_DISCOUNT_FROM, MAX_TICKETS_PER_ORDER,
+    quantityDiscount, unitPriceCzk
 };

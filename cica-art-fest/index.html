@@ -169,6 +169,81 @@
             grid-template-columns: minmax(0, 520px);
             justify-content: center;
         }
+        /* Výběr počtu lupenů + množstevní sleva */
+        .qty-picker {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border: 1px solid var(--divider);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 22px 0 12px;
+        }
+        .qty-picker span {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .qty-controls button {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-neon);
+            background: transparent;
+            color: var(--accent-neon);
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .qty-controls button:hover:not(:disabled) {
+            background: var(--accent-neon);
+            color: #0D0D0D;
+        }
+        .qty-controls button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .qty-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .qty-total {
+            text-align: center;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .qty-save {
+            display: block;
+            color: var(--accent-neon);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .qty-hint {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+        }
+        /* Na úzkém mobilu se popisek a ovládání nevejdou vedle sebe */
+        @media (max-width: 480px) {
+            .qty-picker {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .qty-picker span {
+                white-space: nowrap;
+            }
+        }
         .program-list {
             display: flex;
             flex-direction: column;
@@ -826,6 +901,19 @@
                         <li>jako první uvidíš limitovaný merch</li>
                         <li>stylová dárková taška</li>
                     </ul>
+                    <div class="qty-picker">
+                        <span>Kolik lupenů?</span>
+                        <div class="qty-controls">
+                            <button type="button" id="qtyMinus" aria-label="O jeden míň">−</button>
+                            <div class="qty-value" id="qtyValue" aria-live="polite">1</div>
+                            <button type="button" id="qtyPlus" aria-label="O jeden víc">+</button>
+                        </div>
+                    </div>
+                    <p class="qty-total" id="qtyTotal">Celkem <strong>777 Kč</strong></p>
+                    <p class="qty-hint">
+                        Vem s sebou svou nej číču nebo kocourka a získej 10 % slevu
+                        za nákup 2 a víc vstupenek.
+                    </p>
                     <button class="btn-primary" id="buyButton" type="button">Chci lupen</button>
                 </div>
             </div>
@@ -1153,6 +1241,67 @@
         if (SALE_OPEN) {
             buyButton.textContent = 'Chci lupen';
         }
+
+        // Množstevní sleva - musí sedět s api/_lib.js, kde se počítá skutečná
+        // cena. Od dvou lupenů výš 10 % z každého, i u pěti nebo deseti.
+        const QUANTITY_DISCOUNT = 0.10;
+        const QUANTITY_DISCOUNT_FROM = 2;
+        const MAX_TICKETS = 10;
+
+        function unitPrice(q) {
+            const off = q >= QUANTITY_DISCOUNT_FROM ? QUANTITY_DISCOUNT : 0;
+            return Math.round(ticketPriceCzk() * (1 - off));
+        }
+        // 1 lupen / 2-4 lupeny / 5+ lupenů
+        function lupenWord(q) {
+            if (q === 1) return 'lupen';
+            return q <= 4 ? 'lupeny' : 'lupenů';
+        }
+        function formatCzk(n) {
+            return n.toLocaleString('cs-CZ') + ' Kč';
+        }
+
+        let quantity = 1;
+        let maxQuantity = MAX_TICKETS;   // sníží se, když zbývá míň míst
+        const qtyValue = document.getElementById('qtyValue');
+        const qtyTotal = document.getElementById('qtyTotal');
+        const qtyMinus = document.getElementById('qtyMinus');
+        const qtyPlus = document.getElementById('qtyPlus');
+
+        function renderQty() {
+            const unit = unitPrice(quantity);
+            const total = unit * quantity;
+            const saved = ticketPriceCzk() * quantity - total;
+            qtyValue.textContent = quantity;
+            qtyTotal.innerHTML = 'Celkem <strong>' + formatCzk(total) + '</strong>'
+                + (quantity > 1 ? ' <span style="color: var(--text-secondary); font-size: 0.9rem;">('
+                    + formatCzk(unit) + ' za lupen)</span>' : '')
+                + (saved > 0 ? '<span class="qty-save">Ušetříš ' + formatCzk(saved) + '</span>' : '');
+            qtyMinus.disabled = quantity <= 1;
+            qtyPlus.disabled = quantity >= maxQuantity;
+            if (SALE_OPEN && !buyButton.disabled) {
+                buyButton.textContent = quantity === 1
+                    ? 'Chci lupen'
+                    : 'Chci ' + quantity + ' ' + lupenWord(quantity);
+            }
+        }
+        function setQty(n) {
+            quantity = Math.max(1, Math.min(n, maxQuantity));
+            renderQty();
+        }
+        // Volá počítadlo zbývajících vstupenek z jiného <script>, proto přes window
+        window.cicaSetMaxQuantity = function (remaining) {
+            if (typeof remaining !== 'number' || remaining < 1) return;
+            maxQuantity = Math.min(MAX_TICKETS, remaining);
+            setQty(quantity);
+        };
+        qtyMinus.addEventListener('click', () => setQty(quantity - 1));
+        qtyPlus.addEventListener('click', () => setQty(quantity + 1));
+        renderQty();
+        // Počítadlo mohlo doběhnout dřív než tenhle kód - dorovnáme se
+        if (typeof window.cicaTicketsRemaining === 'number') {
+            window.cicaSetMaxQuantity(window.cicaTicketsRemaining);
+        }
         // Identifikátory návštěvy pro GA4 i Metu, obojí si je měřicí systémy
         // drží ve vlastních cookies:
         //   _ga / _ga_<ID>  GA4. Bez souhlasu s cookies nevzniknou a pošleme
@@ -1213,11 +1362,11 @@
             try {
                 if (typeof fbq === 'function') {
                     fbq('track', 'InitiateCheckout', {
-                        value: ticketPriceCzk(),
+                        value: unitPrice(quantity) * quantity,
                         currency: 'CZK',
                         content_type: 'product',
                         content_name: 'Vstupenka Cica Art Fest',
-                        contents: [{ id: 'cica-art-fest-vstupenka', quantity: 1 }]
+                        contents: [{ id: 'cica-art-fest-vstupenka', quantity: quantity }]
                     }, { eventID: icEventId });
                 }
             } catch (e) { /* měření nesmí zabránit nákupu */ }
@@ -1232,11 +1381,21 @@
                     // nespustí, když kupující odmítne cookies nebo se ze Stripu
                     // nevrátí). Tyhle dvě ID mu řeknou, do čí návštěvy nákup patří.
                     body: JSON.stringify(Object.assign(
-                        { ic_event_id: icEventId },
+                        { ic_event_id: icEventId, quantity: quantity },
                         gaIdsForCheckout()
                     ))
                 });
                 if (res.status === 409) {
+                    const info = await res.json().catch(() => ({}));
+                    // Mezitím někdo koupil: srovnáme počet na to, co zbývá,
+                    // a necháme kupujícího zkusit to znovu.
+                    if (info.error === 'not_enough_tickets' && info.remaining > 0) {
+                        maxQuantity = Math.min(MAX_TICKETS, info.remaining);
+                        buyButton.disabled = false;
+                        setQty(maxQuantity);
+                        alert('Tolik lupenů už nezbývá. Zbývá jich ' + info.remaining + ', tolik jsme ti navolili.');
+                        return;
+                    }
                     buyButton.textContent = 'Vyprodáno. 250 lidí bylo rychlejších.';
                     return;
                 }
@@ -1249,7 +1408,7 @@
             } catch (e) {
                 alert('Pokladna se zasekla. Zkus to za chvíli znovu, mňau.');
                 buyButton.disabled = false;
-                buyButton.textContent = 'Chci lupen';
+                renderQty();
             }
         });
 
@@ -1379,6 +1538,9 @@
                 } else {
                     badge.textContent = `Zbývá ${n} kusů`;
                 }
+                // Přepínač počtu nesmí nabídnout víc lupenů, než reálně zbývá
+                window.cicaTicketsRemaining = n;
+                if (typeof window.cicaSetMaxQuantity === 'function') window.cicaSetMaxQuantity(n);
             }).catch(() => {});
         }
         })();

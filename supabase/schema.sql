@@ -221,28 +221,45 @@ as $$
     having count(*) > 0;
 $$;
 
--- Guestlist zápis pro veřejné kupující (podle session_id)
+-- Guestlist zápis pro veřejné kupující (podle session_id).
+-- p_slot = pořadí hosta v objednávce (1..počet vstupenek): kdo koupí víc
+-- lupenů, zapíše i lidi, které bere s sebou. Každá vstupenka nese vlastní
+-- záznam (guestlist.ticket_id je unikátní), opakovaný zápis stejného
+-- pořadí předchozí přepíše.
+-- Pozn.: signatura se rozšířila o p_slot, na živé DB proto drop + create
+-- v transakci a notify pgrst, 'reload schema'.
 create or replace function save_guestlist_public(
     p_session_id text,
     p_name text,
     p_role text,
     p_bio text,
     p_visible boolean,
-    p_newsletter boolean
+    p_newsletter boolean,
+    p_slot int default 1
 )
 returns json
 language plpgsql security definer set search_path = public
 as $$
 declare
     t_id uuid;
+    total int;
+    slot int := greatest(coalesce(p_slot, 1), 1);
 begin
-    select id into t_id from tickets
-    where stripe_session_id = p_session_id and status <> 'cancelled'
-    order by ticket_no limit 1;
+    select count(*) into total from tickets
+    where stripe_session_id = p_session_id and status <> 'cancelled';
 
-    if t_id is null then
+    if total = 0 then
         return json_build_object('ok', false, 'error', 'not_found');
     end if;
+
+    if slot > total then
+        return json_build_object('ok', false, 'error', 'no_such_slot');
+    end if;
+
+    select id into t_id from tickets
+    where stripe_session_id = p_session_id and status <> 'cancelled'
+    order by ticket_no
+    offset (slot - 1) limit 1;
 
     if p_name is null or trim(p_name) = '' then
         return json_build_object('ok', false, 'error', 'missing_name');
@@ -258,7 +275,9 @@ begin
             visible = excluded.visible,
             newsletter = excluded.newsletter;
 
-    return json_build_object('ok', true);
+    -- kolik hostů z objednávky ještě může přibýt
+    return json_build_object('ok', true, 'slot', slot, 'total', total,
+                             'remaining', total - slot);
 end;
 $$;
 
