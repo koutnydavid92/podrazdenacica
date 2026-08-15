@@ -32,12 +32,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="facebook-domain-verification" content="3mrz0u1ks3xajz36mj3w59r4qbwx8h" />
     <title>Číča Art Fest – 28. 8. 2026 v Brně | Podrážděná číča</title>
-    <meta name="description" content="Číča Art Fest. Vernisáž kolekce Královny Brno-venkov, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně, vstupenka za 666 Kč.">
+    <meta name="description" content="Číča Art Fest. Vernisáž kolekce Královny Brno-venkov, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně, vstupenka za 777 Kč.">
     <link rel="canonical" href="https://www.podrazdenacica.cz/cica-art-fest">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Číča Art Fest – umění, power bitches a jedna divoká noc">
-    <meta property="og:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně. Vstupenka za 666 Kč, jen 250 míst.">
+    <meta property="og:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně. Vstupenka za 777 Kč, jen 250 míst.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.podrazdenacica.cz/cica-art-fest">
     <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-image.jpg">
@@ -95,12 +95,12 @@
       "offers": {
         "@type": "Offer",
         "name": "Vstupenka",
-        "price": "666",
+        "price": "777",
         "priceCurrency": "CZK",
         "url": "https://www.podrazdenacica.cz/cica-art-fest",
         "availability": "https://schema.org/InStock",
         "validFrom": "2026-07-16T12:00:00+02:00",
-        "priceValidUntil": "2026-08-14"
+        "priceValidUntil": "2026-08-28"
       }
     }
     </script>
@@ -816,8 +816,7 @@
                     <p class="pricing-tagline">
                         Vstup do světa bohyň, ze kterého se ti nebude chtít odejít.
                     </p>
-                    <div class="pricing-price"><s style="color: var(--text-secondary); font-size: 0.6em; font-weight: 400;">777 Kč</s> 666 Kč</div>
-                    <p class="pricing-tagline" style="margin-top: -8px;">Early číča cena do 14. 8. Pak 777 Kč.</p>
+                    <div class="pricing-price">777 Kč</div>
                     <ul>
                         <li>vstup na celý večer od vernisáže po parket</li>
                         <li>welcome drink ofc</li>
@@ -1140,10 +1139,11 @@
         // Current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        // Cena vstupenky podle data - musí sedět s currentPriceCzk() v api/_lib.js.
+        // Cena vstupenky - musí sedět s currentPriceCzk() v api/_lib.js.
         // Používá se jen pro hodnotu v měření, skutečnou cenu určuje server.
+        // Early bird (666 Kč) skončil 14. 8. 2026, dál platí plná cena.
         function ticketPriceCzk() {
-            return new Date() < new Date('2026-08-15T00:00:00+02:00') ? 666 : 777;
+            return 777;
         }
 
         // Tlačítko nákupu. SALE_OPEN = false: prodej nespuštěn, vede na newsletter.
