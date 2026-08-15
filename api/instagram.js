@@ -12,6 +12,18 @@ const IG_USER_ID = '17841442684710513'; // @cicaartfest
 const API_VERSION = 'v21.0';
 const LIMIT = 9;
 
+// Posty, které na web nepatří, i když na Instagramu zůstávají.
+// Instagram vrací příspěvky čistě podle data a o připnutí na profilu neví,
+// takže pořadí z profilu se sem přenést nedá - dá se jen něco vynechat.
+// ID příspěvku zjistíš z Graph API, nebo o vynechání řekni Claudovi.
+const SKRYTE_POSTY = [
+    // "Girl math... early číča cena" - cena po 14. 8. 2026 už neplatí
+    '18107013845152440'
+];
+
+// Bereme s rezervou, ať po vynechání zbyde plných devět
+const FETCH_LIMIT = LIMIT + SKRYTE_POSTY.length + 3;
+
 module.exports = async (req, res) => {
     const token = process.env.META_IG_TOKEN;
     if (!token) {
@@ -22,7 +34,7 @@ module.exports = async (req, res) => {
 
     const fields = 'id,media_type,media_url,thumbnail_url,permalink,caption,timestamp';
     const url = `https://graph.facebook.com/${API_VERSION}/${IG_USER_ID}/media`
-        + `?fields=${fields}&limit=${LIMIT}&access_token=${encodeURIComponent(token)}`;
+        + `?fields=${fields}&limit=${FETCH_LIMIT}&access_token=${encodeURIComponent(token)}`;
 
     try {
         // Časový strop, ať stránka nečeká, kdyby Instagram neodpovídal
@@ -47,7 +59,10 @@ module.exports = async (req, res) => {
 
         // Ven pouštíme jen to, co mřížka potřebuje. Videa a alba mají náhled
         // v thumbnail_url, obyčejné fotky v media_url.
-        const posts = (data.data || []).slice(0, LIMIT).map(p => ({
+        const posts = (data.data || [])
+            .filter(p => !SKRYTE_POSTY.includes(p.id))
+            .slice(0, LIMIT)
+            .map(p => ({
             id: p.id,
             image: p.thumbnail_url || p.media_url || null,
             permalink: p.permalink,
