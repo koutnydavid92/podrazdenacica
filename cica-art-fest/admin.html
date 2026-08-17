@@ -103,6 +103,26 @@
             font-size: 0.8rem;
             cursor: pointer;
         }
+        /* Filtr VIP pozvánek podle stavu odpovědi */
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: -6px 0 12px;
+        }
+        .filterbtn {
+            border: 1px solid var(--pink);
+            background: transparent;
+            color: var(--pink);
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .filterbtn:hover { background: rgba(254, 69, 232, 0.15); }
+        .filterbtn.active { background: var(--pink); color: #0D0D0D; font-weight: 700; }
         .grid2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
         @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
         .muted { color: var(--muted); font-size: 0.9rem; }
@@ -144,6 +164,12 @@
             </div>
 
             <h2>VIP pozvánky</h2>
+            <div class="filter-row" id="inviteFilter">
+                <button class="filterbtn active" data-filter="all" type="button">Všichni</button>
+                <button class="filterbtn" data-filter="confirmed" type="button">Přijdou</button>
+                <button class="filterbtn" data-filter="invited" type="button">Mlčí</button>
+                <button class="filterbtn" data-filter="declined" type="button">Nedají to</button>
+            </div>
             <div class="card table-scroll"><table id="invitesTable"></table></div>
 
             <h2>Guestlist</h2>
@@ -206,7 +232,7 @@
                         : i.status === 'declined' ? '<span class="pill bad">nedá to</span>'
                         : '<span class="pill">mlčí</span>';
                     const sendLabel = i.status === 'confirmed' ? 'Uložit a poslat' : 'Uložit';
-                    return `<tr><td><input type="text" class="inv-name" data-code="${esc(i.code)}" value="${esc(i.full_name)}" placeholder="celé jméno" style="min-width:150px;padding:6px 8px;font-size:0.85rem;">`
+                    return `<tr data-invite-status="${esc(i.status)}"><td><input type="text" class="inv-name" data-code="${esc(i.code)}" value="${esc(i.full_name)}" placeholder="celé jméno" style="min-width:150px;padding:6px 8px;font-size:0.85rem;">`
                         + `<input type="text" class="inv-greeting" data-code="${esc(i.code)}" value="${esc(i.greeting_name || '')}" placeholder="oslovení (5. pád)" style="min-width:150px;padding:6px 8px;font-size:0.85rem;margin-top:6px;">`
                         + `<div style="margin-top:6px;"><button class="rowbtn inv-name-save" data-code="${esc(i.code)}" type="button">Uložit jméno</button></div>`
                         + `<div class="muted inv-name-msg" data-namemsgfor="${esc(i.code)}" style="font-size:0.75rem;margin-top:4px;"></div></td>`
@@ -216,6 +242,15 @@
                         + `<td>${esc(i.code)}</td><td>${pill}<br><span class="muted">${fmtDate(i.responded_at)}</span></td>`
                         + `<td><button class="rowbtn" data-copy="${esc(link)}" type="button">Kopírovat odkaz</button></td></tr>`;
                 }).join('');
+
+            // Počty do filtru a znovu použití vybraného filtru po načtení dat
+            const pocty = { all: data.invites.length, confirmed: 0, invited: 0, declined: 0 };
+            data.invites.forEach(i => { if (pocty[i.status] !== undefined) pocty[i.status]++; });
+            document.querySelectorAll('#inviteFilter .filterbtn').forEach(b => {
+                const zaklad = { all: 'Všichni', confirmed: 'Přijdou', invited: 'Mlčí', declined: 'Nedají to' };
+                b.textContent = zaklad[b.dataset.filter] + ' (' + (pocty[b.dataset.filter] || 0) + ')';
+            });
+            applyInviteFilter();
 
             el('guestlistTable').innerHTML =
                 '<tr><th>Jméno</th><th>Kde působí</th><th>Bio</th><th>Stav</th><th></th></tr>'
@@ -311,6 +346,22 @@
                 el('pinError').hidden = false;
             }
         }
+
+        // Filtr pozvánek. Řádky jen skrýváme (ne překreslujeme), aby tlačítkům
+        // v tabulce zůstaly navěšené obsluhy.
+        let inviteFilter = 'all';
+        function applyInviteFilter() {
+            document.querySelectorAll('#invitesTable tr[data-invite-status]').forEach(tr => {
+                tr.hidden = inviteFilter !== 'all' && tr.dataset.inviteStatus !== inviteFilter;
+            });
+            document.querySelectorAll('#inviteFilter .filterbtn').forEach(b =>
+                b.classList.toggle('active', b.dataset.filter === inviteFilter));
+        }
+        document.querySelectorAll('#inviteFilter .filterbtn').forEach(b =>
+            b.addEventListener('click', () => {
+                inviteFilter = b.dataset.filter;
+                applyInviteFilter();
+            }));
 
         el('pinButton').addEventListener('click', unlock);
         el('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
