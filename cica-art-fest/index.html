@@ -32,7 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="facebook-domain-verification" content="3mrz0u1ks3xajz36mj3w59r4qbwx8h" />
     <title>Číča Art Fest – 28. 8. 2026 v Brně | Podrážděná číča</title>
-    <meta name="description" content="Číča Art Fest. Vernisáž kolekce Královny Brno-venkov, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně, vstupenka za 777 Kč.">
+    <meta name="description" content="Číča Art Fest, program odhalen: vernisáž Královny Brno-venkov, Vážky, panelovka o číči a hlavě, stand-up Terezy Bonaventurové, Krupicafaja, módní přehlídka, charitativní dražba a Miss Petty. 28. 8. 2026 v CO.LABS v Brně, vstupenka za 777 Kč.">
     <link rel="canonical" href="https://www.podrazdenacica.cz/cica-art-fest">
 
     <!-- Open Graph -->
@@ -56,7 +56,7 @@
       "@context": "https://schema.org",
       "@type": "Event",
       "name": "Číča Art Fest",
-      "description": "Vernisáž kolekce Královny Brno-venkov, módní přehlídka, hudební vystoupení z ženských prsou, standup komička a dražba obrazů a artefaktů.",
+      "description": "Vernisáž série Královny Brno-venkov, Hudební soubor Vážky, panelová diskuze o ženské sexualitě, stand-up Terezy Bonaventurové, lidová rapperka Krupicafaja, módní přehlídka, charitativní dražba umění a grande finale drag queen Miss Petty. Moderuje Tereza Bonaventurová, hraje DJka Luci Jacuzzi, tetuje Breberka Tattoo.",
       "startDate": "2026-08-28T15:30:00+02:00",
       "endDate": "2026-08-28T22:00:00+02:00",
       "eventStatus": "https://schema.org/EventScheduled",
@@ -84,6 +84,27 @@
           "@type": "Person",
           "name": "Tereza Bonaventurová",
           "description": "Moderátorka večera a stand-up komička"
+        },
+        {
+          "@type": "Person",
+          "name": "Kristýna Mlynář Koutná",
+          "alternateName": "Podrážděná číča",
+          "description": "Výtvarnice, komentovaná vernisáž série Královny Brno-venkov a moderace panelové diskuze"
+        },
+        {
+          "@type": "MusicGroup",
+          "name": "Hudební soubor Vážky",
+          "description": "Folk šmrnclý swingem"
+        },
+        {
+          "@type": "Person",
+          "name": "Krupicafaja",
+          "description": "Valašská lidová rapperka"
+        },
+        {
+          "@type": "Person",
+          "name": "Luci Jacuzzi",
+          "description": "DJka"
         },
         {
           "@type": "Person",
@@ -244,44 +265,345 @@
                 white-space: nowrap;
             }
         }
-        .program-list {
+        /* ---------- Program: časová osa s rozbalovacími kartami ---------- */
+        .timeline-tools {
+            display: flex;
+            justify-content: flex-end;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .timeline-tools button {
+            background: none;
+            border: 0;
+            color: var(--text-secondary);
+            font: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 6px 0;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .timeline-tools button:hover {
+            color: var(--accent-neon);
+        }
+        .timeline {
+            list-style: none;
+            padding: 0;
+            max-width: 820px;
+            margin: 52px auto 0;
+            position: relative;
+        }
+        /* Svislá neonová linka, dole se vytrácí */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 91px;
+            top: 8px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-neon) 0%, var(--accent-neon) 92%, transparent 100%);
+            opacity: 0.55;
+        }
+        .tl-slot {
+            position: relative;
+            padding-left: 122px;
+            padding-bottom: 54px;
+        }
+        .tl-slot:last-child {
+            padding-bottom: 0;
+        }
+        .tl-time {
+            position: absolute;
+            left: 0;
+            top: 24px;
+            width: 76px;
+            text-align: right;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        /* Puntík na lince */
+        .tl-time::after {
+            content: '';
+            position: absolute;
+            left: 84px;
+            top: 1px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #0D0D0D;
+            border: 2px solid var(--accent-neon);
+            box-shadow: 0 0 0 4px #0D0D0D, 0 0 14px rgba(254, 69, 232, 0.55);
+            transition: background 0.3s ease;
+        }
+        .tl-slot:hover .tl-time::after {
+            background: var(--accent-neon);
+        }
+        /* Mezera mezi kartami musí pojmout fotku, která vyčuhuje nad kartu */
+        .tl-cards {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            max-width: 820px;
-            margin: 32px auto 0;
+            gap: 54px;
         }
-        .program-item {
-            display: flex;
-            gap: 22px;
-            align-items: flex-start;
+        .tl-card {
+            position: relative;
             background: var(--bg-card);
             border: 1px solid var(--divider);
-            border-radius: 12px;
-            padding: 26px 30px;
-            transition: border-color 0.3s ease;
+            border-radius: 14px;
+            scroll-margin-top: 150px; /* přímý odkaz na kartu nezajede pod fixní hlavičku */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .program-item:hover {
+        .tl-card:hover,
+        .tl-card.is-open {
             border-color: var(--accent-neon);
         }
-        .program-emoji {
-            font-size: 2rem;
-            line-height: 1.2;
+        .tl-card.is-open {
+            box-shadow: 0 0 24px rgba(254, 69, 232, 0.12);
         }
-        .program-item h3 {
-            font-size: 1.15rem;
-            margin-bottom: 6px;
+        .tl-h {
+            margin: 0;
+            font-size: inherit;
+            font-weight: inherit;
         }
-        .program-item p {
+        /* Hlavička = celé klikací tlačítko. Vpravo je místo pro fotku. */
+        .tl-head {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            width: 100%;
+            min-height: 132px;
+            padding: 22px 230px 20px 24px;
+            background: none;
+            border: 0;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 14px;
+        }
+        .tl-head:focus-visible {
+            outline: 2px solid var(--accent-neon);
+            outline-offset: 2px;
+        }
+        .tl-title {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.3rem;
+            line-height: 1.3;
+        }
+        .tl-title em {
+            font-style: normal;
+            color: var(--accent-neon);
+        }
+        /* Pilulka „Ukaž víc / Schovej“ */
+        .tl-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border: 1px solid var(--accent-neon);
+            border-radius: 999px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--accent-neon);
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        .tl-more::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: translateY(-2px) rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+        .tl-head:hover .tl-more,
+        .tl-card.is-open .tl-more {
+            background: var(--accent-neon);
+            color: #0D0D0D;
+        }
+        .tl-card.is-open .tl-more::after {
+            transform: translateY(2px) rotate(-135deg);
+        }
+        .tl-more-close {
+            display: none;
+        }
+        .tl-card.is-open .tl-more-open {
+            display: none;
+        }
+        .tl-card.is-open .tl-more-close {
+            display: inline;
+        }
+        /* Fotka: vyříznutá postava přilepená vpravo, stojí na spodní hraně
+           hlavičky a vyčuhuje nad horní okraj karty */
+        .tl-figure {
+            position: absolute;
+            right: 22px;
+            bottom: 0;
+            height: 176px;
+            max-width: 200px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            pointer-events: none;
+            filter: drop-shadow(0 0 22px rgba(254, 69, 232, 0.35));
+        }
+        .tl-figure img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            transform-origin: bottom center;
+            transition: transform 0.35s ease;
+        }
+        .tl-card:hover .tl-figure img,
+        .tl-card.is-open .tl-figure img {
+            transform: scale(1.04);
+        }
+        /* Karta bez fotky (noční klid): nadpis dostane celou šířku */
+        .tl-card--nofigure .tl-head {
+            padding-right: 24px;
+            min-height: 0;
+        }
+        /* Více lidí v jedné hlavičce (zahájení, panel): překrývají se */
+        .tl-figure--multi {
+            max-width: none;
+        }
+        .tl-figure--multi img {
+            height: 100%;
+            width: auto;
+            max-width: 118px;
+            object-fit: contain;
+            object-position: bottom;
+            margin-left: -34px;
+        }
+        .tl-figure--multi img:first-child {
+            margin-left: 0;
+        }
+        .tl-card--multi .tl-head {
+            padding-right: 310px;
+        }
+        /* Rozbalení přes grid-template-rows: plynulé, bez pevné výšky */
+        .tl-body {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease;
+        }
+        .tl-body > div {
+            overflow: hidden;
+            min-height: 0;
+        }
+        .tl-card.is-open .tl-body {
+            grid-template-rows: 1fr;
+        }
+        .tl-body-inner {
+            padding: 4px 24px 24px 24px;
+            border-top: 1px solid var(--divider);
+            margin: 0 1px;
+            padding-top: 18px;
+        }
+        .tl-body-inner p {
             color: var(--text-secondary);
         }
-        .program-item .program-photo {
-            width: 150px;
+        .tl-body-inner p + p {
+            margin-top: 10px;
+        }
+        .tl-body-inner .tl-handle {
+            margin-top: 10px;
+        }
+        .tl-body-inner .tl-handle a {
+            color: var(--accent-neon);
+        }
+        .tl-body-inner .btn-secondary {
+            margin-top: 14px;
+        }
+        .tl-body-inner .fest-host-player {
+            margin-top: 14px;
+        }
+        .tl-body-inner .fest-host-note {
+            margin-top: 10px;
+        }
+        .tl-wide-photo {
+            width: 100%;
             height: auto;
             border-radius: 10px;
-            flex-shrink: 0;
-            align-self: center;
-            margin-left: auto;
+            display: block;
+            margin-top: 16px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .tl-body, .tl-more, .tl-more::after, .tl-figure img {
+                transition: none;
+            }
+        }
+        @media (max-width: 600px) {
+            .timeline {
+                margin-top: 44px;
+            }
+            .timeline::before {
+                left: 9px;
+            }
+            .tl-slot {
+                padding-left: 30px;
+                padding-bottom: 40px;
+            }
+            .tl-time {
+                position: static;
+                width: auto;
+                text-align: left;
+                font-size: 1rem;
+                color: var(--accent-neon);
+                margin-bottom: 8px;
+            }
+            .tl-time::after {
+                left: 2px;
+                top: auto;
+                margin-top: 1px;
+                width: 12px;
+                height: 12px;
+                box-shadow: 0 0 0 3px #0D0D0D, 0 0 12px rgba(254, 69, 232, 0.55);
+            }
+            .tl-cards {
+                gap: 40px;
+            }
+            .tl-card {
+                scroll-margin-top: 120px;
+            }
+            .tl-head {
+                min-height: 108px;
+                gap: 12px;
+                padding: 18px 128px 16px 16px;
+            }
+            .tl-title {
+                font-size: 1.05rem;
+            }
+            .tl-more {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            .tl-figure {
+                right: 10px;
+                height: 132px;
+                max-width: 118px;
+            }
+            .tl-card--nofigure .tl-head {
+                padding-right: 16px;
+            }
+            .tl-figure--multi img {
+                max-width: 68px;
+                margin-left: -24px;
+            }
+            .tl-card--multi .tl-head {
+                padding-right: 152px;
+            }
+            .tl-body-inner {
+                padding: 16px 16px 18px 16px;
+            }
         }
         /* Panelistky: čtvercové portréty ve třech sloupcích */
         .panel-people {
@@ -339,9 +661,6 @@
                 margin-top: auto;
                 padding-top: 8px;
             }
-        }
-        .program-item.program-teaser {
-            border-style: dashed;
         }
         .program-cta {
             text-align: center;
@@ -456,14 +775,6 @@
             display: block;
         }
         @media (max-width: 600px) {
-            .program-item {
-                flex-direction: column;
-                gap: 12px;
-                padding: 22px;
-            }
-            .program-item .program-photo {
-                margin: 0 auto;
-            }
             /* Na mobilu panelistky pod sebou: malá fotka vlevo, text vpravo */
             .panel-people {
                 grid-template-columns: 1fr;
@@ -489,11 +800,6 @@
             .fest-host img {
                 width: 100%;
                 max-width: 100%;
-            }
-            .fest-host--petty img {
-                width: 220px;
-                max-width: 65%;
-                margin: 0 auto;
             }
         }
         .partner-group {
@@ -720,8 +1026,7 @@
         <div class="container">
             <h2 class="section-title reveal">Co tě večer čeká</h2>
             <p class="art-intro reveal">
-                Detailní program s časy a jmény připravujeme a postupně ho odhalíme.
-                Jako tvoji mámu.
+                Program odhalen. Jako tvoje máma.
             </p>
             <div class="fest-host reveal">
                 <img src="/images/performeri/tereza-bonaventurova.webp"
@@ -738,175 +1043,291 @@
                 </div>
                 <div class="fest-host-player" id="hostVideoPlayer" hidden></div>
             </div>
-            <div class="program-list">
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🖼️</div>
-                    <div>
-                        <h3>Vernisáž: Královny Brno-venkov</h3>
-                        <p>
-                            Nová kolekce obrazů naživo a pohromadě. Královny, které
-                            vznikly sprejem a štětcem Podrážděné číči, se konečně
-                            ukážou svým lidem.
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">👠</div>
-                    <div>
-                        <h3>Módní přehlídka</h3>
-                        <p>
-                            Ve spolupráci s partnery festu oblečeme top girls. Molo,
-                            světla a móda, která si nepřišla pro potlesk, ale pro
-                            pozdvižené obočí a nekončící respekt.
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🎶</div>
-                    <div>
-                        <h3>Hudba z ženských prsou</h3>
-                        <p>
-                            Živá vystoupení a DJky, které rozhodnou, kdy se tančí.
-                            Line-up oznámíme, jakmile podepíšou krví. Nebo aspoň fixou.
-                            A možná pozvem i ňáký good bois.
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🎧</div>
-                    <div>
-                        <h3>DJka<br><span style="color: var(--accent-neon);">Luci Jacuzzi</span></h3>
-                        <p>
-                            Do vířivky beatů tě hodí Luci Jacuzzi. DJka, co pouští
-                            přesně to, co potřebuješ slyšet, ještě dřív, než to víš.
-                            Parket ožije jak Františkovy lázně v hlavní sezóně.
-                        </p>
-                        <p style="margin-top: 10px;">
-                            <a href="https://www.instagram.com/luci_jacuzzi/" target="_blank" rel="noopener" style="color: var(--accent-neon);">@luci_jacuzzi</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🎙️</div>
-                    <div>
-                        <h3>Lidová rapperka<br><span style="color: var(--accent-neon);">Krupicafaja</span></h3>
-                        <p>
-                            Valašská lidová rapperka, co má texty ostré jak štamprla
-                            stodolovej gořalky! Pusť si jednu písničku, ať víš vo co go
-                            a zbytkem se nech překvapit na místě.
-                        </p>
-                        <button class="btn-secondary" id="krupicaVideoBtn" type="button" style="margin-top: 14px;">▶ Ochutnávka hýr</button>
-                        <div class="fest-host-player" id="krupicaVideoPlayer" hidden style="margin-top: 14px;"></div>
-                    </div>
-                    <img class="program-photo" src="/images/performeri/krupicafaja.webp"
-                         alt="Krupicafaja, valašská lidová rapperka" loading="lazy" width="400" height="359">
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🪡</div>
-                    <div>
-                        <h3>Tatérka<br><span style="color: var(--accent-neon);">Breberka Tattoo</span></h3>
-                        <p>
-                            Breberka mi dělala moji první tetovačku. To ji zajistilo
-                            speciální místo v mém srdci a taky místo na prvním ročníku
-                            ČAF. Vytetuje ti číču či jinou číčovinu. Tento večer se ti
-                            tak zaryje pod kůži už navždy. Mňau.
-                        </p>
-                        <p style="margin-top: 10px;">
-                            <a href="https://www.instagram.com/breberka.tattoo/" target="_blank" rel="noopener" style="color: var(--accent-neon);">@breberka.tattoo</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🧠</div>
-                    <div>
-                        <h3>Panelová diskuze<br><span style="color: var(--accent-neon);">Všechno je to v hlavě a v číči!</span></h3>
-                        <p>
-                            Podrážděná číča za vás vyzpovídá jedny z nejpovolanějších žen
-                            na psychologii a ženskou sexualitu. Bude to především diskuze
-                            o číči a problémech v našich hlavičičkách.
-                        </p>
-                        <div class="panel-people">
-                            <div class="panel-person">
-                                <img src="/images/performeri/panel-olga-vlachynska.webp"
-                                     alt="Olga Vlachynská, terapeutka známá jako PsychOlinka"
-                                     loading="lazy" width="600" height="600">
-                                <div>
-                                    <h4><a href="https://www.olinkavlachynska.cz/" target="_blank" rel="noopener">Olga Vlachynská</a></h4>
-                                    <p>Známá též jako PsychOlinka aneb lidská terapeutka s ADHD a silnými názory.</p>
-                                    <p class="panel-link"><a href="https://www.olinkavlachynska.cz/" target="_blank" rel="noopener">olinkavlachynska.cz</a></p>
-                                </div>
-                            </div>
-                            <div class="panel-person">
-                                <img src="/images/performeri/panel-zuzana-krizova.webp"
-                                     alt="Zuzana Křížová, sex koučka a zakladatelka projektu Rozkoššš"
-                                     loading="lazy" width="600" height="600">
-                                <div>
-                                    <h4><a href="https://www.zuzanakrizova.com/" target="_blank" rel="noopener">Zuzana Křížová</a></h4>
-                                    <p>Certifikovaná sex koučka a zakladatelka projektu Rozkoššš. Š š š, š š š, š š š š š š šup ho tam.</p>
-                                    <p class="panel-link"><a href="https://www.zuzanakrizova.com/" target="_blank" rel="noopener">zuzanakrizova.com</a></p>
-                                </div>
-                            </div>
-                            <div class="panel-person">
-                                <img src="/images/performeri/panel-hana-vackova.webp"
-                                     alt="Hana Vacková, novinářka a autorka knihy Česká touha"
-                                     loading="lazy" width="600" height="600">
-                                <div>
-                                    <h4><a href="https://sxinteligence.cz/" target="_blank" rel="noopener">Hana Vacková</a></h4>
-                                    <p>Novinářka, spisovatelka a autorka knihy Česká touha: Naše sexualita v příbězích a souvislostech.</p>
-                                    <p class="panel-link"><a href="https://sxinteligence.cz/" target="_blank" rel="noopener">sxinteligence.cz</a></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🎤</div>
-                    <div>
-                        <h3>Standup komičička<br><span style="color: var(--accent-neon);">Tereza Bonaventurová</span></h3>
-                        <p>
-                            Něžná feministka, hysterická hospodyňka a silná závislá žena.
-                            Mezi její oblíbená témata patří televizní pečení a potratová
-                            politika aneb všechno, co jste nechtěli vědět o životě
-                            moderních žen a nikdy se nechtěli zeptat.
-                        </p>
-                        <p style="margin-top: 10px;">
-                            <a href="https://www.instagram.com/terezabonaventurova/" target="_blank" rel="noopener" style="color: var(--accent-neon);">@terezabonaventurova</a>
-                        </p>
-                    </div>
-                </div>
-                <div class="program-item reveal">
-                    <div class="program-emoji" aria-hidden="true">🔨</div>
-                    <div>
-                        <h3>Dražba obrazů a artefaktů</h3>
-                        <p>
-                            Vyvrcholení večera. Obrazy z kolekce a další kusy, které
-                            jinde neseženeš. Zvedni ruku a odnes si domů kus číči.
-                        </p>
-                    </div>
-                </div>
-                <div class="fest-host fest-host--petty reveal">
-                    <img src="/images/performeri/miss-petty.webp"
-                         srcset="/images/performeri/miss-petty-sm.webp 450w, /images/performeri/miss-petty.webp 900w"
-                         sizes="(max-width: 600px) 220px, 280px"
-                         alt="Miss Petty, drag queen a zpěvačka, grande finale Číča Art Festu"
-                         loading="lazy" width="900" height="1125">
-                    <div class="fest-host-text">
-                        <p class="fest-host-lead">
-                            <strong class="fest-host-title">Grande finale</strong>
-                            <strong class="fest-host-name">Miss Petty</strong>
-                            První drag queen v Česku, co si píše vlastní písničky
-                            a pak na ně v lodičkách koncertuje. Zpíval s Charli XCX
-                            v Roxy, s Kapitánem Demem v O2 aréně a rozsvítil Pohodu
-                            i Colours. Křiklavý barvy, energie za celou elektrárnu
-                            a sebeláska, co se rozdává i do zadních řad. Až to bude
-                            vypadat, že večer už nemá čím překvapit, přijde Miss Petty.
-                        </p>
-                        <button class="btn-secondary" id="pettyVideoBtn" type="button">▶ PUSSYCAT – hymna pro každou číču</button>
-                        <p class="fest-host-note">Naposlouchej si ji předem. Na místě se řve každý slovo, mňau.</p>
-                    </div>
-                    <div class="fest-host-player" id="pettyVideoPlayer" hidden></div>
-                </div>
+
+            <div class="timeline-tools reveal">
+                <button type="button" id="timelineToggleAll" aria-expanded="false">Rozbalit celý program</button>
             </div>
+            <ol class="timeline" id="timeline">
+
+                <!-- 15:30 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T15:30+02:00">15:30</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-brany" data-name="Otevíráme brány parku">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-brany-body">
+                                    <span class="tl-title">Otevíráme brány parku</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/welcome-drink-stary-vrch.webp" alt="Welcome drink: frizzante Starý vrch" loading="lazy" width="477" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-brany-body"><div><div class="tl-body-inner">
+                                <p>Přijdeš, registruješ se a do pacičky dostaneš welcome drink. Páteček, pohodička, pártoška.</p>
+                            </div></div></div>
+                        </article>
+
+                        <article class="tl-card" id="p-breberka" data-name="Breberka Tattoo">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-breberka-body">
+                                    <span class="tl-title"><em>Breberka Tattoo</em> otevírá tetovací studio</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/breberkatattoo.webp" alt="Breberka Tattoo, tatérka" loading="lazy" width="520" height="444"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-breberka-body"><div><div class="tl-body-inner">
+                                <p>Breberka mi dělala moji první tetovačku. To ji zajistilo speciální místo v mém srdci a taky místo na prvním ročníku ČAF. Vytetuje ti číču či jinou číčovinu. Tento páteček se ti tak zaryje pod kůži už navždy. Mňau.</p>
+                                <p class="tl-handle"><a href="https://www.instagram.com/breberka.tattoo/" target="_blank" rel="noopener">@breberka.tattoo</a></p>
+                            </div></div></div>
+                        </article>
+
+                        <article class="tl-card" id="p-luci" data-name="DJka Luci Jacuzzi">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-luci-body">
+                                    <span class="tl-title">Začíná hrát DJka <em>Luci Jacuzzi</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/lucijacuzzi.webp" alt="DJka Luci Jacuzzi" loading="lazy" width="398" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-luci-body"><div><div class="tl-body-inner">
+                                <p>Do vířivky beatů tě hodí Luci Jacuzzi. DJka, co pouští přesně to, co potřebuješ slyšet, ještě dřív, než to víš. Parket ožije jak Františkovy lázně v hlavní sezóně.</p>
+                                <p class="tl-handle"><a href="https://www.instagram.com/luci_jacuzzi/" target="_blank" rel="noopener">@luci_jacuzzi</a></p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 15:45 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T15:45+02:00">15:45</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-vernisaz" data-name="Vernisáž Královny Brno-venkov">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-vernisaz-body">
+                                    <span class="tl-title">Komentovaná vernisáž série obrazů <em>Královny Brno-venkov</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/podrazdena-cica.webp" alt="Kristýna Mlynář Koutná alias Podrážděná číča" loading="lazy" width="472" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-vernisaz-body"><div><div class="tl-body-inner">
+                                <p>Zkušená komentátorka s ADHD, brněnská náplava z Orlové, humoristka a výtvarnice Kristýna Mlynář Koutná a.k.a. Podrážděná číča ti poví story, jak vznikala její první série hravých nudesek. Najdeš ji po schodech dole v ateliéru.</p>
+                                <img class="tl-wide-photo" src="/images/performeri/program/vernisaz-kralovny-brno-venkov.webp"
+                                     srcset="/images/performeri/program/vernisaz-kralovny-brno-venkov-sm.webp 800w, /images/performeri/program/vernisaz-kralovny-brno-venkov.webp 1400w"
+                                     sizes="(max-width: 600px) 92vw, 700px"
+                                     alt="Obraz ze série Královny Brno-venkov od Podrážděné číči" loading="lazy" width="1400" height="788">
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 16:20 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T16:20+02:00">16:20</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card tl-card--multi" id="p-zahajeni" data-name="Zahájení">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-zahajeni-body">
+                                    <span class="tl-title">Začínáme. Držte si klobouky. A hůlky.</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure tl-figure--multi"><img src="/images/performeri/program/tereza-bonaventurova.webp" alt="Tereza Bonaventurová" loading="lazy" width="387" height="520"><img src="/images/performeri/program/podrazdena-cica.webp" alt="Podrážděná číča" loading="lazy" width="472" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-zahajeni-body"><div><div class="tl-body-inner">
+                                <p>Hello hello. Na stage ti přijde zamávat bohyně humoru Tereza Bonaventurová a bohyně blbých keců Podrážděná číča.</p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 16:30 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T16:30+02:00">16:30</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-vazky" data-name="Hudební soubor Vážky">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-vazky-body">
+                                    <span class="tl-title">Nastupuje <em>Hudební soubor Vážky</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/hudebni-soubor-vazky.webp" alt="Hudební soubor Vážky" loading="lazy" width="520" height="443"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-vazky-body"><div><div class="tl-body-inner">
+                                <p>Těšíme se na tebe v omezené sestavě tří bílých heteroboys. Přineseme ti trochu folku šmrnclýho swingem a romáckýma kilama.</p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 17:20 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T17:20+02:00">17:20</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card tl-card--multi" id="p-panel" data-name="Panelová diskuze">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-panel-body">
+                                    <span class="tl-title">Začíná panelová diskuze <em>Všechno je to v hlavě a v číči</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure tl-figure--multi"><img src="/images/performeri/program/olinka-vlachynska.webp" alt="Olga Vlachynská" loading="lazy" width="301" height="520"><img src="/images/performeri/program/zuzana-krizova.webp" alt="Zuzana Křížová" loading="lazy" width="373" height="520"><img src="/images/performeri/program/hana-vackova.webp" alt="Hana Vacková" loading="lazy" width="445" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-panel-body"><div><div class="tl-body-inner">
+                                <p>Podrážděná číča za vás vyzpovídá jedny z nejpovolanějších žen na psychologii a ženskou sexualitu. Bude to především diskuze o číči a problémech v našich hlavičičkách.</p>
+                                <div class="panel-people">
+                                    <div class="panel-person">
+                                        <img src="/images/performeri/panel-olga-vlachynska.webp"
+                                             alt="Olga Vlachynská, terapeutka známá jako PsychOlinka"
+                                             loading="lazy" width="600" height="600">
+                                        <div>
+                                            <h4><a href="https://www.olinkavlachynska.cz/" target="_blank" rel="noopener">Olga Vlachynská</a></h4>
+                                            <p>Známá též jako PsychOlinka aneb lidská terapeutka s ADHD a silnými názory.</p>
+                                            <p class="panel-link"><a href="https://www.olinkavlachynska.cz/" target="_blank" rel="noopener">olinkavlachynska.cz</a></p>
+                                        </div>
+                                    </div>
+                                    <div class="panel-person">
+                                        <img src="/images/performeri/panel-zuzana-krizova.webp"
+                                             alt="Zuzana Křížová, sex koučka a zakladatelka projektu Rozkoššš"
+                                             loading="lazy" width="600" height="600">
+                                        <div>
+                                            <h4><a href="https://www.zuzanakrizova.com/" target="_blank" rel="noopener">Zuzana Křížová</a></h4>
+                                            <p>Certifikovaná sex koučka a zakladatelka projektu Rozkoššš. Š š š, š š š, š š š š š š šup ho tam.</p>
+                                            <p class="panel-link"><a href="https://www.zuzanakrizova.com/" target="_blank" rel="noopener">zuzanakrizova.com</a></p>
+                                        </div>
+                                    </div>
+                                    <div class="panel-person">
+                                        <img src="/images/performeri/panel-hana-vackova.webp"
+                                             alt="Hana Vacková, novinářka a autorka knihy Česká touha"
+                                             loading="lazy" width="600" height="600">
+                                        <div>
+                                            <h4><a href="https://sxinteligence.cz/" target="_blank" rel="noopener">Hana Vacková</a></h4>
+                                            <p>Novinářka, spisovatelka a autorka knihy Česká touha: Naše sexualita v příbězích a souvislostech.</p>
+                                            <p class="panel-link"><a href="https://sxinteligence.cz/" target="_blank" rel="noopener">sxinteligence.cz</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 17:50 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T17:50+02:00">17:50</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-tereza" data-name="Stand-up Tereza Bonaventurová">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-tereza-body">
+                                    <span class="tl-title">Přichází vrchní standup komičička <em>Tereza Bonaventurová</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/tereza-bonaventurova.webp" alt="Tereza Bonaventurová, stand-up komička" loading="lazy" width="387" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-tereza-body"><div><div class="tl-body-inner">
+                                <p>Něžná feministka, hysterická hospodyňka a silná závislá žena. Mezi její oblíbená témata patří televizní pečení a potratová politika aneb všechno, co jste nechtěli vědět o životě moderních žen a nikdy se nechtěli zeptat.</p>
+                                <p class="tl-handle"><a href="https://www.instagram.com/terezabonaventurova/" target="_blank" rel="noopener">@terezabonaventurova</a></p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 18:30 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T18:30+02:00">18:30</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-krupicafaja" data-name="Krupicafaja">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-krupicafaja-body">
+                                    <span class="tl-title"><em>Krupicafaja</em> zandává lidové rap</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/krupicafaja.webp" alt="Krupicafaja, valašská lidová rapperka" loading="lazy" width="340" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-krupicafaja-body"><div><div class="tl-body-inner">
+                                <p>Valašská lidová rapperka, co má texty ostré jak štamprla stodolovej gořalky! Pusť si jednu písničku, ať víš vo co go a zbytkem se nech překvapit na místě.</p>
+                                <button class="btn-secondary" id="krupicaVideoBtn" type="button">▶ Ochutnávka hýr</button>
+                                <div class="fest-host-player" id="krupicaVideoPlayer" hidden></div>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 19:30 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T19:30+02:00">19:30</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-prehlidka" data-name="Módní přehlídka">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-prehlidka-body">
+                                    <span class="tl-title">Přicházejí štylový kocs</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/modni-prehlidka-balenciciaga.webp" alt="Módní přehlídka: taška Balenčičiaga" loading="lazy" width="477" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-prehlidka-body"><div><div class="tl-body-inner">
+                                <p>Ve spolupráci s parťačkama z Hůlkárny, Rozkoššše a Furiosy vystajlujeme topové vědkyně, podnikatelky, umělkyně, alfa matky a další multifunkční ženy. Devět žen s devíti silnými příběhy.</p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 20:10 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T20:10+02:00">20:10</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-drazba" data-name="Dražba">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-drazba-body">
+                                    <span class="tl-title">Vrcholí dražba umění a artefaktů</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/drazba-kurwa-bober.webp" alt="Dražba: obraz Kurwa bobr od Podrážděné číči" loading="lazy" width="520" height="372"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-drazba-body"><div><div class="tl-body-inner">
+                                <p>Přichází tvá jedinečná možnost odnést si některý z kousků nejen od Podrážděné číči, ale i dalších po číči umělců a umělkyň. Závěr dražby bude charitativní a výtěžek poputuje pacientské organizaci LYMFOM HELP, z. s. a také do Nadace Veronica. Katalog s předměty brzy zveřejníme.</p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 21:10 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T21:10+02:00">21:10</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card" id="p-petty" data-name="Miss Petty">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-petty-body">
+                                    <span class="tl-title">Přichází tomu nasadit korunku drag queen <em>Miss Petty</em></span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    <span class="tl-figure"><img src="/images/performeri/program/miss-petty.webp" alt="Miss Petty, drag queen a zpěvačka" loading="lazy" width="392" height="520"></span>
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-petty-body"><div><div class="tl-body-inner">
+                                <p>Všechny královny nechť se dostaví do kotle. Čeká tam hottest závěrečná párty tohoto hot léta.</p>
+                                <button class="btn-secondary" id="pettyVideoBtn" type="button">▶ PUSSYCAT – hymna pro každou číču</button>
+                                <p class="fest-host-note">Naposlouchej si to předem. Na místě se řve každý slovo, mňau.</p>
+                                <div class="fest-host-player" id="pettyVideoPlayer" hidden></div>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+
+                <!-- 22:00 -->
+                <li class="tl-slot reveal">
+                    <div class="tl-time"><time datetime="2026-08-28T22:00+02:00">22:00</time></div>
+                    <div class="tl-cards">
+                        <article class="tl-card tl-card--nofigure" id="p-konec" data-name="Noční klid">
+                            <h3 class="tl-h">
+                                <button class="tl-head" type="button" aria-expanded="false" aria-controls="p-konec-body">
+                                    <span class="tl-title">Pšššt, začíná noční klid. A my začínáme hledat, kam dál.</span>
+                                    <span class="tl-more"><span class="tl-more-open">Ukaž víc</span><span class="tl-more-close">Schovej</span></span>
+                                    
+                                </button>
+                            </h3>
+                            <div class="tl-body" id="p-konec-body"><div><div class="tl-body-inner">
+                                <p>Zatlačíme slzu, zavřeme brány CO.LABS. A se silným jádrem pokračujeme lovit příběhy do některého brněnského podniku.</p>
+                            </div></div></div>
+                        </article>
+                    </div>
+                </li>
+            </ol>
             <div class="program-cta reveal">
                 <p>Pro fresh informace o ČAF sleduj náš Instagram</p>
                 <!-- Mřížka se doplní z /api/instagram, dokud nedorazí, není vidět -->
@@ -1451,6 +1872,50 @@
                 renderQty();
             }
         });
+
+        // Program: rozbalovací karty na časové ose
+        const timelineCards = Array.from(document.querySelectorAll('#timeline .tl-card'));
+        const toggleAllBtn = document.getElementById('timelineToggleAll');
+        function setCardOpen(card, open, track) {
+            const btn = card.querySelector('.tl-head');
+            card.classList.toggle('is-open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open && track) {
+                const params = { program_item: card.dataset.name || card.id, cta_page: window.location.pathname };
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push(Object.assign({ event: 'program_open' }, params));
+                if (typeof gtag === 'function') gtag('event', 'program_open', params);
+            }
+        }
+        function refreshToggleAll() {
+            const allOpen = timelineCards.every(c => c.classList.contains('is-open'));
+            toggleAllBtn.textContent = allOpen ? 'Sbalit celý program' : 'Rozbalit celý program';
+            toggleAllBtn.setAttribute('aria-expanded', allOpen ? 'true' : 'false');
+        }
+        timelineCards.forEach(card => {
+            card.querySelector('.tl-head').addEventListener('click', () => {
+                setCardOpen(card, !card.classList.contains('is-open'), true);
+                refreshToggleAll();
+            });
+        });
+        toggleAllBtn.addEventListener('click', () => {
+            const allOpen = timelineCards.every(c => c.classList.contains('is-open'));
+            timelineCards.forEach(c => setCardOpen(c, !allOpen, false));
+            refreshToggleAll();
+        });
+        // Přímý odkaz na bod programu (#p-krupicafaja) kartu rovnou rozbalí
+        function openCardFromHash() {
+            let target = null;
+            try {
+                target = window.location.hash && document.querySelector('#timeline .tl-card' + window.location.hash);
+            } catch (e) { /* neplatný hash, ignorujeme */ }
+            if (target) {
+                setCardOpen(target, true, false);
+                refreshToggleAll();
+            }
+        }
+        openCardFromHash();
+        window.addEventListener('hashchange', openCardFromHash);
 
         // Videoukázka moderátorky: YouTube se načte až po kliknutí,
         // ať stránku nebrzdí cizí skripty (a nesbírá cookies zbytečně).
