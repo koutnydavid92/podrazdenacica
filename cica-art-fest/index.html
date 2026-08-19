@@ -36,7 +36,7 @@
     <link rel="canonical" href="https://www.podrazdenacica.cz/cica-art-fest">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Číča Art Fest – umění, power bitches a jedna divoká noc">
+    <meta property="og:title" content="Číča Art Fest – páteční chichill a večičírek pro hot číče">
     <meta property="og:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně. Vstupenka za 777 Kč, jen 250 míst.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.podrazdenacica.cz/cica-art-fest">
@@ -46,7 +46,7 @@
 
     <!-- Twitter/X -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Číča Art Fest – umění, power bitches a jedna divoká noc">
+    <meta name="twitter:title" content="Číča Art Fest – páteční chichill a večičírek pro hot číče">
     <meta name="twitter:description" content="Vernisáž, módní přehlídka, hudba z ženských prsou, standup a dražba obrazů. 28. 8. 2026 v CO.LABS v Brně.">
     <meta name="twitter:image" content="https://www.podrazdenacica.cz/images/og-image.jpg">
 
@@ -180,6 +180,62 @@
             border-radius: 999px;
             font-size: 0.9rem;
             letter-spacing: 0.02em;
+        }
+        /* Podnadpis pod názvem festu */
+        #fest-hero .hero-title {
+            margin-bottom: 0.6rem;
+        }
+        .hero-subtitle {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+            line-height: 1.35;
+            color: var(--text-primary);
+            max-width: 720px;
+            margin-bottom: 1.4rem;
+        }
+        /* Odpočet do začátku festu */
+        .fest-countdown {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px 18px;
+            margin: -16px 0 36px;
+        }
+        .fest-countdown-label {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+        .fest-countdown-units {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 6px 18px;
+            align-items: baseline;
+        }
+        .fest-countdown-units span {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .fest-countdown-units b {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.9rem;
+            line-height: 1;
+            color: var(--accent-neon);
+            font-variant-numeric: tabular-nums;
+        }
+        .fest-countdown-units small {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        .fest-countdown.is-live .fest-countdown-label {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.4rem;
+            color: var(--accent-neon);
+        }
+        @media (max-width: 600px) {
+            .fest-countdown-units b {
+                font-size: 1.5rem;
+            }
         }
         .tickets-note {
             text-align: center;
@@ -1002,7 +1058,8 @@
         <div class="container">
             <div class="hero-text">
                 <div class="hero-label">První ročník. Žádná zkouška nanečisto.</div>
-                <h1 class="hero-title">Číča Art Fest.<br>Umění, power bitches a jedna divoká noc</h1>
+                <h1 class="hero-title">Číča Art Fest.</h1>
+                <p class="hero-subtitle">Páteční chichill a večičírek pro hot číče, nezávislé feny a jejich obdivovatele.</p>
                 <p class="hero-description">
                     Hot kocs všude. Na plátně i na mole. Možná i na mol.
                     Hudba z ženských prsou, stand-up i dražba, u který budou
@@ -1013,6 +1070,10 @@
                     <span>📅 28. 8. 2026, 15:30–22:00</span>
                     <span>📍 co.labs_park, Brno</span>
                 </div>
+                <p class="fest-countdown" id="festCountdown" aria-live="polite" hidden>
+                    <span class="fest-countdown-label">Už za</span>
+                    <span class="fest-countdown-units" id="festCountdownUnits"></span>
+                </p>
                 <div class="hero-buttons">
                     <a href="#vstupenky" class="btn-primary">Chci lupen</a>
                     <a href="#program" class="btn-secondary">Co se bude dít</a>
@@ -1020,6 +1081,55 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Odpočet do začátku festu. Časy jsou v pražském čase (+02:00 v srpnu).
+        (function () {
+            const box = document.getElementById('festCountdown');
+            const units = document.getElementById('festCountdownUnits');
+            const label = box.querySelector('.fest-countdown-label');
+            const start = new Date('2026-08-28T15:30:00+02:00').getTime();
+            const end = new Date('2026-08-28T22:00:00+02:00').getTime();
+            // České plurály: 1 den / 2 dny / 5 dní
+            function plural(n, one, few, many) {
+                if (n === 1) return one;
+                if (n >= 2 && n <= 4) return few;
+                return many;
+            }
+            function unit(n, one, few, many) {
+                return '<span><b>' + n + '</b><small>' + plural(n, one, few, many) + '</small></span>';
+            }
+            function tick() {
+                const now = Date.now();
+                if (now >= end) {
+                    box.classList.add('is-live');
+                    label.textContent = 'Bylo to divoký. Díky, že jsi u toho byla. Mňau.';
+                    units.innerHTML = '';
+                    return false;
+                }
+                if (now >= start) {
+                    box.classList.add('is-live');
+                    label.textContent = 'Právě probíhá. Kde jsi? Mňau.';
+                    units.innerHTML = '';
+                    return true;
+                }
+                let diff = Math.floor((start - now) / 1000);
+                const d = Math.floor(diff / 86400); diff -= d * 86400;
+                const h = Math.floor(diff / 3600); diff -= h * 3600;
+                const m = Math.floor(diff / 60);
+                const sec = diff - m * 60;
+                units.innerHTML =
+                    (d > 0 ? unit(d, 'den', 'dny', 'dní') : '') +
+                    unit(h, 'hodina', 'hodiny', 'hodin') +
+                    unit(m, 'minuta', 'minuty', 'minut') +
+                    unit(sec, 'sekunda', 'sekundy', 'sekund');
+                return true;
+            }
+            tick();
+            box.hidden = false;
+            const timer = setInterval(function () { if (!tick()) clearInterval(timer); }, 1000);
+        })();
+    </script>
 
     <!-- Program -->
     <section id="program">
