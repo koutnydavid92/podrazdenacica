@@ -72,9 +72,11 @@ module.exports = async (req, res) => {
             isAlbum: p.media_type === 'CAROUSEL_ALBUM'
         })).filter(p => p.image && p.permalink);
 
-        // 10 minut čerstvé, další hodinu smí CDN servírovat starou verzi,
-        // zatímco si na pozadí stahuje novou. Návštěvník tak nikdy nečeká.
-        res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=3600');
+        // 3 minuty čerstvé, dalších 10 minut smí CDN servírovat starou verzi,
+        // zatímco si na pozadí stahuje novou. Návštěvník tak nikdy nečeká
+        // a nový příspěvek se na webu objeví do pár minut. Instagram to unese:
+        // i při plném provozu je to nanejvýš 20 dotazů za hodinu.
+        res.setHeader('Cache-Control', 's-maxage=180, stale-while-revalidate=600');
         res.status(200).json({ posts });
     } catch (e) {
         console.error('Instagram: feed se nenačetl:', e.message);
