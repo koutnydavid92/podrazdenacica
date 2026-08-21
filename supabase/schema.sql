@@ -47,7 +47,7 @@ create table if not exists guestlist (
     ticket_id uuid unique references tickets(id),
     name text not null,
     role text,
-    bio text check (char_length(bio) <= 140),
+    bio text check (char_length(bio) <= 200),
     visible boolean not null default true,
     newsletter boolean not null default false,
     created_at timestamptz not null default now()
@@ -170,7 +170,7 @@ begin
 
     insert into guestlist (invite_id, name, role, bio, visible, newsletter)
     values (inv.id, trim(p_name), nullif(trim(p_role), ''),
-            nullif(trim(left(p_bio, 140)), ''), p_visible, p_newsletter)
+            nullif(trim(left(p_bio, 200)), ''), p_visible, p_newsletter)
     on conflict (invite_id) do update
         set name = excluded.name,
             role = excluded.role,
@@ -267,7 +267,7 @@ begin
 
     insert into guestlist (ticket_id, name, role, bio, visible, newsletter)
     values (t_id, trim(p_name), nullif(trim(p_role), ''),
-            nullif(trim(left(p_bio, 140)), ''), p_visible, p_newsletter)
+            nullif(trim(left(p_bio, 200)), ''), p_visible, p_newsletter)
     on conflict (ticket_id) do update
         set name = excluded.name,
             role = excluded.role,
