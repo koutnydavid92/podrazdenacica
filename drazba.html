@@ -127,6 +127,14 @@
             transform: scale(1.04);
         }
 
+        /* Kurwa bober – video smyčka z Hravých nudesek (na šířku, tak se vejde celé) */
+        .drazba-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
         .drazba-placeholder {
             width: min(42%, 400px);
             flex-shrink: 0;
@@ -410,7 +418,7 @@
                         <h3>Bad Nun</h3>
                         <p>
                             I jeptišky rády zlobí. Stylovej art piece vhodný do každého prostoru.
-                            Ideálně tam, kde nejčastěji odříkáváte otčenáše.
+                            Ideálně tam, kde nejčastěji odříkáváš otčenáše.
                         </p>
                         <div class="sale-meta">
                             <span>📐 70 × 90 cm</span>
@@ -428,11 +436,10 @@
 
                 <!-- Kurwa bober -->
                 <div class="gallery-item sale-item reveal" data-delay="100">
-                    <div class="drazba-image" data-full="/images/drazba/kurwa-bober.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Kurwa bober">
-                        <picture>
-                            <source media="(max-width: 600px)" srcset="/images/drazba/kurwa-bober-sm.webp" type="image/webp">
-                            <img src="/images/drazba/kurwa-bober.webp" alt="Kurwa bober – interaktivní autoportrét s magnetickou fólií, Podrážděná číča" loading="lazy" width="864" height="1536">
-                        </picture>
+                    <div class="drazba-image drazba-video" data-full="/images/drazba/kurwa-bober.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Kurwa bober">
+                        <video muted loop playsinline preload="metadata" poster="/videos/nudesky/lezici-akt-poster.webp" width="720" height="466" aria-label="Kurwa bober – obraz s vyměnitelnými magnetkami v akci">
+                            <source src="/videos/nudesky/lezici-akt.mp4" type="video/mp4">
+                        </video>
                     </div>
                     <div class="gallery-info">
                         <h3>Kurwa bober</h3>
@@ -802,6 +809,22 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeLightbox();
         });
+
+        // Video Kurwa bober – hraje, jen když je vidět (stejně jako na Hravých nudeskách)
+        const drazbaVideos = document.querySelectorAll('.drazba-video video');
+        if (drazbaVideos.length) {
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play().catch(() => {});
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.3 });
+            drazbaVideos.forEach(v => videoObserver.observe(v));
+        }
 
         // Current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
