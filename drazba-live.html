@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PBTC7F4W');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Přihazuj! | Dražba Číča Art Fest</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Online přihazování v tiché dražbě Číča Art Festu.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        body {
+            padding-top: 0;
+        }
+
+        .live-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 7.5rem 1.2rem 4rem;
+        }
+
+        .test-banner {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1500;
+            background: repeating-linear-gradient(45deg, #FE45E8, #FE45E8 14px, #0D0D0D 14px, #0D0D0D 28px);
+            padding: 3px;
+            display: none;
+        }
+
+        .test-banner span {
+            display: block;
+            background: #0D0D0D;
+            color: #FE45E8;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+        }
+
+        .live-head h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(1.9rem, 5vw, 2.8rem);
+            margin-bottom: 0.6rem;
+        }
+
+        .live-head p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .live-status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.4rem;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .live-status b {
+            color: var(--accent-neon);
+        }
+
+        /* Přihlášení */
+        .auth-box {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 16px;
+            padding: 1.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-box h2 {
+            font-size: 1.15rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .auth-box p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-box input[type="text"],
+        .auth-box input[type="email"] {
+            width: 100%;
+            background: #0D0D0D;
+            border: 1px solid var(--divider);
+            border-radius: 10px;
+            color: var(--white);
+            font: inherit;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .auth-box input:focus {
+            outline: none;
+            border-color: var(--accent-neon);
+        }
+
+        .auth-check {
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-check input {
+            margin-top: 0.2rem;
+        }
+
+        .btn-bid {
+            background: var(--accent-neon);
+            color: var(--black);
+            border: none;
+            border-radius: 50px;
+            font: inherit;
+            font-weight: 700;
+            padding: 0.75rem 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-bid:hover {
+            box-shadow: 0 0 24px rgba(255, 0, 255, 0.4);
+        }
+
+        .btn-bid:disabled {
+            opacity: 0.5;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        .auth-note {
+            color: var(--accent-neon);
+            font-size: 0.92rem;
+        }
+
+        .signed-in {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .signed-in b {
+            color: var(--white);
+        }
+
+        /* Položky */
+        .bid-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-item.is-leading {
+            border-color: var(--accent-neon);
+        }
+
+        .bid-thumb {
+            width: 72px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        }
+
+        .bid-thumb.placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+        .bid-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bid-info h3 {
+            font-size: 1.02rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .bid-info .bid-charity {
+            color: var(--accent-neon);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .bid-info .bid-top {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        .bid-info .bid-top b {
+            color: var(--white);
+            font-size: 1.05rem;
+            white-space: nowrap;
+        }
+
+        .bid-info .bid-lead-flag {
+            color: var(--accent-neon);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .bid-action {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .bid-action .btn-bid {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Modal příhozu */
+        .bid-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(13, 13, 13, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem;
+        }
+
+        .bid-modal.open {
+            display: flex;
+        }
+
+        .bid-modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 16px;
+            padding: 1.6rem;
+            width: min(420px, 100%);
+        }
+
+        .bid-modal-card h3 {
+            margin-bottom: 0.3rem;
+        }
+
+        .bid-modal-card .bid-min {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-modal-card input {
+            width: 100%;
+            background: #0D0D0D;
+            border: 1px solid var(--divider);
+            border-radius: 10px;
+            color: var(--white);
+            font: inherit;
+            font-size: 1.3rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-modal-card input:focus {
+            outline: none;
+            border-color: var(--accent-neon);
+        }
+
+        .bid-modal-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+        }
+
+        .btn-ghost {
+            background: none;
+            border: 1px solid var(--divider);
+            color: var(--text-secondary);
+            border-radius: 50px;
+            font: inherit;
+            padding: 0.75rem 1.4rem;
+            cursor: pointer;
+        }
+
+        .msg {
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.92rem;
+            display: none;
+        }
+
+        .msg.err {
+            background: rgba(255, 70, 70, 0.12);
+            border: 1px solid rgba(255, 70, 70, 0.5);
+            color: #ff9c9c;
+        }
+
+        .msg.ok {
+            background: rgba(254, 69, 232, 0.1);
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+        }
+
+        .live-footer {
+            margin-top: 2.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .live-footer a {
+            color: var(--accent-neon);
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBTC7F4W"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <div class="test-banner" id="testBanner"><span>🚧 Testovací režim · příhozy se před ostrým startem smažou 🚧</span></div>
+
+    <header id="top">
+        <div class="header-content">
+            <a href="/drazba" class="logo-link">
+                <picture>
+                    <source srcset="/images/logo.webp" type="image/webp">
+                    <img src="/images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140" fetchpriority="high">
+                </picture>
+            </a>
+        </div>
+    </header>
+
+    <main class="live-wrap">
+        <div class="live-head">
+            <h1>Tichá dražba naživo</h1>
+            <p>Přihazuješ online, vidíš vždycky jen nejvyšší nabídku. Kdo dá víc, vede. Ve 20:00 online kolo končí a finále proběhne na pódiu.</p>
+        </div>
+
+        <div class="live-status" id="liveStatus">
+            <span id="statusMode">Načítám dražbu…</span>
+            <span id="statusCountdown"></span>
+        </div>
+
+        <div class="msg err" id="globalErr"></div>
+        <div class="msg ok" id="globalOk"></div>
+
+        <!-- Přihlášení -->
+        <div class="auth-box" id="authBox" style="display:none;">
+            <h2>Přihlas se k přihazování</h2>
+            <p>Stačí jméno a e-mail. Pošleme ti odkaz, kliknutím ho potvrdíš a můžeš přihazovat. Žádná hesla.</p>
+            <input type="text" id="authName" placeholder="Jméno a příjmení" autocomplete="name">
+            <input type="email" id="authEmail" placeholder="tvuj@email.cz" autocomplete="email">
+            <label class="auth-check">
+                <input type="checkbox" id="authNewsletter">
+                <span>Chci občas dostat novinky od Podrážděné číči (nepovinné, kdykoliv se odhlásíš)</span>
+            </label>
+            <button class="btn-bid" id="authSend">Poslat mi odkaz</button>
+            <p class="auth-note" id="authNote" style="display:none; margin-top:1rem;"></p>
+        </div>
+
+        <p class="signed-in" id="signedIn" style="display:none;"></p>
+
+        <!-- Seznam děl -->
+        <div id="items"></div>
+
+        <p class="live-footer">
+            Přihozením souhlasíš s <a href="/drazba-pravidla">pravidly dražby</a>. Nabídka je závazná.
+            Katalog s fotkami a popisy najdeš na <a href="/drazba">stránce dražby</a>. Mňau ₍^. .^₎⟆
+        </p>
+    </main>
+
+    <!-- Modal příhozu -->
+    <div class="bid-modal" id="bidModal">
+        <div class="bid-modal-card">
+            <h3 id="modalTitle"></h3>
+            <p class="bid-min" id="modalMin"></p>
+            <div class="msg err" id="modalErr"></div>
+            <input type="number" id="modalAmount" inputmode="numeric" step="100">
+            <div class="bid-modal-actions">
+                <button class="btn-ghost" id="modalCancel">Zpět</button>
+                <button class="btn-bid" id="modalConfirm">Přihodit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const TOKEN_KEY = 'cica_drazba_token';
+        const IMAGES = {
+            'balencicaga': '/images/drazba/balencicaga-sm.webp',
+            'hulka': '/images/drazba/hulka-sm.webp',
+            'klitty': '/images/drazba/klitty-sm.webp',
+            'bad-nun': '/images/drazba/bad-nun-sm.webp',
+            'kurwa-bober': '/images/drazba/kurwa-bober-sm.webp',
+            'sila-tisice-cecek': null,
+            'euforie': '/images/drazba/euforie-sm.webp',
+            'vaclav-havel': '/images/drazba/vaclav-havel-sm.webp',
+            'cica-broz': '/images/drazba/cica-broz-sm.webp',
+            'black-sheep': '/images/drazba/black-sheep-sm.webp'
+        };
+        const MIN_INCREMENT = 100;
+
+        let state = null;
+        let token = localStorage.getItem(TOKEN_KEY) || null;
+        let modalItem = null;
+
+        const $ = (id) => document.getElementById(id);
+        const czk = (n) => (n === null || n === undefined) ? '' : n.toLocaleString('cs-CZ') + ' Kč';
+
+        function bidsWord(n) {
+            if (n === 1) return '1 příhoz';
+            if (n >= 2 && n <= 4) return n + ' příhozy';
+            return n + ' příhozů';
+        }
+
+        function showMsg(id, text) {
+            const el = $(id);
+            el.textContent = text;
+            el.style.display = text ? 'block' : 'none';
+        }
+
+        // ---- načtení stavu ----
+        async function fetchState() {
+            const url = '/api/drazba' + (token ? '?t=' + encodeURIComponent(token) : '');
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('state ' + res.status);
+            state = await res.json();
+            render();
+        }
+
+        function biddingOpen() {
+            if (!state) return false;
+            if (state.mode === 'test') return true;
+            if (state.mode !== 'live') return false;
+            const now = new Date(state.now).getTime();
+            return now >= new Date(state.opens_at).getTime()
+                && now <= new Date(state.closes_at).getTime();
+        }
+
+        function render() {
+            $('testBanner').style.display = state.mode === 'test' ? 'block' : 'none';
+
+            // stavový řádek
+            let modeText;
+            if (state.mode === 'test') {
+                modeText = 'Testovací provoz. Přihazuj vesele, nic z toho neplatí.';
+            } else if (state.mode === 'closed') {
+                modeText = 'Online kolo skončilo. Finále probíhá naživo na pódiu!';
+            } else {
+                const now = new Date(state.now).getTime();
+                if (now < new Date(state.opens_at).getTime()) {
+                    modeText = 'Dražba startuje 28. 8. v 15:30.';
+                } else if (now > new Date(state.closes_at).getTime()) {
+                    modeText = 'Online kolo skončilo. Finále probíhá naživo na pódiu!';
+                } else {
+                    modeText = 'Dražba běží! Online přihazování končí ve 20:00.';
+                }
+            }
+            $('statusMode').textContent = modeText;
+
+            // přihlášení
+            const signed = !!(state.me && state.me.name);
+            $('authBox').style.display = signed ? 'none' : 'block';
+            $('signedIn').style.display = signed ? 'block' : 'none';
+            if (signed) {
+                $('signedIn').innerHTML = 'Přihazuješ jako <b></b>. Když tě někdo přehodí, přijde ti e-mail.';
+                $('signedIn').querySelector('b').textContent = state.me.name;
+            }
+
+            // položky
+            const wrap = $('items');
+            wrap.innerHTML = '';
+            for (const it of state.items) {
+                if (it.withdrawn) continue;
+                const row = document.createElement('div');
+                row.className = 'bid-item' + (it.leading ? ' is-leading' : '');
+
+                const img = IMAGES[it.slug]
+                    ? `<img class="bid-thumb" src="${IMAGES[it.slug]}" alt="" loading="lazy">`
+                    : `<div class="bid-thumb placeholder">🔞</div>`;
+
+                const topLine = it.top
+                    ? `Nejvyšší nabídka: <b>${czk(it.top)}</b> · ${bidsWord(it.bids)}`
+                    : `Vyvolávací cena: <b>${czk(it.starting)}</b> · zatím bez příhozu`;
+
+                row.innerHTML = `
+                    ${img}
+                    <div class="bid-info">
+                        ${it.charity ? `<span class="bid-charity">${it.charity}</span>` : ''}
+                        <h3></h3>
+                        <div class="bid-top">${topLine}</div>
+                        ${it.leading ? '<div class="bid-lead-flag">😼 Vedeš!</div>' : ''}
+                    </div>
+                    <div class="bid-action">
+                        <button class="btn-bid" data-slug="${it.slug}" ${(!signed || !biddingOpen()) ? 'disabled' : ''}>Přihodit</button>
+                    </div>`;
+                row.querySelector('h3').textContent = it.title;
+                wrap.appendChild(row);
+            }
+
+            wrap.querySelectorAll('button[data-slug]').forEach(btn => {
+                btn.addEventListener('click', () => openModal(btn.dataset.slug));
+            });
+        }
+
+        // ---- odpočet ----
+        function tickCountdown() {
+            if (!state || state.mode !== 'live') { $('statusCountdown').textContent = ''; return; }
+            const closes = new Date(state.closes_at).getTime();
+            // odhad "teď" od posledního fetchi stačí: odpočet je orientační
+            const diff = closes - Date.now();
+            if (diff <= 0) { $('statusCountdown').textContent = ''; return; }
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            $('statusCountdown').innerHTML = 'Do konce: <b>' +
+                (h ? h + ' h ' : '') + m + ' min ' + s + ' s</b>';
+        }
+
+        // ---- přihlášení ----
+        $('authSend').addEventListener('click', async () => {
+            const name = $('authName').value.trim();
+            const email = $('authEmail').value.trim();
+            showMsg('globalErr', '');
+            if (!name || !email.includes('@')) {
+                showMsg('globalErr', 'Vyplň jméno a platný e-mail, jinak ti odkaz nemáme kam poslat.');
+                return;
+            }
+            $('authSend').disabled = true;
+            try {
+                const res = await fetch('/api/drazba', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'register', email, name,
+                        newsletter: $('authNewsletter').checked
+                    })
+                });
+                const out = await res.json();
+                if (out.ok) {
+                    const note = $('authNote');
+                    note.style.display = 'block';
+                    note.textContent = out.sent
+                        ? 'Odkaz letí do tvé schránky. Mrkni i do spamu, pošty jsou někdy podrážděné.'
+                        : 'Odkaz jsme ti posílali před chviličkou. Mrkni do schránky (i do spamu).';
+                } else {
+                    showMsg('globalErr', 'Tohle se nepovedlo odeslat. Zkontroluj e-mail a zkus to znovu.');
+                }
+            } catch (e) {
+                showMsg('globalErr', 'Spojení se nepovedlo. Zkus to za chvíli znovu.');
+            } finally {
+                $('authSend').disabled = false;
+            }
+        });
+
+        // ---- ověření z e-mailového odkazu ----
+        async function maybeVerify() {
+            const params = new URLSearchParams(location.search);
+            const t = params.get('vstup');
+            if (!t) return;
+            try {
+                const res = await fetch('/api/drazba', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'verify', token: t })
+                });
+                const out = await res.json();
+                if (out.ok) {
+                    token = t;
+                    localStorage.setItem(TOKEN_KEY, t);
+                    showMsg('globalOk', 'E-mail potvrzený. Přihazování odemčeno, hodně štěstí. Mňau.');
+                } else {
+                    showMsg('globalErr', 'Tenhle odkaz nefunguje. Registruj se prosím znovu.');
+                }
+            } catch (e) {
+                showMsg('globalErr', 'Ověření se nepovedlo. Zkus odkaz otevřít znovu.');
+            }
+            history.replaceState(null, '', location.pathname);
+        }
+
+        // ---- příhoz ----
+        function openModal(slug) {
+            modalItem = state.items.find(i => i.slug === slug);
+            if (!modalItem) return;
+            const minimum = modalItem.top ? modalItem.top + MIN_INCREMENT : modalItem.starting;
+            $('modalTitle').textContent = modalItem.title;
+            $('modalMin').textContent = modalItem.top
+                ? `Nejvyšší nabídka je ${czk(modalItem.top)}, minimální příhoz je 100 Kč.`
+                : `Vyvolávací cena je ${czk(modalItem.starting)}.`;
+            $('modalAmount').value = minimum;
+            $('modalAmount').min = minimum;
+            showMsg('modalErr', '');
+            $('bidModal').classList.add('open');
+        }
+
+        function closeModal() {
+            $('bidModal').classList.remove('open');
+            modalItem = null;
+        }
+
+        $('modalCancel').addEventListener('click', closeModal);
+        $('bidModal').addEventListener('click', (e) => {
+            if (e.target === $('bidModal')) closeModal();
+        });
+
+        $('modalConfirm').addEventListener('click', async () => {
+            if (!modalItem) return;
+            const amount = Math.round(Number($('modalAmount').value));
+            showMsg('modalErr', '');
+            $('modalConfirm').disabled = true;
+            try {
+                const res = await fetch('/api/drazba', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'bid', token, slug: modalItem.slug, amount })
+                });
+                const out = await res.json();
+                if (out.ok) {
+                    closeModal();
+                    showMsg('globalOk', `Přihozeno! ${czk(amount)} a zatím vedeš. Držíme palce.`);
+                    await fetchState();
+                } else if (out.error === 'too_low') {
+                    showMsg('modalErr', `Málo. Někdo mezitím přihodil, minimum je teď ${czk(out.minimum)}.`);
+                    $('modalAmount').value = out.minimum;
+                    await fetchState();
+                } else if (out.error === 'auction_closed' || out.error === 'not_open_yet') {
+                    showMsg('modalErr', 'Online přihazování teď neběží.');
+                } else if (out.error === 'not_verified') {
+                    showMsg('modalErr', 'Nejdřív potvrď e-mail odkazem, který jsme ti poslali.');
+                } else {
+                    showMsg('modalErr', 'Příhoz se nepovedl. Zkus to znovu.');
+                }
+            } catch (e) {
+                showMsg('modalErr', 'Spojení se nepovedlo. Zkus to znovu.');
+            } finally {
+                $('modalConfirm').disabled = false;
+            }
+        });
+
+        // ---- start ----
+        (async () => {
+            await maybeVerify();
+            try {
+                await fetchState();
+            } catch (e) {
+                $('statusMode').textContent = 'Dražbu se nepovedlo načíst. Obnov stránku.';
+            }
+            setInterval(() => fetchState().catch(() => {}), 8000);
+            setInterval(tickCountdown, 1000);
+        })();
+    })();
+    </script>
+</body>
+</html>

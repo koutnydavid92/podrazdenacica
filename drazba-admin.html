@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dražba admin | Číča Art Fest</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0D0D0D;
+            --card: #151515;
+            --divider: #2A2A2A;
+            --text: #F5F5F5;
+            --muted: #B3B3B3;
+            --neon: #FE45E8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem 1rem 4rem;
+        }
+
+        .wrap { max-width: 860px; margin: 0 auto; }
+
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 { font-size: 1.05rem; margin: 2rem 0 0.8rem; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 14px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        input, select {
+            background: #0A0A0A;
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            color: var(--text);
+            font: inherit;
+            padding: 0.6rem 0.9rem;
+        }
+
+        input:focus, select:focus { outline: none; border-color: var(--neon); }
+
+        button {
+            background: var(--neon);
+            color: #0D0D0D;
+            border: none;
+            border-radius: 50px;
+            font: inherit;
+            font-weight: 700;
+            padding: 0.6rem 1.4rem;
+            cursor: pointer;
+        }
+
+        button.ghost {
+            background: none;
+            border: 1px solid var(--divider);
+            color: var(--muted);
+        }
+
+        button:disabled { opacity: 0.5; cursor: default; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+        th, td {
+            text-align: left;
+            padding: 0.5rem 0.6rem;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        th { color: var(--muted); font-weight: 500; }
+
+        td b { color: var(--neon); }
+
+        .mode-pill {
+            display: inline-block;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            border-radius: 999px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .row { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; }
+
+        .muted { color: var(--muted); font-size: 0.85rem; }
+
+        .msg { margin: 0.8rem 0; font-size: 0.9rem; color: var(--neon); min-height: 1.2em; }
+
+        @media (max-width: 640px) {
+            table { font-size: 0.8rem; }
+            th, td { padding: 0.4rem 0.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Dražba · řídicí pult 😼</h1>
+
+        <!-- PIN -->
+        <div class="card" id="pinCard">
+            <div class="row">
+                <input type="password" id="pin" placeholder="Admin PIN" autocomplete="current-password">
+                <button id="loginBtn">Otevřít</button>
+            </div>
+            <div class="msg" id="pinMsg"></div>
+        </div>
+
+        <div id="panel" style="display:none;">
+            <!-- Režim -->
+            <div class="card">
+                <div class="row">
+                    <span>Režim: <span class="mode-pill" id="modePill">…</span></span>
+                    <span class="muted" id="windowInfo"></span>
+                </div>
+                <div class="row" style="margin-top:0.8rem;">
+                    <button class="ghost" data-mode="test">Testovací</button>
+                    <button data-mode="live">Spustit ostrou</button>
+                    <button class="ghost" data-mode="closed">Ukončit online kolo</button>
+                    <button class="ghost" id="wipeBtn">Smazat testovací příhozy</button>
+                </div>
+                <div class="msg" id="modeMsg"></div>
+            </div>
+
+            <!-- Přehled děl -->
+            <h2>Díla a nejvyšší nabídky <span class="muted" id="bidderStats"></span></h2>
+            <div class="card">
+                <table id="itemsTable">
+                    <thead><tr><th>Dílo</th><th>Vyvolávací</th><th>Nejvyšší</th><th>Příhozy</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Živý příhoz -->
+            <h2>Živý příhoz z pléna</h2>
+            <div class="card">
+                <div class="row">
+                    <select id="liveSlug"></select>
+                    <input type="number" id="liveAmount" placeholder="Kč" style="width:110px;" step="100">
+                    <input type="text" id="liveName" placeholder="Kdo přihodil (nepovinné)">
+                    <button id="liveBtn">Zapsat</button>
+                </div>
+                <div class="msg" id="liveMsg"></div>
+            </div>
+
+            <!-- Poslední příhozy -->
+            <h2>Posledních 30 příhozů</h2>
+            <div class="card">
+                <table id="latestTable">
+                    <thead><tr><th>Čas</th><th>Dílo</th><th>Částka</th><th>Kdo</th><th>Zdroj</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Vítězové -->
+            <h2>Vítězové</h2>
+            <div class="card">
+                <div class="row" style="margin-bottom:0.8rem;">
+                    <button class="ghost" id="winnersBtn">Načíst vítěze</button>
+                    <button id="winnerEmailsBtn">Poslat vítězům e-mail s platbou</button>
+                </div>
+                <div class="msg" id="winnersMsg"></div>
+                <table id="winnersTable" style="display:none;">
+                    <thead><tr><th>Dílo</th><th>Částka</th><th>Vítěz</th><th>E-mail</th><th>Zdroj</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        let pin = sessionStorage.getItem('cica_drazba_pin') || '';
+        const $ = (id) => document.getElementById(id);
+        const czk = (n) => (n === null || n === undefined) ? '—' : Number(n).toLocaleString('cs-CZ') + ' Kč';
+
+        async function api(action, extra) {
+            const res = await fetch('/api/drazba-admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ pin, action }, extra || {}))
+            });
+            return res.json();
+        }
+
+        function fillTable(tbody, rows) {
+            tbody.innerHTML = '';
+            for (const cells of rows) {
+                const tr = document.createElement('tr');
+                for (const c of cells) {
+                    const td = document.createElement('td');
+                    if (c && c.b) { const b = document.createElement('b'); b.textContent = c.b; td.appendChild(b); }
+                    else td.textContent = c === null || c === undefined ? '—' : c;
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+        }
+
+        async function refresh() {
+            const out = await api('overview');
+            if (!out.ok) {
+                $('pinMsg').textContent = out.error === 'rate_limited'
+                    ? 'Moc pokusů, počkej chvíli.' : 'Špatný PIN.';
+                sessionStorage.removeItem('cica_drazba_pin');
+                return false;
+            }
+            $('pinCard').style.display = 'none';
+            $('panel').style.display = 'block';
+
+            $('modePill').textContent = out.settings.mode;
+            const fmt = (d) => new Date(d).toLocaleString('cs-CZ', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'numeric' });
+            $('windowInfo').textContent = `online okno: ${fmt(out.settings.opens_at)} – ${fmt(out.settings.closes_at)}`;
+            $('bidderStats').textContent = `· registrovaných ${out.bidders.bidders}, ověřených ${out.bidders.verified}`;
+
+            fillTable($('itemsTable').querySelector('tbody'), out.items.map(i => [
+                i.title, czk(i.starting_price_czk),
+                i.top_amount ? { b: czk(i.top_amount) } : null,
+                i.bid_count
+            ]));
+
+            const t = (d) => new Date(d).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            fillTable($('latestTable').querySelector('tbody'), out.latest.map(b => [
+                t(b.created_at), b.title, { b: czk(b.amount_czk) },
+                (b.name || '—') + (b.email ? ' · ' + b.email : ''),
+                b.source === 'live' ? 'naživo' : 'online'
+            ]));
+
+            const sel = $('liveSlug');
+            if (!sel.options.length) {
+                for (const i of out.items) {
+                    const o = document.createElement('option');
+                    o.value = i.slug;
+                    o.textContent = i.title;
+                    sel.appendChild(o);
+                }
+            }
+            return true;
+        }
+
+        $('loginBtn').addEventListener('click', async () => {
+            pin = $('pin').value;
+            if (await refresh()) {
+                sessionStorage.setItem('cica_drazba_pin', pin);
+                setInterval(() => refresh().catch(() => {}), 10000);
+            }
+        });
+
+        document.querySelectorAll('button[data-mode]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const mode = btn.dataset.mode;
+                const labels = { test: 'testovací režim', live: 'OSTROU dražbu', closed: 'ukončení online kola' };
+                if (!confirm('Opravdu přepnout na ' + labels[mode] + '?')) return;
+                const out = await api('set_mode', { mode });
+                $('modeMsg').textContent = out.ok ? 'Režim přepnut na ' + mode + '.' : 'Nepovedlo se.';
+                refresh();
+            });
+        });
+
+        $('wipeBtn').addEventListener('click', async () => {
+            if (!confirm('Smazat VŠECHNY testovací příhozy? Ostrých dat se to nedotkne.')) return;
+            const out = await api('wipe_test');
+            $('modeMsg').textContent = out.ok ? `Smazáno ${out.deleted} testovacích příhozů.` : 'Nepovedlo se.';
+            refresh();
+        });
+
+        $('liveBtn').addEventListener('click', async () => {
+            const out = await api('live_bid', {
+                slug: $('liveSlug').value,
+                amount: Number($('liveAmount').value),
+                name: $('liveName').value
+            });
+            if (out.ok) {
+                $('liveMsg').textContent = 'Zapsáno: ' + czk(out.top);
+                $('liveAmount').value = '';
+                $('liveName').value = '';
+            } else if (out.error === 'too_low') {
+                $('liveMsg').textContent = 'Málo. Minimum je ' + czk(out.minimum) + '.';
+            } else {
+                $('liveMsg').textContent = 'Nepovedlo se zapsat.';
+            }
+            refresh();
+        });
+
+        $('winnersBtn').addEventListener('click', async () => {
+            const out = await api('winners');
+            if (!out.ok) { $('winnersMsg').textContent = 'Nepovedlo se načíst.'; return; }
+            $('winnersTable').style.display = 'table';
+            fillTable($('winnersTable').querySelector('tbody'), out.winners.map(w => [
+                w.title,
+                w.amount ? { b: czk(w.amount) } : 'bez příhozu',
+                w.winner_name, w.winner_email,
+                w.source === 'live' ? 'naživo' : (w.source ? 'online' : '—')
+            ]));
+        });
+
+        $('winnerEmailsBtn').addEventListener('click', async () => {
+            if (!confirm('Poslat všem vítězům e-mail s částkou a QR platbou? Posílej až po skončení živého finále.')) return;
+            $('winnerEmailsBtn').disabled = true;
+            const out = await api('send_winner_emails');
+            $('winnerEmailsBtn').disabled = false;
+            $('winnersMsg').textContent = out.ok
+                ? `Odesláno: ${out.sent.length}${out.failed.length ? ', selhalo: ' + out.failed.join(', ') : ''}.`
+                : 'Nepovedlo se.';
+        });
+
+        if (pin) {
+            $('pin').value = pin;
+            refresh().then(ok => { if (ok) setInterval(() => refresh().catch(() => {}), 10000); });
+        }
+    })();
+    </script>
+</body>
+</html>

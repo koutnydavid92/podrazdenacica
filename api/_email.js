@@ -164,7 +164,127 @@ async function subscribeToEventListSafe({ email, name, isVip }) {
     }
 }
 
+// ============================================================
+// Dražba – e-maily (ověření, přehození, výhra)
+// ============================================================
+
+// Společný obal dražebních mailů ve stylu vstupenek
+function auctionShell({ heading, bodyHtml, footNote }) {
+    return `<!DOCTYPE html>
+<html lang="cs"><body style="margin:0;padding:0;background:#0D0D0D;">
+<div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:Helvetica,Arial,sans-serif;">
+    <div style="text-align:center;margin-bottom:24px;">
+        <img src="${BASE_URL}/images/logo.png" alt="Podrážděná číča" width="90" style="width:90px;">
+    </div>
+    <div style="background:#111111;border:1px solid #FE45E8;border-radius:16px;padding:32px 24px;">
+        <h1 style="color:#F5F5F5;font-size:24px;margin:0 0 16px;text-align:center;">${heading}</h1>
+        ${bodyHtml}
+        <p style="color:#CCCCCC;font-size:14px;margin:20px 0 0;">
+            Nech si mě v hlavě. Mňau ₍^. .^₎⟆
+        </p>
+    </div>
+    <p style="color:#666666;font-size:11px;text-align:center;margin:20px 0 0;">${footNote}</p>
+</div>
+</body></html>`;
+}
+
+function auctionButton(href, label) {
+    return `<div style="text-align:center;margin:24px 0;">
+        <a href="${href}" style="display:inline-block;background:#FE45E8;color:#0D0D0D;
+           font-weight:bold;font-size:16px;padding:14px 32px;border-radius:50px;
+           text-decoration:none;">${label}</a>
+    </div>`;
+}
+
+// Ověřovací odkaz po registraci do dražby
+async function sendAuctionVerifyEmail({ to, name, token }) {
+    const link = `${BASE_URL}/drazba-live?vstup=${token}`;
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: 'Potvrď vstup do dražby 🖤',
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: to, name: name || '' }],
+            html: auctionShell({
+                heading: `Čaf${name ? ' ' + esc(String(name).split(/\s+/)[0]) : ''}, ještě klik a přihazuješ.`,
+                bodyHtml: `
+                    <p style="color:#CCCCCC;font-size:15px;line-height:1.6;text-align:center;margin:0;">
+                        Tímhle tlačítkem potvrdíš svůj e-mail a můžeš se vrhnout
+                        na tichou dražbu Číča Art Festu.
+                    </p>
+                    ${auctionButton(link, 'Jdu přihazovat')}
+                    <p style="color:#888888;font-size:12px;line-height:1.6;text-align:center;margin:0;">
+                        Nejde tlačítko? Zkopíruj si odkaz: ${link}
+                    </p>`,
+                footNote: 'Tenhle mail ti přišel, protože ses registroval(a) do dražby na Číča Art Festu. Pokud jsi to nebyl(a) ty, klidně ho ignoruj.'
+            }),
+            text: `Potvrď vstup do dražby Číča Art Festu: ${link}\n\nPokud jsi to nebyl(a) ty, mail ignoruj. Mňau.`
+        }
+    });
+}
+
+// Upozornění: někdo tě přehodil
+async function sendOutbidEmail({ to, name, itemTitle, amount }) {
+    const link = `${BASE_URL}/drazba-live`;
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: `Přehodili tě! ${itemTitle} už není tvoje 😾`,
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: to, name: name || '' }],
+            html: auctionShell({
+                heading: 'Au. Někdo přihodil víc.',
+                bodyHtml: `
+                    <p style="color:#CCCCCC;font-size:15px;line-height:1.6;text-align:center;margin:0;">
+                        Dílo <b style="color:#F5F5F5;">${esc(itemTitle)}</b> ti právě
+                        někdo vyfoukl nabídkou <b style="color:#FE45E8;">${amount.toLocaleString('cs-CZ')} Kč</b>.
+                        Necháš si to líbit?
+                    </p>
+                    ${auctionButton(link, 'Přehodit zpátky')}`,
+                footNote: 'Tenhle mail ti přišel, protože přihazuješ v dražbě na Číča Art Festu.'
+            }),
+            text: `Dílo ${itemTitle} ti někdo přehodil nabídkou ${amount} Kč. Přihoď zpátky: ${link}\n\nMňau.`
+        }
+    });
+}
+
+// Zpráva vítězi po skončení dražby (posílá se z adminu)
+async function sendWinnerEmail({ to, name, itemTitle, amount, qrUrl }) {
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: `Vyhráls dražbu: ${itemTitle} je tvoje! 🖤`,
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: to, name: name || '' }],
+            html: auctionShell({
+                heading: `Gratulace${name ? ', ' + esc(String(name).split(/\s+/)[0]) : ''}. Máš to.`,
+                bodyHtml: `
+                    <p style="color:#CCCCCC;font-size:15px;line-height:1.6;text-align:center;margin:0 0 16px;">
+                        Dílo <b style="color:#F5F5F5;">${esc(itemTitle)}</b> je tvoje
+                        za <b style="color:#FE45E8;">${amount.toLocaleString('cs-CZ')} Kč</b>.
+                    </p>
+                    ${qrUrl ? `<div style="background:#FFFFFF;border-radius:12px;padding:24px;margin:16px 0;text-align:center;">
+                        <img src="${qrUrl}" alt="QR platba" width="240" height="240" style="display:block;margin:0 auto;width:240px;height:240px;">
+                        <p style="color:#555555;font-size:12px;margin:12px 0 0;">Naskenuj v bankovní appce</p>
+                    </div>` : ''}
+                    <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+                        Zaplatit můžeš QR kódem, nebo převodem na účet
+                        <b style="color:#F5F5F5;">1952337019/3030</b> (do zprávy napiš název díla).
+                        Peníze musí dorazit nejpozději 31. 8. 2026, jinak dílo putuje
+                        k dalšímu v pořadí. Předání domluvíme e-mailem.
+                    </p>`,
+                footNote: 'Tenhle mail ti přišel, protože jsi vyhrál(a) dražbu na Číča Art Festu. Pravidla: ' + BASE_URL + '/drazba-pravidla'
+            }),
+            text: `Vyhráls dražbu na Číča Art Festu: ${itemTitle} za ${amount} Kč.\n\nZaplať převodem na 1952337019/3030 (do zprávy název díla) nejpozději do 31. 8. 2026.\n\nMňau.`
+        }
+    });
+}
+
 module.exports = {
     sendTicketEmail, subscribeToNewsletter,
-    subscribeToEventList, subscribeToEventListSafe
+    subscribeToEventList, subscribeToEventListSafe,
+    sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail
 };
