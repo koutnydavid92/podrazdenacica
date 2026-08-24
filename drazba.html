@@ -65,8 +65,42 @@
 
     <!-- Dražba – styly jen pro tuhle stránku -->
     <style>
+        /* Katalog: jedna široká karta na řádek, fotka vlevo, text vpravo */
+        #katalog .gallery-grid {
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #katalog .gallery-item {
+            display: flex;
+        }
+
+        #katalog .gallery-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        #katalog .gallery-info .sale-footer {
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            #katalog .gallery-item {
+                flex-direction: column;
+            }
+
+            #katalog .gallery-info {
+                padding: 1.5rem;
+            }
+        }
+
         .drazba-image {
-            width: 100%;
+            width: min(42%, 400px);
+            flex-shrink: 0;
             aspect-ratio: 4 / 5;
             background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
             overflow: hidden;
@@ -92,14 +126,30 @@
         }
 
         .drazba-placeholder {
+            width: min(42%, 400px);
+            flex-shrink: 0;
             aspect-ratio: 4 / 5;
             height: auto;
+            border-bottom: none;
+            border-right: 1px solid var(--divider);
+        }
+
+        @media (max-width: 768px) {
+            .drazba-image,
+            .drazba-placeholder {
+                width: 100%;
+            }
+
+            .drazba-placeholder {
+                border-right: none;
+                border-bottom: 1px solid var(--divider);
+            }
         }
 
         .charity-badge {
             position: absolute;
             top: 1rem;
-            right: 1rem;
+            left: 1rem;
             z-index: 2;
             font-size: 0.72rem;
             font-weight: 700;
@@ -256,12 +306,12 @@
         <div class="container">
             <div class="hero-text">
                 <div class="hero-label">Číča Art Fest · 28. 8. 2026 · Brno</div>
-                <h1 class="hero-title">Tichá dražba. Hlasitý vkus.</h1>
+                <h1 class="hero-title">Tichá dražba.<br>Hlasitý vkus.</h1>
                 <p class="hero-description">
                     Deset kusů umění, které nikde jinde neseženeš. Přihazuješ v klidu
                     online od začátku festivalu do 20:00. Pak vyhlásíme vítěze naživo
                     a kdo bude chtít, může to celé ještě přebít před publikem.
-                    Část výtěžku jde na dobrou věc. Zbytek na ego autorky.
+                    Část výtěžku jde na dobrou věc. Zbytek na složenky a hypotéky autorů.
                 </p>
                 <p class="hero-description">
                     🤫 Vyvolávací ceny odhalíme při otevření festivalu 28. 8. v 15:30. Zatím koukej, vybírej a šetři.
