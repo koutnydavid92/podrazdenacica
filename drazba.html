@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PBTC7F4W');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="facebook-domain-verification" content="3mrz0u1ks3xajz36mj3w59r4qbwx8h" />
+    <title>Dražba | Číča Art Fest | Podrážděná číča</title>
+    <meta name="description" content="Tichá dražba na Číča Art Festu 28. 8. 2026 v Brně. Originály od Podrážděné číči a spřízněných umělců. Část výtěžku jde na Lymfom Help, Nadaci Veronica a Opuštěné kočičí tlapky.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Dražba | Číča Art Fest">
+    <meta property="og:description" content="Tichá dražba originálů 28. 8. 2026 v Brně. Přihazuješ online, finále naživo. Část výtěžku jde na dobrou věc.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.podrazdenacica.cz/drazba">
+    <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-drazba.jpg">
+    <meta property="og:image:width" content="675">
+    <meta property="og:image:height" content="1200">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/podrazdenacica/my-favicon/site.webmanifest" />
+
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="/images/logo.webp" type="image/webp">
+
+    <!-- Google Fonts - non-blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Google Analytics - loads only after consent -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        function loadGA() {
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-R06FFJPHLK';
+            document.head.appendChild(script);
+            gtag('js', new Date());
+            gtag('config', 'G-R06FFJPHLK');
+        }
+
+        // Check if consent already given
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+            loadGA();
+        }
+    </script>
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Dražba – styly jen pro tuhle stránku -->
+    <style>
+        .drazba-image {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .drazba-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.3s ease;
+        }
+
+        .drazba-image picture {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .gallery-item:hover .drazba-image img {
+            transform: scale(1.04);
+        }
+
+        .drazba-placeholder {
+            aspect-ratio: 4 / 5;
+            height: auto;
+        }
+
+        .charity-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(13, 13, 13, 0.75);
+            border: 1px solid var(--accent-neon);
+            color: var(--accent-neon);
+            backdrop-filter: blur(10px);
+        }
+
+        .drazba-author {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.4rem 0.8rem;
+            margin-top: 0.9rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .drazba-author a {
+            color: var(--accent-neon);
+            text-decoration: none;
+        }
+
+        .drazba-author a:hover {
+            text-decoration: underline;
+        }
+
+        .drazba-price {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .drazba-price b {
+            color: var(--white);
+        }
+
+        /* Časová osa dražby */
+        .drazba-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .drazba-step {
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 16px;
+            padding: 1.8rem;
+        }
+
+        .drazba-step .step-time {
+            font-family: 'Archivo Black', sans-serif;
+            color: var(--accent-neon);
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .drazba-step p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: rgba(13, 13, 13, 0.94);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            cursor: zoom-out;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 92vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 80px rgba(255, 0, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBTC7F4W"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Přeskočit na obsah</a>
+    <!-- Header -->
+    <header id="top">
+        <div class="header-content">
+            <a href="/" class="logo-link">
+                <picture>
+                    <source srcset="/images/logo.webp" type="image/webp">
+                    <img src="/images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140" fetchpriority="high">
+                </picture>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/#art">Art</a></li>
+                    <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
+                    <li><a href="/drazba">Dražba</a></li>
+                    <li><a href="/#words">Slova</a></li>
+                    <li><a href="/#podcast">Podcast</a></li>
+                    <li><a href="/#collab">Spolupráce</a></li>
+                    <li><a href="/#contact">Kontakt</a></li>
+                </ul>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
+                    <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
+                </div>
+            </nav>
+            <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" role="navigation" aria-label="Mobilní navigace">
+        <ul>
+            <li><a href="/#art">Art</a></li>
+            <li><a href="/hrave-nudesky">Hravé nudesky <span class="nav-badge">Hot & new</span></a></li>
+            <li><a href="/cica-art-fest">Číča Art Fest <span class="nav-badge">28. 8.</span></a></li>
+            <li><a href="/drazba">Dražba</a></li>
+            <li><a href="/#words">Slova</a></li>
+            <li><a href="/#podcast">Podcast</a></li>
+            <li><a href="/#collab">Spolupráce</a></li>
+            <li><a href="/#contact">Kontakt</a></li>
+        </ul>
+    </div>
+
+    <main id="main-content">
+
+    <!-- Page Hero -->
+    <section id="drazba-hero" class="page-hero">
+        <div class="container">
+            <div class="hero-text">
+                <div class="hero-label">Číča Art Fest · 28. 8. 2026 · Brno</div>
+                <h1 class="hero-title">Tichá dražba. Hlasitý vkus.</h1>
+                <p class="hero-description">
+                    Deset kusů umění, které nikde jinde neseženeš. Přihazuješ v klidu
+                    online od začátku festivalu do 20:00. Pak vyhlásíme vítěze naživo
+                    a kdo bude chtít, může to celé ještě přebít před publikem.
+                    Část výtěžku jde na dobrou věc. Zbytek na ego autorky.
+                </p>
+                <p class="hero-description">
+                    🤫 Vyvolávací ceny odhalíme při otevření festivalu 28. 8. v 15:30. Zatím koukej, vybírej a šetři.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Katalog -->
+    <section id="katalog">
+        <div class="container">
+            <h2 class="section-title reveal">Katalog</h2>
+            <div class="gallery-grid">
+
+                <!-- Balenčičiaga -->
+                <div class="gallery-item sale-item reveal" data-delay="0">
+                    <div class="drazba-image" data-full="/images/drazba/balencicaga.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Balenčičiaga">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/balencicaga-sm.webp" type="image/webp">
+                            <img src="/images/drazba/balencicaga.webp" alt="Balenčičiaga – ručně pomalovaná kabelka od Podrážděné číči" loading="lazy" width="675" height="1200">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Balenčičiaga</h3>
+                        <p>
+                            Originální mastrpiss Balenčičiaga první. Artefakt je nabitý mocnou
+                            tvůrčí energií a špínou z ulice. Módní doplněk autentický stejně
+                            jako jeho nositelka.
+                        </p>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Číča hůlka -->
+                <div class="gallery-item sale-item reveal" data-delay="100">
+                    <div class="gallery-placeholder drazba-placeholder">
+                        <span>🪄</span>
+                        <span>Foto už brzy</span>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Číča hůlka</h3>
+                        <p>
+                            Kdo chce styl mít, hůl si najde. S touhle počíčovanou hůlkou budeš
+                            main character v každé společnosti. Staň se vycházející hvězdou
+                            každé vycházky.
+                        </p>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/hulkarna.cz/" target="_blank" rel="noopener">Hůlkárnou</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Klitty s fotečkama -->
+                <div class="gallery-item sale-item reveal" data-delay="200">
+                    <div class="drazba-image" data-full="/images/drazba/klitty.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Klitty s fotečkama">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/klitty-sm.webp" type="image/webp">
+                            <img src="/images/drazba/klitty.webp" alt="Klitty s fotečkama – balíček od Podrážděné číči a Rozkoššš" loading="lazy" width="924" height="924">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Klitty s fotečkama</h3>
+                        <p>
+                            Tak tahle číča udělá největší radost té tvojí číči. Balíček je
+                            okořeněný o stylové fotky Podrážděné číči a Zuzky z nejoblíbenějšího
+                            hračkářství pro dospělé a.k.a. Rozkoššš.
+                        </p>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/rozkosss/" target="_blank" rel="noopener">Rozkoššš</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bad Nun -->
+                <div class="gallery-item sale-item reveal" data-delay="0">
+                    <div class="drazba-image" data-full="/images/drazba/bad-nun.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Bad Nun">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/bad-nun-sm.webp" type="image/webp">
+                            <img src="/images/drazba/bad-nun.webp" alt="Bad Nun – kombinovaná technika na papíře, Podrážděná číča" loading="lazy" width="1152" height="1536">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Bad Nun</h3>
+                        <p>
+                            I jeptišky rády zlobí. Stylovej art piece vhodný do každého prostoru.
+                            Ideálně tam, kde nejčastěji odříkáváte otčenáše.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 70 × 90 cm</span>
+                            <span>🎨 kombinovaná technika na papíře</span>
+                            <span>👑 série Královny Brno-venkov</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kurwa bober -->
+                <div class="gallery-item sale-item reveal" data-delay="100">
+                    <div class="drazba-image" data-full="/images/drazba/kurwa-bober.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Kurwa bober">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/kurwa-bober-sm.webp" type="image/webp">
+                            <img src="/images/drazba/kurwa-bober.webp" alt="Kurwa bober – interaktivní autoportrét s magnetickou fólií, Podrážděná číča" loading="lazy" width="864" height="1536">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Kurwa bober</h3>
+                        <p>
+                            Autorský autoportrét ze série 13 obrazů hravých nudesek Královny
+                            Brno-venkov. Dílo je interaktivní díky magnetické fólii a každý si
+                            tak s obrazem může hrát dle své nálady.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 70 × 90 cm</span>
+                            <span>🎨 kombinovaná technika na plátně, magnetická fólie a prvky</span>
+                            <span>👑 série Královny Brno-venkov</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Síla tisíce cecek -->
+                <div class="gallery-item sale-item reveal" data-delay="200">
+                    <span class="charity-badge">100 % pro Lymfom Help</span>
+                    <div class="gallery-placeholder drazba-placeholder">
+                        <span>🔞</span>
+                        <span>Odhalení až na festivalu</span>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Síla tisíce cecek</h3>
+                        <p>
+                            Tohle dílo se ukáže v celé své kráse až na festivalu. Ať se máš
+                            na co těšit. Formát velký jako autorčino ego. Při tvorbě byla
+                            použita <a href="https://culturehustle.com/products/pink-50g-powdered-paint-by-stuart-semple" target="_blank" rel="noopener" style="color: var(--accent-neon);">nejrůžovější růžová</a>. Fakt.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 130 × 190 cm</span>
+                            <span>🎨 kombinovaná technika na plátně</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EUFORIE -->
+                <div class="gallery-item sale-item reveal" data-delay="0">
+                    <span class="charity-badge">50 % pro Opuštěné kočičí tlapky</span>
+                    <div class="drazba-image" data-full="/images/drazba/euforie.webp" role="button" tabindex="0" aria-label="Zvětšit fotku EUFORIE">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/euforie-sm.webp" type="image/webp">
+                            <img src="/images/drazba/euforie.webp" alt="EUFORIE – akvarel, Molotow a akryl na plátně, Šárka Motyčková" loading="lazy" width="900" height="1200">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>EUFORIE</h3>
+                        <p>
+                            Cassie byla štěňátko. Jenže my jsme koťátka. Chceme spát většinu
+                            dne, lásku prostě žereme, lovíme pro zábavu a myslíme na vraždění.
+                            Ale velmi něžně a esteticky. Nehlaď bez ptaní!
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 70 × 90 cm</span>
+                            <span>🎨 akvarel, Molotow, akryl na plátně</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">Šárka Motyčková</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Václav Havel -->
+                <div class="gallery-item sale-item reveal" data-delay="100">
+                    <span class="charity-badge">100 % pro Lymfom Help</span>
+                    <div class="drazba-image" data-full="/images/drazba/vaclav-havel.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Václav Havel">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/vaclav-havel-sm.webp" type="image/webp">
+                            <img src="/images/drazba/vaclav-havel.webp" alt="Václav Havel – akryl na plátně ze série DEMOkraté, Joe Pisttone" loading="lazy" width="870" height="1200">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Václav Havel</h3>
+                        <p>
+                            Akrylová malba Václava Havla v osobitém rukopisu Joe Pisttona.
+                            Výrazná černobílá práce kombinuje expresivní figurativní malbu,
+                            prvky pop-artu a estetiku linorytu. Silné černé linie, šrafování
+                            a kontrastní růžové akcenty vytvářejí syrový, energický a současný
+                            výraz. Obraz je součástí série DEMOkraté, věnované osobnostem,
+                            které významně ovlivnily cestu naší země ke svobodě a demokracii.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 70 × 90 cm</span>
+                            <span>🎨 akryl na plátně</span>
+                            <span>🗳️ série DEMOkraté</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autor: <a href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">Joe Pisttone</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Číča brož -->
+                <div class="gallery-item sale-item reveal" data-delay="200">
+                    <span class="charity-badge">100 % pro Nadaci Veronica</span>
+                    <div class="drazba-image" data-full="/images/drazba/cica-broz.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Číča brož">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/cica-broz-sm.webp" type="image/webp">
+                            <img src="/images/drazba/cica-broz.webp" alt="Číča brož – ručně vyrobená korálková brož, Jana Dúbravčíková" loading="lazy" width="1200" height="802">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Číča brož</h3>
+                        <p>
+                            Ručně vyrobená korálková brož s výrazným růžovo-černým motivem.
+                            Celá je vytvořená z drobných korálků a je originálním autorským
+                            šperkem, který lze nosit jako brož nebo přívěsek.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 10 × 10 cm</span>
+                            <span>📿 korálkový šperk</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autorka: <a href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">Jana Dúbravčíková</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black sheep -->
+                <div class="gallery-item sale-item reveal" data-delay="0">
+                    <span class="charity-badge">100 % pro Nadaci Veronica</span>
+                    <div class="drazba-image" data-full="/images/drazba/black-sheep.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Black sheep">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/black-sheep-sm.webp" type="image/webp">
+                            <img src="/images/drazba/black-sheep.webp" alt="Black sheep – akryl a tuš na sololitové desce, Frank Abdulov" loading="lazy" width="1030" height="1200">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Black sheep</h3>
+                        <p>
+                            Černá ovce se pozná podle toho, že jí to sluší. Kus pro každého,
+                            kdo taky nikdy nezapadal.
+                        </p>
+                        <div class="sale-meta">
+                            <span>📐 34 × 41 cm</span>
+                            <span>🎨 akryl a tuš na sololitové desce</span>
+                        </div>
+                        <div class="drazba-author">
+                            <span>Autor: <a href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">Frank Abdulov</a></span>
+                        </div>
+                        <div class="sale-footer">
+                            <span class="drazba-price">🤫 Vyvolávací cena: <b>odhalíme 28. 8.</b></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Jak dražba funguje -->
+    <section id="jak-to-funguje">
+        <div class="container">
+            <h2 class="section-title reveal">Jak to celé proběhne</h2>
+            <div class="drazba-steps">
+                <div class="drazba-step reveal">
+                    <div class="step-time">15:30</div>
+                    <p>Otevíráme fest a odhalujeme vyvolávací ceny. Tady na webu i na místě. Do té doby si můžeš jen slintat.</p>
+                </div>
+                <div class="drazba-step reveal">
+                    <div class="step-time">15:30–20:00</div>
+                    <p>Přihazuješ online z mobilu. Žádné zvedání ruky, žádný stres. Tichá dražba jak má být.</p>
+                </div>
+                <div class="drazba-step reveal">
+                    <div class="step-time">20:00 uzávěrka</div>
+                    <p>Online přihazování končí. Kdo dal nejvíc, vede. Ale ještě není vyhráno.</p>
+                </div>
+                <div class="drazba-step reveal">
+                    <div class="step-time">Večer naživo</div>
+                    <p>Vyhlásíme vítěze na pódiu. A kdo bude chtít, může nabídku přebít naživo. Drama garantujeme.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charita -->
+    <section id="dobra-vec">
+        <div class="container">
+            <h2 class="section-title reveal">Dražíme i pro dobrou věc</h2>
+            <div class="faq-list">
+                <div class="faq-item reveal">
+                    <h3>Kam jdou peníze?</h3>
+                    <p>
+                        U děl označených badgem jde uvedená část výtěžku přímo vybrané
+                        organizaci: <b>Lymfom Help</b> pomáhá lidem s lymfomem a jejich
+                        blízkým, <b>Nadace Veronica</b> podporuje ochranu přírody a
+                        <b>Opuštěné kočičí tlapky</b> se starají o číči, které neměly
+                        tolik štěstí. U ostatních děl jde výtěžek autorům. Takže ať
+                        vyhraje kdokoliv, vyhrává někdo, kdo to potřebuje.
+                    </p>
+                </div>
+                <div class="faq-item reveal">
+                    <h3>Jak se můžu zúčastnit?</h3>
+                    <p>
+                        Přijď na <a href="/cica-art-fest" style="color: var(--accent-neon);">Číča Art Fest</a> 28. 8. 2026 v Brně.
+                        Přihazování poběží online, odkaz a přesné instrukce zveřejníme
+                        před festivalem tady a na
+                        <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" style="color: var(--accent-neon);">Instagramu</a>.
+                        Kompletní <a href="/drazba-pravidla" style="color: var(--accent-neon);">pravidla dražby</a> najdeš tady.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="drazba-cta">
+        <div class="container">
+            <div class="nudesky-cta reveal">
+                <h2 class="section-title">Vyhlídnuto?</h2>
+                <p>
+                    Tak si kup lístek na fest, nachystej rozpočet a 28. 8. přihazuj,
+                    jako by ti šlo o život. Protože o stěnu nad gaučem jde vždycky. Mňau.
+                </p>
+                <div class="hero-buttons" style="justify-content: center;">
+                    <a href="/cica-art-fest" class="btn-primary">Chci na fest</a>
+                    <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" class="btn-secondary">Sledovat na IG</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    </main>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-label="Zvětšená fotka díla">
+        <img src="" alt="">
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                © <span id="currentYear"></span> Podrážděná číča
+            </div>
+            <div class="footer-links">
+                <a href="/drazba-pravidla">Pravidla dražby</a>
+                <a href="/podminky">Cookies</a>
+                <a href="/podminky">Podmínky</a>
+            </div>
+            <div class="footer-tagline">
+                Nech si mě v hlavě. Mňau.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Defer non-critical JS to after first paint
+        requestAnimationFrame(() => {
+        // Mobile menu toggle
+        const burger = document.querySelector('.burger');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-menu a');
+
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            const isExpanded = burger.classList.contains('active');
+            burger.setAttribute('aria-expanded', isExpanded);
+            burger.setAttribute('aria-label', isExpanded ? 'Zavřít menu' : 'Otevřít menu');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                burger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                burger.setAttribute('aria-expanded', 'false');
+                burger.setAttribute('aria-label', 'Otevřít menu');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('active') &&
+                !mobileMenu.contains(e.target) &&
+                !burger.contains(e.target)) {
+                burger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                burger.setAttribute('aria-expanded', 'false');
+                burger.setAttribute('aria-label', 'Otevřít menu');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll reveal animation using IntersectionObserver
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        reveals.forEach(element => revealObserver.observe(element));
+
+        // Lightbox – zvětšení fotky díla
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+
+        function openLightbox(el) {
+            const full = el.getAttribute('data-full');
+            const img = el.querySelector('img');
+            if (!full) return;
+            lightboxImg.src = full;
+            lightboxImg.alt = img ? img.alt : '';
+            lightbox.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            lightboxImg.src = '';
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.drazba-image[data-full]').forEach(el => {
+            el.addEventListener('click', () => openLightbox(el));
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openLightbox(el);
+                }
+            });
+        });
+
+        lightbox.addEventListener('click', closeLightbox);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        }); // End requestAnimationFrame
+    </script>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p class="cookie-text">
+                🐱 Používám cookies, aby tohle všechno fungovalo, věděla, kdo sem chodí, a mohla ti servírovat obsah na míru. Souhlas můžeš kdykoliv změnit. Více v <a href="/podminky">Podmínkách ochrany osobních údajů</a>.
+            </p>
+            <div class="cookie-buttons">
+                <button class="cookie-btn cookie-btn-accept" id="acceptCookies">Přijmout vše</button>
+                <button class="cookie-btn cookie-btn-decline" id="declineCookies">Odmítnout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Banner
+        (function() {
+            const cookieBanner = document.getElementById('cookieBanner');
+            const acceptCookies = document.getElementById('acceptCookies');
+            const declineCookies = document.getElementById('declineCookies');
+
+            if (!localStorage.getItem('cookieConsent')) {
+                cookieBanner.classList.add('show');
+            }
+
+            acceptCookies.addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'accepted');
+                cookieBanner.classList.remove('show');
+                if (typeof loadGA === 'function') {
+                    loadGA();
+                }
+                if (typeof window.updateConsent === 'function') {
+                    window.updateConsent('granted');
+                }
+            });
+
+            declineCookies.addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'declined');
+                cookieBanner.classList.remove('show');
+                if (typeof window.updateConsent === 'function') {
+                    window.updateConsent('denied');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
