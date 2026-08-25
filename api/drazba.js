@@ -37,7 +37,8 @@ async function auctionState(c, settings, bidderId) {
                 max(b.amount_czk)::int as top_amount,
                 count(b.id)::int as bid_count,
                 (max(b.amount_czk) is not null and
-                 (array_agg(b.bidder_id order by b.amount_czk desc, b.created_at asc))[1] = $2) as leading
+                 (array_agg(b.bidder_id order by b.amount_czk desc, b.created_at asc))[1] = $2) as leading,
+                bool_or(b.bidder_id = $2) as mine
          from auction_items i
          left join bids b on b.item_id = i.id and b.is_test = $1
          group by i.id
@@ -57,7 +58,8 @@ async function auctionState(c, settings, bidderId) {
             withdrawn: r.withdrawn,
             top: r.top_amount,
             bids: r.bid_count,
-            leading: bidderId ? r.leading : false
+            leading: bidderId ? r.leading : false,
+            mine: bidderId ? !!r.mine : false
         }))
     };
 }

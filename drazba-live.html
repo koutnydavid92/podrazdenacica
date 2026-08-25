@@ -418,6 +418,7 @@
             <h3 id="modalTitle"></h3>
             <p class="bid-min" id="modalMin"></p>
             <div class="msg err" id="modalErr"></div>
+            <div class="msg ok" id="modalWarn"></div>
             <input type="number" id="modalAmount" inputmode="numeric" step="100">
             <div class="bid-modal-actions">
                 <button class="btn-ghost" id="modalCancel">Zpět</button>
@@ -510,10 +511,14 @@
                 $('signedIn').querySelector('b').textContent = state.me.name;
             }
 
-            // položky
+            // položky: kde přihazuju, nahoru - ať se kvůli přehazování nescrolluje
             const wrap = $('items');
             wrap.innerHTML = '';
-            for (const it of state.items) {
+            const ordered = state.items
+                .map((it, idx) => ({ it, idx }))
+                .sort((a, b) => (b.it.mine - a.it.mine) || (a.idx - b.idx))
+                .map(x => x.it);
+            for (const it of ordered) {
                 if (it.withdrawn) continue;
                 const row = document.createElement('div');
                 row.className = 'bid-item' + (it.leading ? ' is-leading' : '');
@@ -532,7 +537,8 @@
                         ${it.charity ? `<span class="bid-charity">${it.charity}</span>` : ''}
                         <h3></h3>
                         <div class="bid-top">${topLine}</div>
-                        ${it.leading ? '<div class="bid-lead-flag">😼 Vedeš!</div>' : ''}
+                        ${it.leading ? '<div class="bid-lead-flag">😼 Vedeš!</div>'
+                            : (it.mine ? '<div class="bid-lead-flag" style="color:#ff9c9c;">😾 Přehodili tě!</div>' : '')}
                     </div>
                     <div class="bid-action">
                         <button class="btn-bid" data-slug="${it.slug}" ${(!signed || !biddingOpen()) ? 'disabled' : ''}>Přihodit</button>
@@ -622,6 +628,17 @@
         }
 
         // ---- příhoz ----
+        // Pojistka proti překlepu: skok o víc než 1000 Kč nad současné
+        // minimum chce druhé kliknutí ("armed"), nabídka je závazná.
+        const BIG_JUMP = 1000;
+        let bigJumpArmed = false;
+
+        function resetBigJump() {
+            bigJumpArmed = false;
+            showMsg('modalWarn', '');
+            $('modalConfirm').textContent = 'Přihodit';
+        }
+
         function openModal(slug) {
             modalItem = state.items.find(i => i.slug === slug);
             if (!modalItem) return;
@@ -633,6 +650,7 @@
             $('modalAmount').value = minimum;
             $('modalAmount').min = minimum;
             showMsg('modalErr', '');
+            resetBigJump();
             $('bidModal').classList.add('open');
         }
 
@@ -646,10 +664,21 @@
             if (e.target === $('bidModal')) closeModal();
         });
 
+        $('modalAmount').addEventListener('input', resetBigJump);
+
         $('modalConfirm').addEventListener('click', async () => {
             if (!modalItem) return;
             const amount = Math.round(Number($('modalAmount').value));
             showMsg('modalErr', '');
+
+            const baseline = modalItem.top || modalItem.starting;
+            const jump = amount - baseline;
+            if (jump > BIG_JUMP && !bigJumpArmed) {
+                bigJumpArmed = true;
+                showMsg('modalWarn', `Pozor, přihazuješ ${czk(amount)}, to je o ${czk(jump)} víc než ${modalItem.top ? 'současná nabídka' : 'vyvolávací cena'}. Nabídka je závazná. Jsi si jistá číča?`);
+                $('modalConfirm').textContent = 'Jo, vážně přihodit';
+                return;
+            }
             $('modalConfirm').disabled = true;
             try {
                 const res = await fetch('/api/drazba', {
