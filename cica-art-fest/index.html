@@ -227,10 +227,49 @@
             font-size: 1.4rem;
             color: var(--accent-neon);
         }
+        /* Kolik lupenů zbývá - hned pod odpočtem, ať je znát, že se tenčí */
+        .fest-seats {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0 12px;
+            margin: -22px 0 36px;
+        }
+        .fest-seats-label,
+        .fest-seats-word {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+        .fest-seats b {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2.6rem;
+            line-height: 1;
+            color: var(--accent-neon);
+            font-variant-numeric: tabular-nums;
+        }
+        /* Poslední desítky: číslo dostane pulz, ať to píchne do oka */
+        .fest-seats.is-low b {
+            animation: seatsPulse 2s ease-in-out infinite;
+        }
+        @keyframes seatsPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .fest-seats.is-low b { animation: none; }
+        }
+        /* Vyprodáno: žádné číslo, jen hláška */
+        .fest-seats.is-out b { display: none; }
+        .fest-seats.is-out .fest-seats-label {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.4rem;
+            color: var(--accent-neon);
+        }
         @media (max-width: 600px) {
             .fest-countdown-units b {
                 font-size: 1.5rem;
             }
+            .fest-seats b { font-size: 2.1rem; }
         }
         .tickets-note {
             text-align: center;
@@ -1071,6 +1110,11 @@
                 <p class="fest-countdown" id="festCountdown" aria-live="polite" hidden>
                     <span class="fest-countdown-label">Už za</span>
                     <span class="fest-countdown-units" id="festCountdownUnits"></span>
+                </p>
+                <p class="fest-seats" id="festSeats" aria-live="polite" hidden>
+                    <span class="fest-seats-label">A zbývá</span>
+                    <b id="festSeatsCount">0</b>
+                    <span class="fest-seats-word" id="festSeatsWord">lupenů</span>
                 </p>
                 <div class="hero-buttons">
                     <a href="#vstupenky" class="btn-primary">Chci lupen</a>
@@ -2223,6 +2267,26 @@
                     badge.textContent = `Zbývají ${n} kusy`;
                 } else {
                     badge.textContent = `Zbývá ${n} kusů`;
+                }
+                // Velké počítadlo v hlavičce vedle odpočtu. Bere číslo odsud,
+                // aby se stejný dotaz neposílal dvakrát.
+                const seats = document.getElementById('festSeats');
+                if (seats) {
+                    const count = document.getElementById('festSeatsCount');
+                    const word = document.getElementById('festSeatsWord');
+                    const label = seats.querySelector('.fest-seats-label');
+                    if (n <= 0) {
+                        seats.classList.add('is-out');
+                        seats.classList.remove('is-low');
+                        label.textContent = 'Vyprodáno. Bylo nás dost.';
+                        word.textContent = '';
+                    } else {
+                        count.textContent = n;
+                        // 1 lupen / 2-4 lupeny / 5+ lupenů
+                        word.textContent = n === 1 ? 'lupen' : (n <= 4 ? 'lupeny' : 'lupenů');
+                        seats.classList.toggle('is-low', n <= 30);
+                    }
+                    seats.hidden = false;
                 }
                 // Přepínač počtu nesmí nabídnout víc lupenů, než reálně zbývá
                 window.cicaTicketsRemaining = n;
