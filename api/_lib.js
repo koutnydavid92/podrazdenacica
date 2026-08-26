@@ -3,7 +3,7 @@
 const crypto = require('crypto');
 const { Client } = require('pg');
 
-const CAPACITY = 250;
+const CAPACITY = 200;
 const PRICE_CZK = 666;          // early bird
 const PRICE_LATE_CZK = 777;     // od 15. 8. 2026
 const EARLY_BIRD_UNTIL = new Date('2026-08-15T00:00:00+02:00');
