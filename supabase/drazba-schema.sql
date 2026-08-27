@@ -31,11 +31,11 @@ create table if not exists auction_items (
 );
 
 insert into auction_items (slug, title, starting_price_czk, charity, sort) values
-    ('balencicaga',       'Balenčičiaga',       2500,  null,                                 1),
-    ('hulka',             'Podrážděná hůlka',   1800,  null,                                 2),
-    ('klitty',            'Klitty s fotečkama', 1800,  null,                                 3),
-    ('bad-nun',           'Bad Nun',            1000,  null,                                 4),
-    ('kurwa-bober',       'Kurwa bober',        2000,  null,                                 5),
+    ('balencicaga',       'Balenčičiaga',       2500,  '100 % pro Číča Art Fest 2027',                                 1),
+    ('hulka',             'Podrážděná hůlka',   1800,  '100 % pro Útulok Tuláčik Brezno',    2),
+    ('klitty',            'Klitty s fotečkama', 1800,  '100 % pro Opuštěné kočičí tlapky',                                 3),
+    ('bad-nun',           'Bad Nun',            1000,  '100 % pro Číča Art Fest 2027',                                 4),
+    ('kurwa-bober',       'Kurwa bober',        2000,  '100 % pro Číča Art Fest 2027',                                 5),
     ('sila-tisice-cecek', 'Síla tisíce cecek',  10000, '100 % pro Lymfom Help',              6),
     ('euforie',           'EUFORIE',            1500,  '50 % pro Opuštěné kočičí tlapky',    7),
     ('vaclav-havel',      'Václav Havel',       10000, '100 % pro Lymfom Help',              8),
