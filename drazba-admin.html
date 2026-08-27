@@ -167,8 +167,9 @@
             <!-- Poslední příhozy -->
             <h2>Posledních 30 příhozů</h2>
             <div class="card">
+                <div class="msg" id="latestMsg"></div>
                 <table id="latestTable">
-                    <thead><tr><th>Čas</th><th>Dílo</th><th>Částka</th><th>Kdo</th><th>Zdroj</th></tr></thead>
+                    <thead><tr><th>Čas</th><th>Dílo</th><th>Částka</th><th>Kdo</th><th>Zdroj</th><th></th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -241,11 +242,31 @@
             ]));
 
             const t = (d) => new Date(d).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            fillTable($('latestTable').querySelector('tbody'), out.latest.map(b => [
+            const latestBody = $('latestTable').querySelector('tbody');
+            fillTable(latestBody, out.latest.map(b => [
                 t(b.created_at), b.title, { b: czk(b.amount_czk) },
                 (b.name || '—') + (b.email ? ' · ' + b.email : ''),
                 b.source === 'live' ? 'naživo' : 'online'
             ]));
+            // tlačítko na smazání ukliknutého příhozu
+            out.latest.forEach((b, i) => {
+                const td = document.createElement('td');
+                const btn = document.createElement('button');
+                btn.className = 'ghost';
+                btn.textContent = 'Smazat';
+                btn.style.padding = '0.25rem 0.8rem';
+                btn.style.fontSize = '0.8rem';
+                btn.addEventListener('click', async () => {
+                    if (!confirm(`Opravdu smazat příhoz ${czk(b.amount_czk)} na ${b.title} (${b.name || 'beze jména'})? Vrátí to ke slovu předchozí nabídku.`)) return;
+                    const out2 = await api('delete_bid', { bid_id: b.id });
+                    $('latestMsg').textContent = out2.ok
+                        ? `Smazán příhoz ${czk(out2.deleted.amount)} na ${out2.deleted.title}.`
+                        : 'Smazání se nepovedlo.';
+                    refresh();
+                });
+                td.appendChild(btn);
+                latestBody.children[i].appendChild(td);
+            });
 
             const sel = $('liveSlug');
             if (!sel.options.length) {

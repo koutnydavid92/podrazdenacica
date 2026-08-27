@@ -4,6 +4,7 @@
 //   {pin, action:'set_mode', mode}                 - 'test' | 'live' | 'closed'
 //   {pin, action:'wipe_test'}                      - smazat testovací příhozy
 //   {pin, action:'live_bid', slug, amount, name}   - živý příhoz z pléna
+//   {pin, action:'delete_bid', bid_id}             - smazat překlep (ukliknutý příhoz)
 //   {pin, action:'winners'}                        - vítězové s kontakty
 //   {pin, action:'send_winner_emails'}             - poslat vítězům e-mail s platbou
 const { withDb, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
@@ -65,7 +66,7 @@ module.exports = async (req, res) => {
                      left join bids b on b.item_id = i.id and b.is_test = $1
                      group by i.id order by i.sort`, [test]);
                 const { rows: latest } = await c.query(
-                    `select i.title, b.amount_czk, b.source, b.is_test, b.created_at,
+                    `select b.id, i.title, b.amount_czk, b.source, b.is_test, b.created_at,
                             coalesce(bd.name, b.live_name) as name, bd.email
                      from bids b
                      join auction_items i on i.id = b.item_id
@@ -111,6 +112,18 @@ module.exports = async (req, res) => {
                     [irows[0].id, name, amount, test]
                 );
                 return { ok: true, top: amount };
+            }
+
+            if (body.action === 'delete_bid') {
+                const bidId = Math.round(Number(body.bid_id));
+                if (!Number.isFinite(bidId) || bidId <= 0) return { ok: false, error: 'missing_fields' };
+                const { rows } = await c.query(
+                    `delete from bids where id = $1
+                     returning amount_czk, (select title from auction_items where id = item_id) as title`,
+                    [bidId]
+                );
+                if (!rows.length) return { ok: false, error: 'not_found' };
+                return { ok: true, deleted: { title: rows[0].title, amount: rows[0].amount_czk } };
             }
 
             if (body.action === 'winners') {
