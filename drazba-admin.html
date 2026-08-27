@@ -165,8 +165,12 @@
             </div>
 
             <!-- Poslední příhozy -->
-            <h2>Posledních 30 příhozů</h2>
+            <h2 id="bidsHeading">Posledních 30 příhozů</h2>
             <div class="card">
+                <div class="row" style="margin-bottom:0.8rem;">
+                    <button class="ghost" id="bidsToggle">Zobrazit všechny příhozy</button>
+                    <select id="bidsFilter" style="display:none;"><option value="">Všechna díla</option></select>
+                </div>
                 <div class="msg" id="latestMsg"></div>
                 <table id="latestTable">
                     <thead><tr><th>Čas</th><th>Dílo</th><th>Částka</th><th>Kdo</th><th>Zdroj</th><th></th></tr></thead>
@@ -241,15 +245,39 @@
                 i.bid_count
             ]));
 
-            const t = (d) => new Date(d).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const latestBody = $('latestTable').querySelector('tbody');
-            fillTable(latestBody, out.latest.map(b => [
+            if (!showAllBids) {
+                renderBidsTable(out.latest);
+            } else {
+                const all = await api('all_bids', { slug: $('bidsFilter').value || undefined });
+                if (all.ok) renderBidsTable(all.bids);
+            }
+
+            const sel = $('liveSlug');
+            if (!sel.options.length) {
+                for (const i of out.items) {
+                    const o = document.createElement('option');
+                    o.value = i.slug;
+                    o.textContent = i.title;
+                    sel.appendChild(o);
+                    $('bidsFilter').appendChild(o.cloneNode(true));
+                }
+            }
+            return true;
+        }
+
+        // ---- tabulka příhozů (posledních 30 / kompletní historie) ----
+        let showAllBids = false;
+        const t = (d) => new Date(d).toLocaleString('cs-CZ', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        function renderBidsTable(bids) {
+            const body = $('latestTable').querySelector('tbody');
+            fillTable(body, bids.map(b => [
                 t(b.created_at), b.title, { b: czk(b.amount_czk) },
                 (b.name || '—') + (b.email ? ' · ' + b.email : ''),
                 b.source === 'live' ? 'naživo' : 'online'
             ]));
             // tlačítko na smazání ukliknutého příhozu
-            out.latest.forEach((b, i) => {
+            bids.forEach((b, i) => {
                 const td = document.createElement('td');
                 const btn = document.createElement('button');
                 btn.className = 'ghost';
@@ -265,20 +293,19 @@
                     refresh();
                 });
                 td.appendChild(btn);
-                latestBody.children[i].appendChild(td);
+                body.children[i].appendChild(td);
             });
-
-            const sel = $('liveSlug');
-            if (!sel.options.length) {
-                for (const i of out.items) {
-                    const o = document.createElement('option');
-                    o.value = i.slug;
-                    o.textContent = i.title;
-                    sel.appendChild(o);
-                }
-            }
-            return true;
         }
+
+        $('bidsToggle').addEventListener('click', () => {
+            showAllBids = !showAllBids;
+            $('bidsToggle').textContent = showAllBids ? 'Zpět na posledních 30' : 'Zobrazit všechny příhozy';
+            $('bidsFilter').style.display = showAllBids ? 'inline-block' : 'none';
+            $('bidsHeading').textContent = showAllBids ? 'Všechny příhozy' : 'Posledních 30 příhozů';
+            refresh();
+        });
+
+        $('bidsFilter').addEventListener('change', () => refresh());
 
         $('loginBtn').addEventListener('click', async () => {
             pin = $('pin').value;

@@ -5,6 +5,7 @@
 //   {pin, action:'wipe_test'}                      - smazat testovací příhozy
 //   {pin, action:'live_bid', slug, amount, name}   - živý příhoz z pléna
 //   {pin, action:'delete_bid', bid_id}             - smazat překlep (ukliknutý příhoz)
+//   {pin, action:'all_bids', slug?}                - kompletní historie příhozů (volitelně jen jedno dílo)
 //   {pin, action:'winners'}                        - vítězové s kontakty
 //   {pin, action:'send_winner_emails'}             - poslat vítězům e-mail s platbou
 const { withDb, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
@@ -112,6 +113,22 @@ module.exports = async (req, res) => {
                     [irows[0].id, name, amount, test]
                 );
                 return { ok: true, top: amount };
+            }
+
+            if (body.action === 'all_bids') {
+                const slug = String(body.slug || '').trim() || null;
+                const test = (await currentMode(c)) === 'test';
+                const { rows } = await c.query(
+                    `select b.id, i.title, b.amount_czk, b.source, b.created_at,
+                            coalesce(bd.name, b.live_name) as name, bd.email
+                     from bids b
+                     join auction_items i on i.id = b.item_id
+                     left join bidders bd on bd.id = b.bidder_id
+                     where b.is_test = $1 and ($2::text is null or i.slug = $2)
+                     order by b.created_at desc`,
+                    [test, slug]
+                );
+                return { ok: true, bids: rows };
             }
 
             if (body.action === 'delete_bid') {
