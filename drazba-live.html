@@ -352,6 +352,124 @@
         .live-footer a {
             color: var(--accent-neon);
         }
+
+        /* Detail díla */
+        .bid-thumb, .bid-info h3 {
+            cursor: pointer;
+        }
+
+        .detail-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(13, 13, 13, 0.92);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 1.2rem;
+            overflow-y: auto;
+        }
+
+        .detail-modal.open {
+            display: flex;
+        }
+
+        .detail-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 16px;
+            width: min(480px, 100%);
+            margin: auto 0;
+            overflow: hidden;
+        }
+
+        .detail-card img,
+        .detail-card .detail-placeholder {
+            width: 100%;
+            max-height: 55vh;
+            object-fit: contain;
+            display: block;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        }
+
+        .detail-card .detail-placeholder {
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.6rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-card .detail-placeholder span:first-child {
+            font-size: 2.4rem;
+        }
+
+        .detail-body {
+            padding: 1.4rem;
+        }
+
+        .detail-body .bid-charity {
+            color: var(--accent-neon);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-body h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .detail-body .detail-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.9rem;
+        }
+
+        .detail-body .sale-meta-live {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 1.1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .detail-body .detail-author {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .detail-body .detail-author a {
+            color: var(--accent-neon);
+            text-decoration: none;
+        }
+
+        .detail-body .detail-top {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            border-top: 1px solid var(--divider);
+            padding-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-body .detail-top b {
+            color: var(--white);
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 <body>
@@ -412,6 +530,25 @@
         </p>
     </main>
 
+    <!-- Detail díla -->
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-card">
+            <div id="detailMedia"></div>
+            <div class="detail-body">
+                <span class="bid-charity" id="detailCharity"></span>
+                <h3 id="detailTitle"></h3>
+                <p class="detail-desc" id="detailDesc"></p>
+                <div class="sale-meta-live" id="detailMeta"></div>
+                <p class="detail-author" id="detailAuthor"></p>
+                <p class="detail-top" id="detailTop"></p>
+                <div class="detail-actions">
+                    <button class="btn-ghost" id="detailClose">Zavřít</button>
+                    <button class="btn-bid" id="detailBid">Přihodit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal příhozu -->
     <div class="bid-modal" id="bidModal">
         <div class="bid-modal-card">
@@ -430,18 +567,81 @@
     <script>
     (function () {
         const TOKEN_KEY = 'cica_drazba_token';
-        const IMAGES = {
-            'balencicaga': '/images/drazba/balencicaga-sm.webp',
-            'hulka': '/images/drazba/hulka-sm.webp',
-            'klitty': '/images/drazba/klitty-sm.webp',
-            'bad-nun': '/images/drazba/bad-nun-sm.webp',
-            'kurwa-bober': '/images/drazba/kurwa-bober-sm.webp',
-            'sila-tisice-cecek': null,
-            'euforie': '/images/drazba/euforie-sm.webp',
-            'vaclav-havel': '/images/drazba/vaclav-havel-sm.webp',
-            'cica-broz': '/images/drazba/cica-broz-sm.webp',
-            'black-sheep': '/images/drazba/black-sheep-sm.webp'
+        // Detaily děl: kdo přijde přes QR z letáku, katalog neuvidí,
+        // proto jsou popisy i tady (texty drží krok s /drazba)
+        const DETAILS = {
+            'balencicaga': {
+                img: '/images/drazba/balencicaga-sm.webp',
+                full: '/images/drazba/balencicaga.webp',
+                desc: 'Originální mastrpiss Balenčičiaga první. Artefakt je nabitý mocnou tvůrčí energií a špínou z ulice. Módní doplněk autentický stejně jako jeho nositelka.',
+                meta: [],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>'
+            },
+            'hulka': {
+                img: '/images/drazba/hulka-sm.webp',
+                full: '/images/drazba/hulka.webp',
+                desc: 'Kdo chce styl mít, hůl si najde. S touhle počíčovanou hůlkou budeš main character v každé společnosti. Staň se vycházející hvězdou každé vycházky.',
+                meta: [],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/hulkarna.cz/" target="_blank" rel="noopener">Hůlkárnou</a>'
+            },
+            'klitty': {
+                img: '/images/drazba/klitty-sm.webp',
+                full: '/images/drazba/klitty.webp',
+                desc: 'Tak tahle číča udělá největší radost té tvojí číči. Balíček je okořeněný o stylové fotky Podrážděné číči.',
+                meta: [],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/rozkosss/" target="_blank" rel="noopener">Rozkoššš</a>'
+            },
+            'bad-nun': {
+                img: '/images/drazba/bad-nun-sm.webp',
+                full: '/images/drazba/bad-nun.webp',
+                desc: 'I jeptišky rády zlobí. Stylovej art piece vhodný do každého prostoru. Ideálně tam, kde nejčastěji odříkáváš otčenáše.',
+                meta: ['📐 70 × 100 cm', '🎨 kombinovaná technika na papíře', '👑 série Královny Brno-venkov'],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>'
+            },
+            'kurwa-bober': {
+                img: '/images/drazba/kurwa-bober-sm.webp',
+                full: '/images/drazba/kurwa-bober.webp',
+                desc: 'Autorský autoportrét ze série 13 obrazů hravých nudesek Královny Brno-venkov. Dílo je interaktivní díky magnetické fólii a každý si tak s obrazem může hrát dle své nálady.',
+                meta: ['📐 70 × 100 cm', '🎨 kombinovaná technika na plátně, magnetická fólie a prvky', '👑 série Královny Brno-venkov'],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>'
+            },
+            'sila-tisice-cecek': {
+                img: null,
+                full: null,
+                desc: 'Tohle dílo se ukáže v celé své kráse až na festivalu. Ať se máš na co těšit. Formát velký jako autorčino ego. Při tvorbě byla použita nejrůžovější růžová. Fakt.',
+                meta: ['📐 130 × 190 cm', '🎨 kombinovaná technika na plátně'],
+                author: 'Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>'
+            },
+            'euforie': {
+                img: '/images/drazba/euforie-sm.webp',
+                full: '/images/drazba/euforie.webp',
+                desc: 'Cassie byla štěňátko. Jenže my jsme koťátka. Chceme spát většinu dne, lásku prostě žereme, lovíme pro zábavu a myslíme na vraždění. Ale velmi něžně a esteticky. Nehlaď bez ptaní!',
+                meta: ['📐 70 × 90 cm', '🎨 akvarel, Molotow, akryl na plátně'],
+                author: 'Autorka: <a href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">Šárka Motyčková</a>'
+            },
+            'vaclav-havel': {
+                img: '/images/drazba/vaclav-havel-sm.webp',
+                full: '/images/drazba/vaclav-havel.webp',
+                desc: 'Akrylová malba Václava Havla v osobitém rukopisu Joe Pisttona. Výrazná černobílá práce kombinuje expresivní figurativní malbu, prvky pop-artu a estetiku linorytu. Obraz je součástí série DEMOkraté, věnované osobnostem, které významně ovlivnily cestu naší země ke svobodě a demokracii.',
+                meta: ['📐 60 × 90 cm', '🎨 akryl na plátně', '🗳️ série DEMOkraté'],
+                author: 'Autor: <a href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">Joe Pisttone</a>'
+            },
+            'cica-broz': {
+                img: '/images/drazba/cica-broz-sm.webp',
+                full: '/images/drazba/cica-broz.webp',
+                desc: 'Ručně vyrobená korálková brož s výrazným růžovo-černým motivem. Celá je vytvořená z drobných korálků a je originálním autorským šperkem, který lze nosit jako brož nebo přívěsek.',
+                meta: ['📐 10 × 10 cm', '📿 korálkový šperk'],
+                author: 'Autorka: <a href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">Jana Dúbravčíková</a>'
+            },
+            'black-sheep': {
+                img: '/images/drazba/black-sheep-sm.webp',
+                full: '/images/drazba/black-sheep.webp',
+                desc: 'Černá ovce se pozná podle toho, že jí to sluší. Kus pro každého, kdo taky nikdy nezapadal.',
+                meta: ['📐 34 × 41 cm', '🎨 akryl a tuš na sololitové desce'],
+                author: 'Autor: <a href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">Frank Abdulov</a>'
+            }
         };
+        const IMAGES = Object.fromEntries(Object.entries(DETAILS).map(([k, v]) => [k, v.img]));
         const MIN_INCREMENT = 100;
 
         let state = null;
@@ -522,6 +722,7 @@
                 if (it.withdrawn) continue;
                 const row = document.createElement('div');
                 row.className = 'bid-item' + (it.leading ? ' is-leading' : '');
+                row.dataset.slug = it.slug;
 
                 const img = IMAGES[it.slug]
                     ? `<img class="bid-thumb" src="${IMAGES[it.slug]}" alt="" loading="lazy">`
@@ -550,7 +751,55 @@
             wrap.querySelectorAll('button[data-slug]').forEach(btn => {
                 btn.addEventListener('click', () => openModal(btn.dataset.slug));
             });
+
+            // klik na fotku nebo název otevře detail díla
+            wrap.querySelectorAll('.bid-item').forEach(row => {
+                const slug = row.dataset.slug;
+                row.querySelectorAll('.bid-thumb, h3').forEach(el => {
+                    el.addEventListener('click', () => openDetail(slug));
+                });
+            });
         }
+
+        // ---- detail díla ----
+        let detailSlug = null;
+
+        function openDetail(slug) {
+            const it = state.items.find(i => i.slug === slug);
+            const d = DETAILS[slug];
+            if (!it || !d) return;
+            detailSlug = slug;
+            $('detailMedia').innerHTML = d.full
+                ? `<img src="${d.full}" alt="">`
+                : '<div class="detail-placeholder"><span>🔞</span><span>Odhalení až na festivalu</span></div>';
+            $('detailCharity').textContent = it.charity || '';
+            $('detailCharity').style.display = it.charity ? 'block' : 'none';
+            $('detailTitle').textContent = it.title;
+            $('detailDesc').textContent = d.desc;
+            $('detailMeta').innerHTML = d.meta.map(m => `<span></span>`).join('');
+            [...$('detailMeta').children].forEach((el, i) => { el.textContent = d.meta[i]; });
+            $('detailAuthor').innerHTML = d.author;
+            $('detailTop').innerHTML = it.top
+                ? `Nejvyšší nabídka: <b>${czk(it.top)}</b> · ${bidsWord(it.bids)}`
+                : `Vyvolávací cena: <b>${czk(it.starting)}</b> · zatím bez příhozu`;
+            $('detailBid').disabled = !(state.me && state.me.name) || !biddingOpen();
+            $('detailModal').classList.add('open');
+        }
+
+        function closeDetail() {
+            $('detailModal').classList.remove('open');
+            detailSlug = null;
+        }
+
+        $('detailClose').addEventListener('click', closeDetail);
+        $('detailModal').addEventListener('click', (e) => {
+            if (e.target === $('detailModal')) closeDetail();
+        });
+        $('detailBid').addEventListener('click', () => {
+            const slug = detailSlug;
+            closeDetail();
+            openModal(slug);
+        });
 
         // ---- odpočet ----
         function tickCountdown() {
