@@ -358,6 +358,23 @@
             cursor: pointer;
         }
 
+        .detail-link {
+            background: none;
+            border: none;
+            padding: 0;
+            margin-top: 0.35rem;
+            display: block;
+            font: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-neon);
+            cursor: pointer;
+        }
+
+        .detail-link:hover {
+            text-decoration: underline;
+        }
+
         .detail-modal {
             position: fixed;
             inset: 0;
@@ -740,6 +757,7 @@
                         <div class="bid-top">${topLine}</div>
                         ${it.leading ? '<div class="bid-lead-flag">😼 Vedeš!</div>'
                             : (it.mine ? '<div class="bid-lead-flag" style="color:#ff9c9c;">😾 Přehodili tě!</div>' : '')}
+                        <button class="detail-link" type="button">Detail artefaktu →</button>
                     </div>
                     <div class="bid-action">
                         <button class="btn-bid" data-slug="${it.slug}" ${(!signed || !biddingOpen()) ? 'disabled' : ''}>Přihodit</button>
@@ -755,7 +773,7 @@
             // klik na fotku nebo název otevře detail díla
             wrap.querySelectorAll('.bid-item').forEach(row => {
                 const slug = row.dataset.slug;
-                row.querySelectorAll('.bid-thumb, h3').forEach(el => {
+                row.querySelectorAll('.bid-thumb, h3, .detail-link').forEach(el => {
                     el.addEventListener('click', () => openDetail(slug));
                 });
             });
