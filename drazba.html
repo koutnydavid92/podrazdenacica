@@ -135,6 +135,11 @@
             display: block;
         }
 
+        /* Díla na šířku: celé v kartě, bez ořezu */
+        .drazba-contain img {
+            object-fit: contain;
+        }
+
         .drazba-placeholder {
             width: min(42%, 400px);
             flex-shrink: 0;
@@ -469,15 +474,17 @@
                 <!-- Síla tisíce cecek -->
                 <div class="gallery-item sale-item reveal" data-delay="200">
                     <span class="charity-badge">100 % pro Lymfom Help</span>
-                    <div class="gallery-placeholder drazba-placeholder">
-                        <span>🔞</span>
-                        <span>Odhalení až na festivalu</span>
+                    <div class="drazba-image drazba-contain" data-full="/images/drazba/sila-tisice-cecek.webp" role="button" tabindex="0" aria-label="Zvětšit fotku Síla tisíce cecek">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="/images/drazba/sila-tisice-cecek-sm.webp" type="image/webp">
+                            <img src="/images/drazba/sila-tisice-cecek.webp" alt="Síla tisíce cecek – kombinovaná technika na plátně, Podrážděná číča" loading="lazy" width="1400" height="897">
+                        </picture>
                     </div>
                     <div class="gallery-info">
                         <h3>Síla tisíce cecek</h3>
                         <p>
-                            Tohle dílo se ukáže v celé své kráse až na festivalu. Ať se máš
-                            na co těšit. Formát velký jako autorčino ego. Při tvorbě byla
+                            A je to venku. Síla tisíce cecek v celé své kráse, dřív, než jsme
+                            slibovali. Formát velký jako autorčino ego. Při tvorbě byla
                             použita <a href="https://culturehustle.com/products/pink-50g-powdered-paint-by-stuart-semple" target="_blank" rel="noopener" style="color: var(--accent-neon);">nejrůžovější růžová</a>. Fakt.
                         </p>
                         <div class="sale-meta">
