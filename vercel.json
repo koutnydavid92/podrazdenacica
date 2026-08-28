@@ -62,7 +62,7 @@
   "crons": [
     {
       "path": "/api/program-mail-followup",
-      "schedule": "0 7 * * *"
+      "schedule": "0 8 * * *"
     }
   ]
 }

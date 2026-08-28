@@ -1,6 +1,6 @@
 // Dodatečné poslání mailu "Program odhalen" lidem, kteří se do listu
 // "ČAF 2026 - účastníci" dostali až PO rozeslání kampaně (25. 8. 2026).
-// Spouští Vercel cron denně v 07:00 UTC (09:00 Prahy); reálně posílá jen
+// Spouští Vercel cron denně v 08:00 UTC (10:00 Prahy); reálně posílá jen
 // v den festu 28. 8. 2026. Ručně jde spustit POSTem s ADMIN_PIN.
 //
 // Pojistka proti dvojímu poslání: po odeslání dostane kontakt tag
