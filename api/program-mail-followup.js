@@ -7,8 +7,8 @@
 // SENT_TAG a příště se přeskočí. Kdo byl v listu před kampaní, má
 // subscribed_at pod CUTOFF a nedostane nic.
 
-const { SUBJECT, HTML, TEXT } = require('./_program_mail');
-const { pinEquals } = require('./_lib');
+const { SUBJECT, buildHtml, buildText } = require('./_program_mail');
+const { pinEquals, withDb } = require('./_lib');
 
 const LIST_ID = 3;
 // Kampaň se rozesílala 25. 8. 2026 ~04:05 UTC; příjemci se ale zamkli už
@@ -65,7 +65,15 @@ async function markSent(email) {
     });
 }
 
-async function sendProgramMail(sub) {
+async function ticketsForEmail(c, email) {
+    const { rows } = await c.query(
+        `select qr_token, ticket_no, type from tickets
+         where lower(email) = lower($1) and status <> 'cancelled'
+         order by ticket_no`, [email]);
+    return rows;
+}
+
+async function sendProgramMail(sub, tickets) {
     await ecomail('POST', '/transactional/send-message', {
         message: {
             subject: SUBJECT,
@@ -73,8 +81,8 @@ async function sendProgramMail(sub) {
             from_email: 'jsem@cicoviny.podrazdenacica.cz',
             reply_to: 'jsem@podrazdenacica.cz',
             to: [{ email: sub.email, name: [sub.name, sub.surname].filter(Boolean).join(' ') }],
-            html: HTML,
-            text: TEXT
+            html: buildHtml(tickets),
+            text: buildText(tickets)
         }
     });
 }
@@ -102,15 +110,18 @@ module.exports = async (req, res) => {
         const subs = (await newSubscribers()).slice(0, MAX_SENDS);
         const sent = [];
         const skipped = [];
-        for (const sub of subs) {
-            if (await hasSentTag(sub.email)) {
-                skipped.push(sub.email);
-                continue;
+        await withDb(async (c) => {
+            for (const sub of subs) {
+                if (await hasSentTag(sub.email)) {
+                    skipped.push(sub.email);
+                    continue;
+                }
+                const tickets = await ticketsForEmail(c, sub.email);
+                await sendProgramMail(sub, tickets);
+                await markSent(sub.email);
+                sent.push(sub.email);
             }
-            await sendProgramMail(sub);
-            await markSent(sub.email);
-            sent.push(sub.email);
-        }
+        });
         console.log('program-mail-followup:', sent.length, 'posláno,', skipped.length, 'přeskočeno');
         res.status(200).json({ ok: true, sent: sent.length, skipped: skipped.length });
     } catch (e) {

@@ -23,7 +23,7 @@ const rows = PROGRAM.map(([t, txt]) => `
                 <tr><td style="color:#FE45E8; font-weight:bold; white-space:nowrap; vertical-align:top; padding:6px 14px 6px 0;">${t}</td>
                     <td style="padding:6px 0;">${txt}</td></tr>`).join('');
 
-const HTML = `<!DOCTYPE html>
+const HTML_TEMPLATE = `<!DOCTYPE html>
 <html lang="cs">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${SUBJECT}</title></head>
 <body style="margin:0; padding:0; background-color:#0D0D0D;">
@@ -54,6 +54,7 @@ const HTML = `<!DOCTYPE html>
                 </p>
             </div>
         </td></tr>
+        <!--QR_BLOK-->
         <tr><td style="height:20px; line-height:20px; font-size:0;">&nbsp;</td></tr>
         <tr><td style="background-color:#111111; border:1px solid #2A2A2A; border-radius:14px; padding:28px;">
             <div style="font-family:Arial Black, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; color:#F5F5F5; padding-bottom:18px;">
@@ -140,4 +141,43 @@ Tak v pátek. Přijď, nebo si to budeš vyčítat celej zbytek roku.
 mňau
 Podrážděná číča`;
 
-module.exports = { SUBJECT, HTML, TEXT };
+const BASE_URL = 'https://www.podrazdenacica.cz';
+
+// tickets: [{qr_token, ticket_no, type}] - když jsou, mail nese i QR vstupenky
+function qrBlockHtml(tickets) {
+    if (!tickets || !tickets.length) return '';
+    const cards = tickets.map(t => `
+                <div style="background-color:#FFFFFF; border-radius:12px; padding:20px; margin:14px 0; text-align:center;">
+                    <img src="${BASE_URL}/api/qr?token=${t.qr_token}" alt="QR kód vstupenky"
+                         width="200" height="200" style="display:block; margin:0 auto; width:200px; height:200px;">
+                    <p style="font-family:Arial, Helvetica, sans-serif; color:#0D0D0D; font-size:13px; margin:10px 0 2px; font-weight:bold;">
+                        ${t.type === 'vip' ? 'VIP vstupenka' : 'Vstupenka'}${tickets.length > 1 ? ' ' + t.ticket_no + '/' + tickets.length : ''}
+                    </p>
+                    <p style="font-family:Arial, Helvetica, sans-serif; color:#555555; font-size:12px; margin:0;">
+                        Nejde zobrazit QR? <a href="${BASE_URL}/cica-art-fest/vstupenka?t=${t.qr_token}" style="color:#FE45E8;">Otevři vstupenku na webu</a>.
+                    </p>
+                </div>`).join('');
+    return `
+        <tr><td style="height:20px; line-height:20px; font-size:0;">&nbsp;</td></tr>
+        <tr><td style="background-color:#111111; border:1px solid #FE45E8; border-radius:14px; padding:28px;">
+            <div style="font-family:Arial Black, Arial, Helvetica, sans-serif; font-weight:900; font-size:20px; color:#F5F5F5; padding-bottom:12px;">
+                ${tickets.length > 1 ? 'Tvoje vstupenky, ať je v pátek nehledáš' : 'Tvoje vstupenka, ať ji v pátek nehledáš'}
+            </div>
+            <div style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:1.6; color:#CCCCCC; padding-bottom:6px;">
+                U vchodu ukážeš QR kód, dostaneš pásku a zbytek večera je na tobě.
+            </div>${cards}
+        </td></tr>`;
+}
+
+function buildHtml(tickets) {
+    return HTML_TEMPLATE.replace('<!--QR_BLOK-->', qrBlockHtml(tickets));
+}
+
+function buildText(tickets) {
+    if (!tickets || !tickets.length) return TEXT;
+    const lines = tickets.map(t =>
+        `${t.type === 'vip' ? 'VIP vstupenka' : 'Vstupenka'} ${t.ticket_no}: ${BASE_URL}/cica-art-fest/vstupenka?t=${t.qr_token}`);
+    return TEXT + '\n\nTVOJE VSTUPENKA\n' + lines.join('\n');
+}
+
+module.exports = { SUBJECT, buildHtml, buildText };
