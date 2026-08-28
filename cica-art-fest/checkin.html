@@ -249,20 +249,45 @@
                     box.innerHTML = '<p class="muted" style="margin-top:10px;">Nikdo takový tady není.</p>';
                     return;
                 }
-                box.innerHTML = r.matches.map(m => `
-                    <div class="match">
+                box.innerHTML = r.matches.map(m => {
+                    // Mlčící VIP bez vstupenky - zvláštní řádek a jiné tlačítko
+                    if (m.source === 'invite') {
+                        return `<div class="match">
+                            <div class="who">${escapeHtml(m.name || 'Bez jména')} · VIP
+                                <small style="color: var(--pink);">Nepotvrzeno · nemá vstupenku</small>
+                            </div>
+                            <button data-code="${escapeHtml(m.code)}" data-name="${escapeHtml(m.name || '')}" type="button">Zapsat a pustit</button>
+                        </div>`;
+                    }
+                    return `<div class="match">
                         <div class="who">${escapeHtml(m.name || 'Bez jména')} ${m.type === 'vip' ? '· VIP' : ''}
                             <small>${escapeHtml(m.email || '')} ${m.status === 'checked_in' ? '· UŽ ODBAVENO' : ''}</small>
                         </div>
                         ${m.status === 'valid' ? `<button data-id="${m.id}" type="button">Odbavit</button>` : ''}
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
+                function afterAdmit() {
+                    el('resumeButton').hidden = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    el('searchResults').innerHTML = '';
+                    el('searchInput').value = '';
+                }
                 box.querySelectorAll('button[data-id]').forEach(b => {
                     b.addEventListener('click', async () => {
                         showResult(await api({ ticket_id: b.dataset.id }));
-                        el('resumeButton').hidden = false;
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        el('searchResults').innerHTML = '';
-                        el('searchInput').value = '';
+                        afterAdmit();
+                    });
+                });
+                box.querySelectorAll('button[data-code]').forEach(b => {
+                    b.addEventListener('click', async () => {
+                        // Zápis vytvoří VIP vstupenku - potvrdit, ať to nikdo neťukne omylem
+                        if (!confirm('Zapsat „' + b.dataset.name + '" jako VIP a pustit dovnitř?')) return;
+                        try {
+                            showResult(await api({ admit_code: b.dataset.code }));
+                            afterAdmit();
+                        } catch (e) {
+                            alert('Výpadek spojení, zkus to znovu.');
+                        }
                     });
                 });
             } catch (e) {
