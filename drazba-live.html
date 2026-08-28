@@ -511,7 +511,7 @@
     <main class="live-wrap">
         <div class="live-head">
             <h1>Tichá dražba naživo</h1>
-            <p>Přihazuješ online, vidíš vždycky jen nejvyšší nabídku. Kdo dá víc, vede. Ve 20:00 online kolo končí a finále proběhne na pódiu.</p>
+            <p>Přihazuješ online, vidíš vždycky jen nejvyšší nabídku. Kdo dá víc, vede. Ve 21:45 online kolo končí a finále proběhne na pódiu.</p>
         </div>
 
         <div class="live-status" id="liveStatus">
@@ -714,7 +714,7 @@
                 } else if (now > new Date(state.closes_at).getTime()) {
                     modeText = 'Online kolo skončilo. Finále probíhá naživo na pódiu!';
                 } else {
-                    modeText = 'Dražba běží! Online přihazování končí ve 20:00.';
+                    modeText = 'Dražba běží! Online přihazování končí ve 21:45.';
                 }
             }
             $('statusMode').textContent = modeText;
