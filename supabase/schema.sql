@@ -316,3 +316,16 @@ create table if not exists pin_attempts (
 create index if not exists pin_attempts_ip_time on pin_attempts (ip, attempted_at);
 create index if not exists pin_attempts_time on pin_attempts (attempted_at);
 alter table pin_attempts enable row level security;
+
+-- Zpětná vazba po festu (anonymní; jméno jen u zveřejnitelné reference)
+create table if not exists caf_feedback (
+    id uuid primary key default gen_random_uuid(),
+    created_at timestamptz not null default now(),
+    rating int check (rating between 1 and 5),
+    highlights text[] not null default '{}',
+    improve text,
+    quote text,
+    quote_public boolean not null default false,
+    quote_author text,
+    ip inet
+);

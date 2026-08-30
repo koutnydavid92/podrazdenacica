@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaký byl ČAF? – Podrážděná číča</title>
+    <link rel="canonical" href="https://www.podrazdenacica.cz/dotaznik">
+    <meta name="description" content="Řekni nám, jaký byl první ročník Číča Art Festu. Zabere to dvě minuty.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #CCCCCC;
+            --divider: #2A2A2A;
+            --accent-neon: #FE45E8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px 80px;
+        }
+        .wrap { max-width: 640px; margin: 0 auto; }
+        .logo { display: block; width: 64px; margin: 0 auto 24px; }
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(1.7rem, 5vw, 2.4rem);
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+        h1 em { font-style: normal; color: var(--accent-neon); }
+        .intro {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 14px;
+            padding: 26px 24px;
+            margin-bottom: 18px;
+        }
+        .card h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+        .card .hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        /* 1) škála tlapek */
+        .paws { display: flex; gap: 10px; justify-content: space-between; }
+        .paws label {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 4px 10px;
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.7rem;
+            line-height: 1;
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
+        }
+        .paws label span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-family: 'DM Sans', sans-serif;
+            text-align: center;
+        }
+        .paws input { position: absolute; opacity: 0; pointer-events: none; }
+        .paws label:hover { border-color: var(--accent-neon); }
+        .paws label.on {
+            border-color: var(--accent-neon);
+            background: rgba(254, 69, 232, 0.12);
+            transform: scale(1.05);
+        }
+        /* 2) chips programu */
+        .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+        .chips label {
+            border: 1px solid var(--divider);
+            border-radius: 999px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .chips input { position: absolute; opacity: 0; pointer-events: none; }
+        .chips label:hover { border-color: var(--accent-neon); }
+        .chips label.on {
+            border-color: var(--accent-neon);
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            font-weight: 700;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            background: #0D0D0D;
+            border: 1px solid var(--divider);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font: inherit;
+            padding: 12px 14px;
+        }
+        textarea { min-height: 96px; resize: vertical; }
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-neon);
+        }
+        /* souhlas se zveřejněním */
+        .consent {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 14px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .consent input {
+            width: 20px; height: 20px;
+            margin-top: 2px;
+            accent-color: var(--accent-neon);
+            flex-shrink: 0;
+        }
+        .author { margin-top: 12px; display: none; }
+        .author.show { display: block; }
+        .author label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            border: 0;
+            border-radius: 999px;
+            font: inherit;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 16px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(254, 69, 232, 0.45); }
+        .btn:disabled { opacity: 0.6; cursor: wait; transform: none; box-shadow: none; }
+        .err {
+            display: none;
+            color: #FF7B7B;
+            text-align: center;
+            margin-top: 12px;
+        }
+        /* poděkování */
+        #done { display: none; text-align: center; padding: 60px 0; }
+        #done .big { font-size: 3rem; margin-bottom: 16px; }
+        #done h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        #done p { color: var(--text-secondary); }
+        #done a { color: var(--accent-neon); }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a href="/"><img class="logo" src="/images/logo.png" alt="Podrážděná číča"></a>
+
+        <div id="formPart">
+            <h1>Jaký byl <em>Číča Art Fest?</em></h1>
+            <p class="intro">
+                První ročník máme za sebou a tvoje upřímná slova rozhodnou, jaký
+                bude ten další. Dvě minuty, anonymně, od srdce. Mňau.
+            </p>
+
+            <form id="f">
+                <div class="card">
+                    <h2>Jak moc sis to užila/užil?</h2>
+                    <p class="hint">1 tlapka = nuda, 5 tlapek = nejlepší páteček života</p>
+                    <div class="paws" id="paws">
+                        <label><input type="radio" name="rating" value="1">😾<span>nuda</span></label>
+                        <label><input type="radio" name="rating" value="2">😿<span>slabý</span></label>
+                        <label><input type="radio" name="rating" value="3">😼<span>šlo to</span></label>
+                        <label><input type="radio" name="rating" value="4">😺<span>paráda</span></label>
+                        <label><input type="radio" name="rating" value="5">😻<span>mňau!</span></label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Co bylo za tebe nej?</h2>
+                    <p class="hint">Klidně označ víc věcí</p>
+                    <div class="chips" id="chips">
+                        <label><input type="checkbox" value="welcome">Welcome drink a atmosféra</label>
+                        <label><input type="checkbox" value="tattoo">Breberka Tattoo</label>
+                        <label><input type="checkbox" value="market">Číča Market</label>
+                        <label><input type="checkbox" value="vernisaz">Vernisáž Královny Brno-venkov</label>
+                        <label><input type="checkbox" value="vazky">Hudební soubor Vážky</label>
+                        <label><input type="checkbox" value="panelovka">Panelovka o hlavě a číči</label>
+                        <label><input type="checkbox" value="standup">Stand-up Terezy Bonaventurové</label>
+                        <label><input type="checkbox" value="krupicafaja">Krupicafaja</label>
+                        <label><input type="checkbox" value="prehlidka">Módní přehlídka</label>
+                        <label><input type="checkbox" value="drazba">Dražba</label>
+                        <label><input type="checkbox" value="onanovanky">Komentovka k Onanovánkám</label>
+                        <label><input type="checkbox" value="misspetty">Miss Petty</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Co zlepšit do příštího roku?</h2>
+                    <p class="hint">Piš na rovinu, uneseme to. Kritika je dar.</p>
+                    <textarea name="improve" maxlength="2000" placeholder="Víc jídla? Delší dražba? Jiná kapela? Sem s tím…"></textarea>
+                </div>
+
+                <div class="card">
+                    <h2>Jaký byl za tebe první ročník Číča Art Festu jednou větou?</h2>
+                    <p class="hint">Tahle věta nás bude hřát. A možná i prodávat lupeny na příští rok.</p>
+                    <textarea name="quote" maxlength="500" placeholder="Byl to…"></textarea>
+                    <label class="consent">
+                        <input type="checkbox" id="quotePublic" name="quote_public">
+                        <span>Souhlasím, ať moji větu klidně zveřejníte na webu nebo sítích festu</span>
+                    </label>
+                    <div class="author" id="authorBox">
+                        <label for="quoteAuthor">Jak tě máme podepsat? (jméno, přezdívka… nech prázdné a budeš „návštěvnice ČAF“)</label>
+                        <input type="text" id="quoteAuthor" name="quote_author" maxlength="100" placeholder="např. Katka z Brna">
+                    </div>
+                </div>
+
+                <!-- past na roboty, lidi ji nevidí -->
+                <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-5000px" aria-hidden="true">
+
+                <button class="btn" id="send" type="submit">Odeslat zpětnou vazbu</button>
+                <p class="err" id="err">Něco se pokazilo. Zkus to prosím ještě jednou.</p>
+            </form>
+        </div>
+
+        <div id="done">
+            <div class="big">₍^. .^₎⟆</div>
+            <h2>Díky. Tohle fakt pomáhá.</h2>
+            <p>
+                Přečteme každé slovo a příští ročník bude zase o kus divočejší.<br>
+                Zatím sleduj <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>. Mňau.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // zvýraznění vybrané tlapky / chipů
+        document.querySelectorAll('#paws label').forEach(l => {
+            l.addEventListener('click', () => {
+                document.querySelectorAll('#paws label').forEach(x => x.classList.remove('on'));
+                l.classList.add('on');
+            });
+        });
+        document.querySelectorAll('#chips label').forEach(l => {
+            l.addEventListener('click', () => {
+                setTimeout(() => l.classList.toggle('on', l.querySelector('input').checked), 0);
+            });
+        });
+        // pole na podpis jen při souhlasu se zveřejněním
+        const quotePublic = document.getElementById('quotePublic');
+        quotePublic.addEventListener('change', () => {
+            document.getElementById('authorBox').classList.toggle('show', quotePublic.checked);
+        });
+
+        document.getElementById('f').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const f = e.target;
+            const err = document.getElementById('err');
+            err.style.display = 'none';
+            const rating = f.querySelector('input[name="rating"]:checked');
+            if (!rating) {
+                err.textContent = 'Dej nám aspoň tlapky, prosím. 🐾';
+                err.style.display = 'block';
+                return;
+            }
+            const btn = document.getElementById('send');
+            btn.disabled = true;
+            btn.textContent = 'Odesílám…';
+            try {
+                const res = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        rating: rating.value,
+                        highlights: [...f.querySelectorAll('#chips input:checked')].map(i => i.value),
+                        improve: f.improve.value,
+                        quote: f.quote.value,
+                        quote_public: f.quote_public.checked,
+                        quote_author: f.quote_author.value,
+                        website: f.website.value
+                    })
+                });
+                if (!res.ok) throw new Error('http ' + res.status);
+                document.getElementById('formPart').style.display = 'none';
+                document.getElementById('done').style.display = 'block';
+                window.scrollTo(0, 0);
+            } catch (ex) {
+                err.textContent = 'Něco se pokazilo. Zkus to prosím ještě jednou.';
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Odeslat zpětnou vazbu';
+            }
+        });
+    </script>
+</body>
+</html>
