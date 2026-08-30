@@ -4,7 +4,8 @@ const { withDb, clientIp } = require('./_lib');
 
 const ALLOWED_HIGHLIGHTS = [
     'welcome', 'tattoo', 'market', 'vernisaz', 'vazky', 'panelovka',
-    'standup', 'krupicafaja', 'prehlidka', 'drazba', 'onanovanky', 'misspetty'
+    'standup', 'krupicafaja', 'prehlidka', 'drazba', 'onanovanky', 'misspetty',
+    'lokalita'
 ];
 
 module.exports = async (req, res) => {
@@ -28,6 +29,7 @@ module.exports = async (req, res) => {
         : [];
     const clip = (v, max) => String(v || '').trim().slice(0, max) || null;
     const improve = clip(b.improve, 2000);
+    const artistTip = clip(b.artist_tip, 500);
     const quote = clip(b.quote, 500);
     const quotePublic = Boolean(b.quote_public) && Boolean(quote);
     const quoteAuthor = quotePublic ? clip(b.quote_author, 100) : null;
@@ -44,9 +46,9 @@ module.exports = async (req, res) => {
                 return;
             }
             await c.query(
-                `insert into caf_feedback (rating, highlights, improve, quote, quote_public, quote_author, ip)
-                 values ($1, $2, $3, $4, $5, $6, $7)`,
-                [rating, highlights, improve, quote, quotePublic, quoteAuthor, ip]);
+                `insert into caf_feedback (rating, highlights, improve, quote, quote_public, quote_author, artist_tip, ip)
+                 values ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                [rating, highlights, improve, quote, quotePublic, quoteAuthor, artistTip, ip]);
             res.status(200).json({ ok: true });
         });
     } catch (e) {

@@ -177,7 +177,16 @@ module.exports = async (req, res) => {
                  from tickets order by created_at desc limit 500`
             )).rows;
 
-            return { ok: true, stats, invites, guestlist, tickets };
+            const feedback = (await c.query(
+                `select created_at, rating, highlights, improve, quote, quote_public, quote_author, artist_tip
+                 from caf_feedback order by created_at desc limit 500`
+            )).rows;
+            stats.feedback_count = feedback.length;
+            stats.feedback_avg = feedback.length
+                ? Math.round(feedback.reduce((a, f) => a + f.rating, 0) / feedback.length * 10) / 10
+                : null;
+
+            return { ok: true, stats, invites, guestlist, tickets, feedback };
         });
         const status = out.__status || 200;
         delete out.__status;

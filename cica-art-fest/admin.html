@@ -181,6 +181,12 @@
                 <table id="ticketsTable"></table>
             </div>
 
+            <h2>Zpětná vazba z dotazníku</h2>
+            <div class="card table-scroll">
+                <div id="fbSummary" class="muted" style="margin-bottom: 12px;"></div>
+                <table id="feedbackTable"></table>
+            </div>
+
             <p class="muted" style="margin-top: 20px;">
                 Data se načítají při otevření. <button class="rowbtn" id="reloadButton" type="button">Obnovit</button>
             </p>
@@ -270,6 +276,34 @@
                         : t.status === 'cancelled' ? '<span class="pill bad">zrušená</span>' : 'platná'}</td>`
                     + `<td class="muted">${fmtDate(t.created_at)}</td></tr>`
                 ).join('') : '<tr><td colspan="5" class="muted">Zatím žádné.</td></tr>');
+
+            const fb = data.feedback || [];
+            const fbLabels = {
+                welcome: 'Welcome drink a atmosféra', tattoo: 'Breberka Tattoo', market: 'Číča Market',
+                vernisaz: 'Vernisáž', vazky: 'Vážky', panelovka: 'Panelovka', standup: 'Stand-up Terezy',
+                krupicafaja: 'Krupicafaja', prehlidka: 'Módní přehlídka', drazba: 'Dražba',
+                onanovanky: 'Onanovánky', misspetty: 'Miss Petty', lokalita: 'Lokalita akce'
+            };
+            if (fb.length) {
+                const tally = {};
+                fb.forEach(f => (f.highlights || []).forEach(h => tally[h] = (tally[h] || 0) + 1));
+                const top = Object.entries(tally).sort((a, b) => b[1] - a[1]).slice(0, 3)
+                    .map(([k, n]) => (fbLabels[k] || k) + ' (' + n + '×)').join(', ');
+                el('fbSummary').textContent = fb.length + ' odpovědí · průměr ' + data.stats.feedback_avg
+                    + ' z 5 tlapek' + (top ? ' · nejčastější nej: ' + top : '');
+            } else {
+                el('fbSummary').textContent = 'Zatím žádná odpověď.';
+            }
+            el('feedbackTable').innerHTML =
+                '<tr><th>Kdy</th><th>🐾</th><th>Nej</th><th>Zlepšit</th><th>Interpret</th><th>Věta</th></tr>'
+                + (fb.length ? fb.map(f =>
+                    `<tr><td class="muted">${fmtDate(f.created_at)}</td>`
+                    + `<td>${f.rating}/5</td>`
+                    + `<td>${esc((f.highlights || []).map(h => fbLabels[h] || h).join(', '))}</td>`
+                    + `<td>${esc(f.improve || '')}</td>`
+                    + `<td>${esc(f.artist_tip || '')}</td>`
+                    + `<td>${esc(f.quote || '')}${f.quote_public ? '<br><span class="pill ok">zveřejnit ok</span> <span class="muted">' + esc(f.quote_author || 'bez podpisu') + '</span>' : ''}</td></tr>`
+                ).join('') : '<tr><td colspan="6" class="muted">Zatím prázdno.</td></tr>');
 
             document.querySelectorAll('[data-copy]').forEach(b =>
                 b.addEventListener('click', () => {

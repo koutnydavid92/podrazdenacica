@@ -204,7 +204,7 @@
             <form id="f">
                 <div class="card">
                     <h2>Jak moc sis to užila/užil?</h2>
-                    <p class="hint">1 tlapka = nuda, 5 tlapek = nejlepší páteček života</p>
+                    <p class="hint">Jaká číča vystihuje tvoje pocity?</p>
                     <div class="paws" id="paws">
                         <label><input type="radio" name="rating" value="1">😾<span>nuda</span></label>
                         <label><input type="radio" name="rating" value="2">😿<span>slabý</span></label>
@@ -230,13 +230,20 @@
                         <label><input type="checkbox" value="drazba">Dražba</label>
                         <label><input type="checkbox" value="onanovanky">Komentovka k Onanovánkám</label>
                         <label><input type="checkbox" value="misspetty">Miss Petty</label>
+                        <label><input type="checkbox" value="lokalita">Lokalita akce</label>
                     </div>
                 </div>
 
                 <div class="card">
                     <h2>Co zlepšit do příštího roku?</h2>
                     <p class="hint">Piš na rovinu, uneseme to. Kritika je dar.</p>
-                    <textarea name="improve" maxlength="2000" placeholder="Víc jídla? Delší dražba? Jiná kapela? Sem s tím…"></textarea>
+                    <textarea name="improve" maxlength="2000" placeholder="Víc jídla? Organizaci a informace? Něco jiného? Sem s tím…"></textarea>
+                </div>
+
+                <div class="card">
+                    <h2>Koho si poslechnout příští rok?</h2>
+                    <p class="hint">Interpret, kapela, DJka… koho bys na dalším ČAF chtěla/chtěl vidět?</p>
+                    <textarea name="artist_tip" maxlength="500" placeholder="Sem napiš svůj tip…"></textarea>
                 </div>
 
                 <div class="card">
@@ -312,6 +319,7 @@
                         rating: rating.value,
                         highlights: [...f.querySelectorAll('#chips input:checked')].map(i => i.value),
                         improve: f.improve.value,
+                        artist_tip: f.artist_tip.value,
                         quote: f.quote.value,
                         quote_public: f.quote_public.checked,
                         quote_author: f.quote_author.value,

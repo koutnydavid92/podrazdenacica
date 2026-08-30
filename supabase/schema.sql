@@ -327,5 +327,6 @@ create table if not exists caf_feedback (
     quote text,
     quote_public boolean not null default false,
     quote_author text,
+    artist_tip text,
     ip inet
 );
