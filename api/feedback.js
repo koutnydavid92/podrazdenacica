@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     const artistTip = clip(b.artist_tip, 500);
     const quote = clip(b.quote, 500);
     const quotePublic = Boolean(b.quote_public) && Boolean(quote);
-    const quoteAuthor = quotePublic ? clip(b.quote_author, 100) : null;
+    const quoteAuthor = quotePublic ? (clip(b.quote_author, 100) || 'Anonymní číča') : null;
 
     try {
         await withDb(async (c) => {
