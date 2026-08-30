@@ -1,7 +1,8 @@
-// GET /api/qr?token=<uuid> - PNG s QR kódem vstupenky.
-// GET /api/qr?bid=<id>     - PNG s QR platbou za vyhranou dražbu (SPD formát).
-// Vstup se vždy ověřuje proti databázi, aby se přes nás nedaly
-// generovat libovolné QR kódy.
+// GET /api/qr?token=<uuid>    - PNG s QR kódem vstupenky.
+// GET /api/qr?bid=<id>&am=<n> - PNG s QR platbou za vyhranou dražbu (SPD formát).
+//   `am` je volitelný doplatek (když část ceny dorazila jinak) - povolený
+//   jen do výše vítězného příhozu. Vstup se vždy ověřuje proti databázi,
+//   aby se přes nás nedaly generovat libovolné QR kódy.
 const QRCode = require('qrcode');
 const { withDb } = require('./_lib');
 
@@ -9,7 +10,7 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const ACCOUNT_IBAN = 'CZ2830300000001952337019'; // 1952337019/3030
 
 // SPD string pro QR platbu za vyhrané dílo (jen skutečný vítězný příhoz)
-async function bidPayload(bidId) {
+async function bidPayload(bidId, amountOverride) {
     return withDb(async (c) => {
         const { rows } = await c.query(
             `select b.amount_czk, i.title
@@ -20,23 +21,29 @@ async function bidPayload(bidId) {
             [bidId]
         );
         if (!rows.length) return null;
+        let amount = rows[0].amount_czk;
+        if (amountOverride) {
+            if (amountOverride > rows[0].amount_czk) return null;
+            amount = amountOverride;
+        }
         const msg = ('DRAZBA ' + rows[0].title).normalize('NFD')
             .replace(/[̀-ͯ]/g, '').toUpperCase()
             .replace(/[^A-Z0-9 ]/g, '').slice(0, 60);
-        return `SPD*1.0*ACC:${ACCOUNT_IBAN}*AM:${rows[0].amount_czk}.00*CC:CZK*MSG:${msg}`;
+        return `SPD*1.0*ACC:${ACCOUNT_IBAN}*AM:${amount}.00*CC:CZK*MSG:${msg}`;
     });
 }
 
 module.exports = async (req, res) => {
     const token = ((req.query && req.query.token) || '').trim();
     const bid = ((req.query && req.query.bid) || '').trim();
+    const am = ((req.query && req.query.am) || '').trim();
     try {
         if (bid) {
-            if (!/^\d{1,12}$/.test(bid)) {
+            if (!/^\d{1,12}$/.test(bid) || (am && !/^\d{1,9}$/.test(am))) {
                 res.status(400).json({ error: 'bad_bid' });
                 return;
             }
-            const payload = await bidPayload(Number(bid));
+            const payload = await bidPayload(Number(bid), am ? Number(am) : null);
             if (!payload) {
                 res.status(404).json({ error: 'not_found' });
                 return;
