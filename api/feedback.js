@@ -9,6 +9,24 @@ const ALLOWED_HIGHLIGHTS = [
 ];
 
 module.exports = async (req, res) => {
+    // GET vrací veřejné reference (věty se souhlasem) pro web festu
+    if (req.method === 'GET') {
+        try {
+            const quotes = await withDb(async (c) => {
+                const { rows } = await c.query(
+                    `select quote, quote_author as author from caf_feedback
+                     where quote_public and quote is not null
+                     order by created_at desc limit 60`);
+                return rows;
+            });
+            res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
+            res.status(200).json({ quotes });
+        } catch (e) {
+            console.error('reference error:', e.message);
+            res.status(500).json({ error: 'server_error' });
+        }
+        return;
+    }
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'method_not_allowed' });
         return;

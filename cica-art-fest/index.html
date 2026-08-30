@@ -1662,7 +1662,7 @@
         });
 
         // Reference z dotazníku: načtou se z API, sekce se ukáže, až když něco máme
-        fetch('/api/reference').then(r => r.json()).then(d => {
+        fetch('/api/feedback').then(r => r.json()).then(d => {
             const quotes = (d && d.quotes) || [];
             if (!quotes.length) return;
             const grid = document.getElementById('quoteGrid');
