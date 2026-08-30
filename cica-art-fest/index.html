@@ -1151,6 +1151,49 @@
             max-width: 720px;
             margin: 0 auto;
         }
+        /* Logo festu s bublinou ročníku v hero sekci */
+        .fest-hero-wrap {
+            position: relative;
+        }
+        .fest-logo {
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            width: 180px;
+            filter: drop-shadow(0 0 26px rgba(254, 69, 232, 0.25));
+        }
+        .fest-logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .fest-logo-tag {
+            position: absolute;
+            right: -8px;
+            bottom: -4px;
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1rem;
+            line-height: 1;
+            padding: 8px 14px;
+            border-radius: 999px;
+            transform: rotate(-8deg);
+            box-shadow: 0 0 18px rgba(254, 69, 232, 0.5);
+        }
+        @media (max-width: 900px) {
+            .fest-logo {
+                position: static;
+                width: 128px;
+                margin: 0 0 18px auto;
+            }
+            .fest-logo-tag {
+                right: -10px;
+                bottom: -4px;
+                font-size: 0.85rem;
+                padding: 6px 11px;
+            }
+        }
         /* Reference z dotazníku */
         .quote-grid {
             display: grid;
@@ -1162,12 +1205,26 @@
         }
         .quote-card {
             background: var(--bg-card);
-            border: 1px solid var(--divider);
+            border: 1px solid var(--accent-neon);
             border-radius: 14px;
             padding: 22px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            box-shadow: 0 0 18px rgba(254, 69, 232, 0.16), inset 0 0 24px rgba(254, 69, 232, 0.05);
+            animation: quoteFloat 7s ease-in-out infinite alternate;
+        }
+        /* každá karta pluje trochu jinak, ať to nepůsobí jako výtah */
+        .quote-card:nth-child(3n) { animation-duration: 9s; animation-delay: -3s; }
+        .quote-card:nth-child(3n + 1) { animation-duration: 7.5s; animation-delay: -1.2s; }
+        .quote-card:nth-child(4n) { animation-duration: 8.2s; animation-delay: -5s; }
+        .quote-card:nth-child(2n) { --float-y: -9px; --float-r: -0.5deg; }
+        @keyframes quoteFloat {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(var(--float-y, -7px)) rotate(var(--float-r, 0.5deg)); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .quote-card { animation: none; }
         }
         .quote-card blockquote {
             margin: 0;
@@ -1234,6 +1291,39 @@
             color: var(--text-secondary);
             margin-top: 3px;
         }
+        .lot-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 4px 12px;
+            border: 1px solid var(--accent-neon);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--accent-neon);
+            transition: background 0.25s, color 0.25s;
+        }
+        .lot-more::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: translateY(-1px) rotate(45deg);
+            transition: transform 0.3s;
+        }
+        .lot-head:hover .lot-more,
+        .lot-card.is-open .lot-more {
+            background: var(--accent-neon);
+            color: #0D0D0D;
+        }
+        .lot-card.is-open .lot-more::after {
+            transform: translateY(2px) rotate(-135deg);
+        }
+        .lot-more-close { display: none; }
+        .lot-card.is-open .lot-more-open { display: none; }
+        .lot-card.is-open .lot-more-close { display: inline; }
         .lot-price {
             font-family: 'Archivo Black', sans-serif;
             color: var(--accent-neon);
@@ -1266,7 +1356,11 @@
 
     <!-- Poděkování -->
     <section id="fest-hero" class="page-hero">
-        <div class="container">
+        <div class="container fest-hero-wrap">
+            <div class="fest-logo reveal active" aria-hidden="false">
+                <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
+                <span class="fest-logo-tag">2026</span>
+            </div>
             <div class="hero-text">
                 <div class="hero-label">Číča Art Fest · 28. 8. 2026 · Brno</div>
                 <h1 class="hero-title">Je to za náma.<br>A bylo to po číči. Díky!</h1>
@@ -1346,7 +1440,7 @@
                     <article class="lot-card" id="lot-sila-tisice-cecek">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-sila-tisice-cecek-body">
                             <img class="lot-thumb" src="/images/drazba/sila-tisice-cecek-sm.webp" alt="Síla tisíce cecek" loading="lazy">
-                            <span class="lot-title">Síla tisíce cecek<span class="lot-sub">vydraženo: Katarína</span></span>
+                            <span class="lot-title">Síla tisíce cecek<span class="lot-sub">vydraženo: Katarína</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">46&nbsp;666 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-sila-tisice-cecek-body"><div><div class="lot-body-inner">
@@ -1357,7 +1451,7 @@
                     <article class="lot-card" id="lot-vaclav-havel">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-vaclav-havel-body">
                             <img class="lot-thumb" src="/images/drazba/vaclav-havel-sm.webp" alt="Václav Havel" loading="lazy">
-                            <span class="lot-title">Václav Havel<span class="lot-sub">vydraženo: Gabriela</span></span>
+                            <span class="lot-title">Václav Havel<span class="lot-sub">vydraženo: Gabriela</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">13&nbsp;000 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-vaclav-havel-body"><div><div class="lot-body-inner">
@@ -1368,7 +1462,7 @@
                     <article class="lot-card" id="lot-bad-nun">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-bad-nun-body">
                             <img class="lot-thumb" src="/images/drazba/bad-nun-sm.webp" alt="Bad Nun" loading="lazy">
-                            <span class="lot-title">Bad Nun<span class="lot-sub">vydraženo: Jan</span></span>
+                            <span class="lot-title">Bad Nun<span class="lot-sub">vydraženo: Jan</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">7&nbsp;500 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-bad-nun-body"><div><div class="lot-body-inner">
@@ -1379,7 +1473,7 @@
                     <article class="lot-card" id="lot-black-sheep">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-black-sheep-body">
                             <img class="lot-thumb" src="/images/drazba/black-sheep-sm.webp" alt="Black sheep" loading="lazy">
-                            <span class="lot-title">Black sheep<span class="lot-sub">vydraženo: Hynek</span></span>
+                            <span class="lot-title">Black sheep<span class="lot-sub">vydraženo: Hynek</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">4&nbsp;500 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-black-sheep-body"><div><div class="lot-body-inner">
@@ -1390,7 +1484,7 @@
                     <article class="lot-card" id="lot-kurwa-bober">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-kurwa-bober-body">
                             <img class="lot-thumb" src="/images/drazba/kurwa-bober-sm.webp" alt="Kurwa bober" loading="lazy">
-                            <span class="lot-title">Kurwa bober<span class="lot-sub">vydraženo: Gabriela</span></span>
+                            <span class="lot-title">Kurwa bober<span class="lot-sub">vydraženo: Gabriela</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">3&nbsp;500 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-kurwa-bober-body"><div><div class="lot-body-inner">
@@ -1401,7 +1495,7 @@
                     <article class="lot-card" id="lot-euforie">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-euforie-body">
                             <img class="lot-thumb" src="/images/drazba/euforie-sm.webp" alt="EUFORIE" loading="lazy">
-                            <span class="lot-title">EUFORIE<span class="lot-sub">vydraženo: Tomáš</span></span>
+                            <span class="lot-title">EUFORIE<span class="lot-sub">vydraženo: Tomáš</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">3&nbsp;500 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-euforie-body"><div><div class="lot-body-inner">
@@ -1412,7 +1506,7 @@
                     <article class="lot-card" id="lot-balencicaga">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-balencicaga-body">
                             <img class="lot-thumb" src="/images/drazba/balencicaga-sm.webp" alt="Balenčičiaga" loading="lazy">
-                            <span class="lot-title">Balenčičiaga<span class="lot-sub">vydraženo: Hynek</span></span>
+                            <span class="lot-title">Balenčičiaga<span class="lot-sub">vydraženo: Hynek</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">3&nbsp;000 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-balencicaga-body"><div><div class="lot-body-inner">
@@ -1423,7 +1517,7 @@
                     <article class="lot-card" id="lot-klitty">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-klitty-body">
                             <img class="lot-thumb" src="/images/drazba/klitty-sm.webp" alt="Klitty s fotečkama" loading="lazy">
-                            <span class="lot-title">Klitty s fotečkama<span class="lot-sub">vydraženo: Hanka</span></span>
+                            <span class="lot-title">Klitty s fotečkama<span class="lot-sub">vydraženo: Hanka</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">3&nbsp;000 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-klitty-body"><div><div class="lot-body-inner">
@@ -1434,7 +1528,7 @@
                     <article class="lot-card" id="lot-hulka">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-hulka-body">
                             <img class="lot-thumb" src="/images/drazba/hulka-sm.webp" alt="Podrážděná hůlka" loading="lazy">
-                            <span class="lot-title">Podrážděná hůlka<span class="lot-sub">vydraženo: Petr</span></span>
+                            <span class="lot-title">Podrážděná hůlka<span class="lot-sub">vydraženo: Petr</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">2&nbsp;200 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-hulka-body"><div><div class="lot-body-inner">
@@ -1445,7 +1539,7 @@
                     <article class="lot-card" id="lot-cica-broz">
                         <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-cica-broz-body">
                             <img class="lot-thumb" src="/images/drazba/cica-broz-sm.webp" alt="Číča brož" loading="lazy">
-                            <span class="lot-title">Číča brož<span class="lot-sub">vydraženo: Hanka</span></span>
+                            <span class="lot-title">Číča brož<span class="lot-sub">vydraženo: Hanka</span><span class="lot-more"><span class="lot-more-open">Popis artefaktu</span><span class="lot-more-close">Schovej</span></span></span>
                             <span class="lot-price">2&nbsp;000 Kč</span>
                         </button>
                         <div class="lot-body" id="lot-cica-broz-body"><div><div class="lot-body-inner">
