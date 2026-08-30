@@ -1147,6 +1147,115 @@
             text-align: center;
         }
 
+        .playlist-embed {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        /* Reference z dotazníku */
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            max-width: 920px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .quote-card {
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .quote-card blockquote {
+            margin: 0;
+            font-size: 1.02rem;
+            line-height: 1.55;
+        }
+        .quote-card blockquote::before { content: '„'; color: var(--accent-neon); }
+        .quote-card blockquote::after { content: '“'; color: var(--accent-neon); }
+        .quote-card cite {
+            font-style: normal;
+            color: var(--accent-neon);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        /* Vydražená díla: karta s náhledem a rozbalovacím detailem */
+        .lot-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 14px;
+            max-width: 920px;
+            margin: 28px auto 34px;
+            text-align: left;
+        }
+        .lot-card {
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 14px;
+            transition: border-color 0.3s ease;
+            align-self: start;
+        }
+        .lot-card:hover, .lot-card.is-open { border-color: var(--accent-neon); }
+        .lot-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 14px 16px;
+            background: none;
+            border: 0;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 14px;
+        }
+        .lot-head:focus-visible { outline: 2px solid var(--accent-neon); outline-offset: 2px; }
+        .lot-thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+        .lot-title {
+            flex: 1;
+            min-width: 0;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .lot-sub {
+            display: block;
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+        .lot-price {
+            font-family: 'Archivo Black', sans-serif;
+            color: var(--accent-neon);
+            white-space: nowrap;
+        }
+        .lot-body {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s ease;
+        }
+        .lot-body > div { overflow: hidden; min-height: 0; }
+        .lot-card.is-open .lot-body { grid-template-rows: 1fr; }
+        .lot-body-inner {
+            padding: 0 16px 18px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .lot-body-inner .lot-author {
+            margin-top: 10px;
+            font-size: 0.88rem;
+        }
+        .lot-body-inner .lot-author a { color: var(--accent-neon); }
         .after-center .section-intro {
             max-width: 640px;
             margin: 0 auto 2rem;
@@ -1176,6 +1285,18 @@
         </div>
     </section>
 
+    <!-- Reference návštěvnic a návštěvníků -->
+    <section id="reference" class="after-center" hidden>
+        <div class="container">
+            <h2 class="section-title reveal">Vašima slovama</h2>
+            <p class="section-intro reveal">
+                Jaký byl první ročník jednou větou? Tohle jste nám napsali
+                v dotazníku. A my to rámujeme.
+            </p>
+            <div class="quote-grid" id="quoteGrid"></div>
+        </div>
+    </section>
+
     <!-- Fotky a videa -->
     <section id="fotky" class="after-center">
         <div class="container">
@@ -1197,6 +1318,20 @@
         </div>
     </section>
 
+    <!-- Playlist festu -->
+    <section id="playlist" class="after-center">
+        <div class="container">
+            <h2 class="section-title reveal">Playlist Číča Art Festu</h2>
+            <p class="section-intro reveal">
+                Chceš si fest pustit znovu do uší? Tady je playlist, co zněl
+                parkem. Mňau do sluchátek.
+            </p>
+            <div class="playlist-embed reveal">
+                <iframe title="Playlist Číča Art Festu na Spotify" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3HY7y6d4c7nEqA3PU1CZ31?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
     <!-- Výsledky dražby -->
     <section id="drazba-vysledky">
         <div class="container">
@@ -1207,20 +1342,118 @@
                     Tolik jste společně přihodili za deset kusů umění. Tichá dražba
                     online, finále naživo a přehazovalo se do posledního dechu.
                 </p>
-                <table class="after-results-table">
-                    <tbody>
-                        <tr><td>Síla tisíce cecek</td><td>46 666 Kč</td></tr>
-                        <tr><td>Václav Havel</td><td>13 000 Kč</td></tr>
-                        <tr><td>Bad Nun</td><td>7 500 Kč</td></tr>
-                        <tr><td>Black sheep</td><td>4 500 Kč</td></tr>
-                        <tr><td>Kurwa bober</td><td>3 500 Kč</td></tr>
-                        <tr><td>EUFORIE</td><td>3 500 Kč</td></tr>
-                        <tr><td>Balenčičiaga</td><td>3 000 Kč</td></tr>
-                        <tr><td>Klitty s fotečkama</td><td>3 000 Kč</td></tr>
-                        <tr><td>Podrážděná hůlka</td><td>2 200 Kč</td></tr>
-                        <tr><td>Číča brož</td><td>2 000 Kč</td></tr>
-                    </tbody>
-                </table>
+                <div class="lot-list reveal">
+                    <article class="lot-card" id="lot-sila-tisice-cecek">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-sila-tisice-cecek-body">
+                            <img class="lot-thumb" src="/images/drazba/sila-tisice-cecek-sm.webp" alt="Síla tisíce cecek" loading="lazy">
+                            <span class="lot-title">Síla tisíce cecek<span class="lot-sub">vydraženo: Katarína</span></span>
+                            <span class="lot-price">46&nbsp;666 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-sila-tisice-cecek-body"><div><div class="lot-body-inner">
+                            <p>A je to venku. Síla tisíce cecek v celé své kráse. Formát velký jako autorčino ego. Při tvorbě byla použita <a href="https://culturehustle.com/products/pink-50g-powdered-paint-by-stuart-semple" target="_blank" rel="noopener" style="color: var(--accent-neon);">nejrůžovější růžová</a>. Fakt.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-vaclav-havel">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-vaclav-havel-body">
+                            <img class="lot-thumb" src="/images/drazba/vaclav-havel-sm.webp" alt="Václav Havel" loading="lazy">
+                            <span class="lot-title">Václav Havel<span class="lot-sub">vydraženo: Gabriela</span></span>
+                            <span class="lot-price">13&nbsp;000 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-vaclav-havel-body"><div><div class="lot-body-inner">
+                            <p>Akrylová malba Václava Havla v osobitém rukopisu Joe Pisttona. Výrazná černobílá práce kombinuje expresivní figurativní malbu, prvky pop-artu a estetiku linorytu. Silné černé linie, šrafování a kontrastní růžové akcenty vytvářejí syrový, energický a současný výraz. Obraz je součástí série DEMOkraté, věnované osobnostem, které významně ovlivnily cestu naší země ke svobodě a demokracii.</p>
+                            <p class="lot-author">Autor: <a href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">Joe Pisttone</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-bad-nun">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-bad-nun-body">
+                            <img class="lot-thumb" src="/images/drazba/bad-nun-sm.webp" alt="Bad Nun" loading="lazy">
+                            <span class="lot-title">Bad Nun<span class="lot-sub">vydraženo: Jan</span></span>
+                            <span class="lot-price">7&nbsp;500 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-bad-nun-body"><div><div class="lot-body-inner">
+                            <p>I jeptišky rády zlobí. Stylovej art piece vhodný do každého prostoru. Ideálně tam, kde nejčastěji odříkáváš otčenáše.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-black-sheep">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-black-sheep-body">
+                            <img class="lot-thumb" src="/images/drazba/black-sheep-sm.webp" alt="Black sheep" loading="lazy">
+                            <span class="lot-title">Black sheep<span class="lot-sub">vydraženo: Hynek</span></span>
+                            <span class="lot-price">4&nbsp;500 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-black-sheep-body"><div><div class="lot-body-inner">
+                            <p>Černá ovce se pozná podle toho, že jí to sluší. Kus pro každého, kdo taky nikdy nezapadal.</p>
+                            <p class="lot-author">Autor: <a href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">Frank Abdulov</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-kurwa-bober">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-kurwa-bober-body">
+                            <img class="lot-thumb" src="/images/drazba/kurwa-bober-sm.webp" alt="Kurwa bober" loading="lazy">
+                            <span class="lot-title">Kurwa bober<span class="lot-sub">vydraženo: Gabriela</span></span>
+                            <span class="lot-price">3&nbsp;500 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-kurwa-bober-body"><div><div class="lot-body-inner">
+                            <p>Autorský autoportrét ze série 13 obrazů hravých nudesek Královny Brno-venkov. Dílo je interaktivní díky magnetické fólii a každý si tak s obrazem může hrát dle své nálady.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-euforie">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-euforie-body">
+                            <img class="lot-thumb" src="/images/drazba/euforie-sm.webp" alt="EUFORIE" loading="lazy">
+                            <span class="lot-title">EUFORIE<span class="lot-sub">vydraženo: Tomáš</span></span>
+                            <span class="lot-price">3&nbsp;500 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-euforie-body"><div><div class="lot-body-inner">
+                            <p>Cassie byla štěňátko. Jenže my jsme koťátka. Chceme spát většinu dne, lásku prostě žereme, lovíme pro zábavu a myslíme na vraždění. Ale velmi něžně a esteticky. Nehlaď bez ptaní!</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">Šárka Motyčková</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-balencicaga">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-balencicaga-body">
+                            <img class="lot-thumb" src="/images/drazba/balencicaga-sm.webp" alt="Balenčičiaga" loading="lazy">
+                            <span class="lot-title">Balenčičiaga<span class="lot-sub">vydraženo: Hynek</span></span>
+                            <span class="lot-price">3&nbsp;000 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-balencicaga-body"><div><div class="lot-body-inner">
+                            <p>Originální mastrpiss Balenčičiaga první. Artefakt je nabitý mocnou tvůrčí energií a špínou z ulice. Módní doplněk autentický stejně jako jeho nositelka.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-klitty">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-klitty-body">
+                            <img class="lot-thumb" src="/images/drazba/klitty-sm.webp" alt="Klitty s fotečkama" loading="lazy">
+                            <span class="lot-title">Klitty s fotečkama<span class="lot-sub">vydraženo: Hanka</span></span>
+                            <span class="lot-price">3&nbsp;000 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-klitty-body"><div><div class="lot-body-inner">
+                            <p>Tak tahle číča udělá největší radost té tvojí číči. Balíček je okořeněný o stylové fotky Podrážděné číči.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/rozkosss/" target="_blank" rel="noopener">Rozkoššš</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-hulka">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-hulka-body">
+                            <img class="lot-thumb" src="/images/drazba/hulka-sm.webp" alt="Podrážděná hůlka" loading="lazy">
+                            <span class="lot-title">Podrážděná hůlka<span class="lot-sub">vydraženo: Petr</span></span>
+                            <span class="lot-price">2&nbsp;200 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-hulka-body"><div><div class="lot-body-inner">
+                            <p>Kdo chce styl mít, hůl si najde. S touhle počíčovanou hůlkou budeš main character v každé společnosti. Staň se vycházející hvězdou každé vycházky.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a> v kolaboraci s <a href="https://www.instagram.com/hulkarna.cz/" target="_blank" rel="noopener">Hůlkárnou</a></p>
+                        </div></div></div>
+                    </article>
+                    <article class="lot-card" id="lot-cica-broz">
+                        <button class="lot-head" type="button" aria-expanded="false" aria-controls="lot-cica-broz-body">
+                            <img class="lot-thumb" src="/images/drazba/cica-broz-sm.webp" alt="Číča brož" loading="lazy">
+                            <span class="lot-title">Číča brož<span class="lot-sub">vydraženo: Hanka</span></span>
+                            <span class="lot-price">2&nbsp;000 Kč</span>
+                        </button>
+                        <div class="lot-body" id="lot-cica-broz-body"><div><div class="lot-body-inner">
+                            <p>Ručně vyrobená korálková brož s výrazným růžovo-černým motivem. Celá je vytvořená z drobných korálků a je originálním autorským šperkem, který lze nosit jako brož nebo přívěsek.</p>
+                            <p class="lot-author">Autorka: <a href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">Jana Dúbravčíková</a></p>
+                        </div></div></div>
+                    </article>
+                </div>
                 <div class="after-charity-grid">
                     <div class="after-charity"><b>59 666 Kč</b><span>Lymfom Help</span></div>
                     <div class="after-charity"><b>6 500 Kč</b><span>Nadace Veronica</span></div>
@@ -1425,6 +1658,34 @@
                     e.preventDefault();
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+            });
+        });
+
+        // Reference z dotazníku: načtou se z API, sekce se ukáže, až když něco máme
+        fetch('/api/reference').then(r => r.json()).then(d => {
+            const quotes = (d && d.quotes) || [];
+            if (!quotes.length) return;
+            const grid = document.getElementById('quoteGrid');
+            for (const q of quotes) {
+                const card = document.createElement('div');
+                card.className = 'quote-card';
+                const bq = document.createElement('blockquote');
+                bq.textContent = q.quote;
+                const cite = document.createElement('cite');
+                cite.textContent = '— ' + (q.author || 'Anonymní číča');
+                card.append(bq, cite);
+                grid.append(card);
+            }
+            document.getElementById('reference').hidden = false;
+        }).catch(() => {});
+
+        // Vydražená díla: rozbalení detailu
+        document.querySelectorAll('.lot-card .lot-head').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const card = btn.closest('.lot-card');
+                const open = !card.classList.contains('is-open');
+                card.classList.toggle('is-open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
             });
         });
 
