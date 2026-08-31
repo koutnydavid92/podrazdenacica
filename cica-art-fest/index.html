@@ -1151,6 +1151,54 @@
             max-width: 720px;
             margin: 0 auto;
         }
+        /* Highlight karta fotoalba */
+        .album-card {
+            position: relative;
+            display: block;
+            max-width: 720px;
+            margin: 0 auto 34px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--accent-neon);
+            box-shadow: 0 0 24px rgba(254, 69, 232, 0.18);
+        }
+        .album-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .album-card:hover img { transform: scale(1.04); }
+        .album-card-overlay {
+            position: absolute;
+            inset: auto 0 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(to top, rgba(13, 13, 13, 0.92), rgba(13, 13, 13, 0));
+        }
+        .album-card-title {
+            font-family: 'Archivo Black', sans-serif;
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            text-align: left;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+        }
+        .album-card-cta {
+            flex-shrink: 0;
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: 999px;
+        }
+        @media (max-width: 600px) {
+            .album-card-title { font-size: 0.95rem; }
+            .album-card-cta { font-size: 0.8rem; padding: 8px 14px; }
+        }
         /* Logo festu s bublinou ročníku v hero sekci */
         .fest-hero-wrap {
             position: relative;
@@ -1396,9 +1444,16 @@
         <div class="container">
             <h2 class="section-title reveal">Fotky a videa se už vyvolávají</h2>
             <p class="section-intro reveal">
-                Fotografky a kameramani třídí materiál. Brzy všechno zveřejníme tady
-                na webu. Zatím sdílíme střípky z festu na Instagramu, ať ti nic neuteče.
+                První várka je venku! Zbytek materiálu se pořád třídí a bude
+                přibývat tady na webu i na Instagramu, ať ti nic neuteče.
             </p>
+            <a class="album-card reveal" href="https://photos.app.goo.gl/PUVoxcPf6iV8u1iV9" target="_blank" rel="noopener">
+                <img src="/images/adelice-album-1.webp" alt="Návštěvnice Číča Art Festu v co.labs_parku, foto Adelice" loading="lazy" width="1200" height="630">
+                <span class="album-card-overlay">
+                    <span class="album-card-title">📸 Fotky od Adelice · 1. část</span>
+                    <span class="album-card-cta">Otevřít album</span>
+                </span>
+            </a>
             <p class="section-intro reveal">
                 A hlavně: máš z festu vlastní úlovky? Nahraj nám je! Z nejlepších kousků
                 postavíme galerii. A když je sdílíš na Instagramu, označ
