@@ -142,28 +142,6 @@
             font-family: 'Archivo Black', sans-serif;
         }
 
-        /* Program */
-        .media-program {
-            max-width: 700px;
-            margin: 0 auto;
-            list-style: none;
-            padding: 0;
-        }
-
-        .media-program li {
-            display: flex;
-            gap: 1.2rem;
-            padding: 0.7rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            align-items: baseline;
-        }
-
-        .media-program time {
-            font-family: 'Archivo Black', sans-serif;
-            color: var(--accent-neon);
-            min-width: 3.6rem;
-        }
-
         /* Medailonky */
         .people-grid {
             display: grid;
@@ -266,29 +244,41 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 1.2rem;
+            padding: 1.4rem;
             display: grid;
-            grid-template-columns: 96px 1fr auto;
-            gap: 1.2rem;
-            align-items: center;
+            grid-template-columns: 140px 1fr auto;
+            gap: 1.4rem;
+            align-items: start;
         }
 
         .work-card img {
-            width: 96px;
-            height: 96px;
+            width: 140px;
+            height: 140px;
             object-fit: cover;
             border-radius: 8px;
         }
 
         .work-card h3 {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             color: #fff;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-desc {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+
+        .work-desc a {
+            color: var(--accent-neon);
+            text-decoration: underline;
         }
 
         .work-meta {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.92rem;
             line-height: 1.5;
             margin-bottom: 0.25rem;
         }
@@ -313,16 +303,23 @@
 
         @media (max-width: 700px) {
             .work-card {
-                grid-template-columns: 72px 1fr;
-                gap: 0.9rem;
+                grid-template-columns: 88px 1fr;
+                gap: 1rem;
             }
 
-            .work-card img { width: 72px; height: 72px; }
+            .work-card img { width: 88px; height: 88px; }
+
+            .work-card > div:not(.work-price) {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
 
             .work-price {
                 grid-column: 2;
+                grid-row: 1;
                 text-align: left;
-                font-size: 1.2rem;
+                align-self: center;
+                font-size: 1.25rem;
             }
         }
 
@@ -567,29 +564,8 @@
         </div>
     </section>
 
-    <!-- Program -->
-    <section id="program" class="media-section" style="background: rgba(255,255,255,0.02);">
-        <div class="container">
-            <h2 class="section-title reveal">Program prvního ročníku</h2>
-            <ul class="media-program reveal">
-                <li><time>15:30</time><span>Otevření bran, welcome drink, start Číča Marketu a tetovacího studia Breberka Tattoo</span></li>
-                <li><time>15:45</time><span>Komentovaná vernisáž obrazové série Královny Brno-venkov</span></li>
-                <li><time>16:20</time><span>Oficiální zahájení: Tereza Bonaventurová a Podrážděná číča</span></li>
-                <li><time>16:30</time><span>Koncert: Hudební soubor Vážky</span></li>
-                <li><time>17:10</time><span>Panelová diskuze „Všechno je to v hlavě a v číči"</span></li>
-                <li><time>18:05</time><span>Stand-up: Tereza Bonaventurová</span></li>
-                <li><time>18:35</time><span>Koncert: Krupicafaja, valašský lidový rap</span></li>
-                <li><time>19:30</time><span>Módní přehlídka: devět žen, devět příběhů</span></li>
-                <li><time>20:10</time><span>Živé finále benefiční aukce umění</span></li>
-                <li><time>20:40</time><span>Beseda: jak vznikaly omalovánky Onanovánky</span></li>
-                <li><time>21:10</time><span>Grande finale: drag queen Miss Petty</span></li>
-                <li><time>22:00</time><span>Konec programu</span></li>
-            </ul>
-        </div>
-    </section>
-
     <!-- Módní přehlídka -->
-    <section id="prehlidka" class="media-section">
+    <section id="prehlidka" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Módní přehlídka: devět žen, devět příběhů</h2>
             <p class="media-lead reveal">
@@ -635,7 +611,7 @@
     </section>
 
     <!-- Performeři -->
-    <section id="performeri" class="media-section" style="background: rgba(255,255,255,0.02);">
+    <section id="performeri" class="media-section">
         <div class="container">
             <h2 class="section-title reveal">Kdo vystoupil</h2>
             <div class="people-grid">
@@ -733,7 +709,7 @@
     </section>
 
     <!-- Prodaná díla -->
-    <section id="umelci" class="media-section">
+    <section id="umelci" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Deset děl, deset autorských rukopisů</h2>
             <p class="media-lead reveal" style="text-align: center;">
@@ -745,6 +721,11 @@
                     <img src="/images/drazba/sila-tisice-cecek-sm.webp" alt="Síla tisíce cecek, kombinovaná technika na plátně" loading="lazy" width="450" height="288">
                     <div>
                         <h3>Síla tisíce cecek</h3>
+                        <p class="work-desc">
+                            A je to venku. Síla tisíce cecek v celé své kráse. Formát velký
+                            jako autorčino ego. Při tvorbě byla použita
+                            <a href="https://culturehustle.com/products/pink-50g-powdered-paint-by-stuart-semple" target="_blank" rel="noopener">nejrůžovější růžová</a>. Fakt.
+                        </p>
                         <p class="work-meta">
                             Kombinovaná technika na plátně, 130 × 190 cm ·
                             Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
@@ -758,6 +739,14 @@
                     <img src="/images/drazba/vaclav-havel-sm.webp" alt="Václav Havel, akryl na plátně ze série DEMOkraté" loading="lazy" width="435" height="600">
                     <div>
                         <h3>Václav Havel</h3>
+                        <p class="work-desc">
+                            Akrylová malba Václava Havla v osobitém rukopisu Joe Pisttona.
+                            Výrazná černobílá práce kombinuje expresivní figurativní malbu,
+                            prvky pop-artu a estetiku linorytu. Silné černé linie, šrafování
+                            a kontrastní růžové akcenty vytvářejí syrový, energický a současný
+                            výraz. Obraz je součástí série DEMOkraté, věnované osobnostem,
+                            které významně ovlivnily cestu naší země ke svobodě a demokracii.
+                        </p>
                         <p class="work-meta">
                             Akryl na plátně ze série DEMOkraté, 60 × 90 cm ·
                             Autor: <a href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">Joe Pisttone</a>
@@ -771,6 +760,10 @@
                     <img src="/images/drazba/bad-nun-sm.webp" alt="Bad Nun, kombinovaná technika na papíře" loading="lazy" width="450" height="600">
                     <div>
                         <h3>Bad Nun</h3>
+                        <p class="work-desc">
+                            I jeptišky rády zlobí. Stylovej art piece vhodný do každého
+                            prostoru. Ideálně tam, kde nejčastěji odříkáváš otčenáše.
+                        </p>
                         <p class="work-meta">
                             Kombinovaná technika na papíře, 70 × 100 cm, série Královny Brno-venkov ·
                             Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
@@ -784,6 +777,10 @@
                     <img src="/images/drazba/black-sheep-sm.webp" alt="Black sheep, akryl a tuš na sololitové desce" loading="lazy" width="515" height="600">
                     <div>
                         <h3>Black sheep</h3>
+                        <p class="work-desc">
+                            Černá ovce se pozná podle toho, že jí to sluší. Kus pro každého,
+                            kdo taky nikdy nezapadal.
+                        </p>
                         <p class="work-meta">
                             Akryl a tuš na sololitové desce, 34 × 41 cm ·
                             Autor: <a href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">Frank Abdulov</a>
@@ -797,6 +794,11 @@
                     <img src="/images/drazba/kurwa-bober-sm.webp" alt="Kurwa bober, interaktivní obraz s magnetickou fólií" loading="lazy" width="450" height="600">
                     <div>
                         <h3>Kurwa bober</h3>
+                        <p class="work-desc">
+                            Autorský autoportrét ze série 13 obrazů hravých nudesek Královny
+                            Brno-venkov. Dílo je interaktivní díky magnetické fólii a každý
+                            si tak s obrazem může hrát dle své nálady.
+                        </p>
                         <p class="work-meta">
                             Kombinovaná technika na plátně s magnetickou fólií, 70 × 100 cm,
                             série Královny Brno-venkov ·
@@ -811,6 +813,11 @@
                     <img src="/images/drazba/euforie-sm.webp" alt="EUFORIE, akvarel, Molotow a akryl na plátně" loading="lazy" width="450" height="600">
                     <div>
                         <h3>EUFORIE</h3>
+                        <p class="work-desc">
+                            Cassie byla štěňátko. Jenže my jsme koťátka. Chceme spát většinu
+                            dne, lásku prostě žereme, lovíme pro zábavu a myslíme na vraždění.
+                            Ale velmi něžně a esteticky. Nehlaď bez ptaní!
+                        </p>
                         <p class="work-meta">
                             Akvarel, Molotow a akryl na plátně, 70 × 90 cm ·
                             Autorka: <a href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">Šárka Motyčková</a>
@@ -824,6 +831,11 @@
                     <img src="/images/drazba/balencicaga-sm.webp" alt="Balenčičiaga, ručně pomalovaná kabelka" loading="lazy" width="450" height="600">
                     <div>
                         <h3>Balenčičiaga</h3>
+                        <p class="work-desc">
+                            Originální mastrpiss Balenčičiaga první. Artefakt je nabitý mocnou
+                            tvůrčí energií a špínou z ulice. Módní doplněk autentický stejně
+                            jako jeho nositelka.
+                        </p>
                         <p class="work-meta">
                             Ručně pomalovaná kabelka ·
                             Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
@@ -837,6 +849,10 @@
                     <img src="/images/drazba/klitty-sm.webp" alt="Klitty s fotečkama, balíček od Podrážděné číči a Rozkoššš" loading="lazy" width="462" height="462">
                     <div>
                         <h3>Klitty s fotečkama</h3>
+                        <p class="work-desc">
+                            Tak tahle číča udělá největší radost té tvojí číči. Balíček je
+                            okořeněný o stylové fotky Podrážděné číči.
+                        </p>
                         <p class="work-meta">
                             Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
                             v kolaboraci s <a href="https://www.instagram.com/rozkosss/" target="_blank" rel="noopener">Rozkoššš</a>
@@ -850,6 +866,11 @@
                     <img src="/images/drazba/hulka-sm.webp" alt="Podrážděná hůlka, holografická vycházková hůlka" loading="lazy" width="450" height="600">
                     <div>
                         <h3>Podrážděná hůlka</h3>
+                        <p class="work-desc">
+                            Kdo chce styl mít, hůl si najde. S touhle počíčovanou hůlkou budeš
+                            main character v každé společnosti. Staň se vycházející hvězdou
+                            každé vycházky.
+                        </p>
                         <p class="work-meta">
                             Holografická vycházková hůlka ·
                             Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
@@ -864,6 +885,11 @@
                     <img src="/images/drazba/cica-broz-sm.webp" alt="Číča brož, ručně vyrobený korálkový šperk" loading="lazy" width="600" height="401">
                     <div>
                         <h3>Číča brož</h3>
+                        <p class="work-desc">
+                            Ručně vyrobená korálková brož s výrazným růžovo-černým motivem.
+                            Celá je vytvořená z drobných korálků a je originálním autorským
+                            šperkem, který lze nosit jako brož nebo přívěsek.
+                        </p>
                         <p class="work-meta">
                             Ručně vyrobený korálkový šperk, 10 × 10 cm ·
                             Autorka: <a href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">Jana Dúbravčíková</a>
@@ -880,7 +906,7 @@
     </section>
 
     <!-- Reference -->
-    <section id="reference" class="media-section" style="background: rgba(255,255,255,0.02);">
+    <section id="reference" class="media-section">
         <div class="container">
             <h2 class="section-title reveal">Řekli o festu</h2>
             <div class="press-quotes">
@@ -905,7 +931,7 @@
     </section>
 
     <!-- Mediakit -->
-    <section id="mediakit" class="media-section">
+    <section id="mediakit" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Mediakit ke stažení</h2>
             <div class="mediakit-box reveal">
@@ -927,7 +953,7 @@
     </section>
 
     <!-- Kontakt pro média -->
-    <section id="kontakt" class="media-section" style="background: rgba(255,255,255,0.02);">
+    <section id="kontakt" class="media-section">
         <div class="container">
             <h2 class="section-title reveal">Kontakt pro média</h2>
             <div class="press-contact reveal" style="text-align: center;">
