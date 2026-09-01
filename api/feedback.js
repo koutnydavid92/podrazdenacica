@@ -46,6 +46,11 @@ module.exports = async (req, res) => {
         ? b.highlights.filter(h => ALLOWED_HIGHLIGHTS.includes(h)).slice(0, ALLOWED_HIGHLIGHTS.length)
         : [];
     const clip = (v, max) => String(v || '').trim().slice(0, max) || null;
+    const comeAgain = ['ano', 'mozna', 'ne'].includes(b.come_again) ? b.come_again : null;
+    const ALLOWED_BRING = ['kamosky', 'partner', 'mamu', 'rodinu', 'kolegy', 'deti', 'sam'];
+    const bringWho = Array.isArray(b.bring_who)
+        ? b.bring_who.filter(x => ALLOWED_BRING.includes(x)).slice(0, ALLOWED_BRING.length)
+        : [];
     const improve = clip(b.improve, 2000);
     const artistTip = clip(b.artist_tip, 500);
     const quote = clip(b.quote, 500);
@@ -69,9 +74,9 @@ module.exports = async (req, res) => {
                 return;
             }
             await c.query(
-                `insert into caf_feedback (rating, highlights, improve, quote, quote_public, quote_author, artist_tip, email, ip)
-                 values ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-                [rating, highlights, improve, quote, quotePublic, quoteAuthor, artistTip, email, ip]);
+                `insert into caf_feedback (rating, highlights, improve, quote, quote_public, quote_author, artist_tip, email, come_again, bring_who, ip)
+                 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+                [rating, highlights, improve, quote, quotePublic, quoteAuthor, artistTip, email, comeAgain, bringWho, ip]);
             res.status(200).json({ ok: true });
         });
     } catch (e) {

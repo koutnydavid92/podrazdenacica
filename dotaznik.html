@@ -236,6 +236,30 @@
                 </div>
 
                 <div class="card">
+                    <h2>Přišel/přišla bys znovu?</h2>
+                    <p class="hint">Druhý ročník se už rýsuje v hlavičičkách</p>
+                    <div class="chips" id="comeAgain">
+                        <label><input type="radio" name="come_again" value="ano">Jasně, mňau! 😻</label>
+                        <label><input type="radio" name="come_again" value="mozna">Možná, uvidím</label>
+                        <label><input type="radio" name="come_again" value="ne">Spíš ne</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Koho bys vzal/a s sebou?</h2>
+                    <p class="hint">Klidně označ celou smečku</p>
+                    <div class="chips" id="bringWho">
+                        <label><input type="checkbox" value="kamosky">Kámošky a kámoše</label>
+                        <label><input type="checkbox" value="partner">Partnera / partnerku</label>
+                        <label><input type="checkbox" value="mamu">Mámu</label>
+                        <label><input type="checkbox" value="rodinu">Zbytek rodiny</label>
+                        <label><input type="checkbox" value="kolegy">Kolegyně a kolegy</label>
+                        <label><input type="checkbox" value="deti">Koťata (děti)</label>
+                        <label><input type="checkbox" value="sam">Přijdu sólo a je mi fajn</label>
+                    </div>
+                </div>
+
+                <div class="card">
                     <h2>Co zlepšit do příštího roku?</h2>
                     <p class="hint">Piš na rovinu, uneseme to. Kritika je dar.</p>
                     <textarea name="improve" maxlength="2000" placeholder="Víc jídla? Organizaci a informace? Něco jiného? Sem s tím…"></textarea>
@@ -293,9 +317,17 @@
                 l.classList.add('on');
             });
         });
-        document.querySelectorAll('#chips label').forEach(l => {
+        document.querySelectorAll('#chips label, #bringWho label').forEach(l => {
             l.addEventListener('click', () => {
                 setTimeout(() => l.classList.toggle('on', l.querySelector('input').checked), 0);
+            });
+        });
+        document.querySelectorAll('#comeAgain label').forEach(l => {
+            l.addEventListener('click', () => {
+                setTimeout(() => {
+                    document.querySelectorAll('#comeAgain label').forEach(x =>
+                        x.classList.toggle('on', x.querySelector('input').checked));
+                }, 0);
             });
         });
         // pole na podpis jen při souhlasu se zveřejněním
@@ -325,6 +357,8 @@
                     body: JSON.stringify({
                         rating: rating.value,
                         highlights: [...f.querySelectorAll('#chips input:checked')].map(i => i.value),
+                        come_again: (f.querySelector('input[name="come_again"]:checked') || {}).value || '',
+                        bring_who: [...f.querySelectorAll('#bringWho input:checked')].map(i => i.value),
                         improve: f.improve.value,
                         artist_tip: f.artist_tip.value,
                         quote: f.quote.value,
