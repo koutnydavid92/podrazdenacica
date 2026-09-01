@@ -330,8 +330,15 @@ create table if not exists caf_feedback (
     artist_tip text,
     come_again text check (come_again in ('ano','mozna','ne')),
     bring_who text[],
+    email text,          -- nepovinný, kdo chce stránky z Onanovánek
+    pin_order int,       -- ruční připnutí reference nahoru (1..N), jinak NULL
     ip inet
 );
+
+-- Stejný model jako zbytek: zamčeno RLS bez policies, čte a zapisuje
+-- jen backend přes přímé DB připojení. Anon klíč se k datům nedostane.
+-- (Zapnuto 31. 8. 2026 - tabulka byla omylem založena bez RLS.)
+alter table caf_feedback enable row level security;
 
 -- ============================================================
 -- Týmová nástěnka zpětné vazby (/tym, api/tym.js)
