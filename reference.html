@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vašima slovama – reference z Číča Art Festu | Podrážděná číča</title>
+    <link rel="canonical" href="https://www.podrazdenacica.cz/reference">
+    <meta name="description" content="Co o prvním ročníku Číča Art Festu napsali ti, co u toho byli. Reference návštěvnic a návštěvníků z dotazníku.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Vašima slovama – reference z Číča Art Festu">
+    <meta property="og:description" content="Co o prvním ročníku Číča Art Festu napsali ti, co u toho byli.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.podrazdenacica.cz/reference">
+    <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #CCCCCC;
+            --divider: #2A2A2A;
+            --accent-neon: #FE45E8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px 80px;
+        }
+        .wrap { max-width: 1000px; margin: 0 auto; }
+        .logo { display: block; width: 64px; margin: 0 auto 24px; }
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        h1 em { font-style: normal; color: var(--accent-neon); }
+        .intro {
+            text-align: center;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin: 0 auto 40px;
+        }
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .quote-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 0 18px rgba(254, 69, 232, 0.16), inset 0 0 24px rgba(254, 69, 232, 0.05);
+            animation: quoteFloat 7s ease-in-out infinite alternate;
+        }
+        /* každá karta pluje trochu jinak, ať to nepůsobí jako výtah */
+        .quote-card:nth-child(3n) { animation-duration: 9s; animation-delay: -3s; }
+        .quote-card:nth-child(3n + 1) { animation-duration: 7.5s; animation-delay: -1.2s; }
+        .quote-card:nth-child(4n) { animation-duration: 8.2s; animation-delay: -5s; }
+        .quote-card:nth-child(2n) { --float-y: -9px; --float-r: -0.5deg; }
+        @keyframes quoteFloat {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(var(--float-y, -7px)) rotate(var(--float-r, 0.5deg)); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .quote-card { animation: none; }
+        }
+        .quote-card blockquote {
+            margin: 0;
+            font-size: 1.02rem;
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+        .quote-card blockquote::before { content: '„'; color: var(--accent-neon); }
+        .quote-card blockquote::after { content: '“'; color: var(--accent-neon); }
+        .quote-card cite {
+            font-style: normal;
+            color: var(--accent-neon);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        .state {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 40px 0;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 44px;
+        }
+        .btn {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 14px 28px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-pink {
+            background: var(--accent-neon);
+            color: #0D0D0D;
+        }
+        .btn-pink:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.45); }
+        .btn-ghost {
+            border: 2px solid var(--accent-neon);
+            color: var(--accent-neon);
+        }
+        .btn-ghost:hover { box-shadow: 0 0 20px rgba(254, 69, 232, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a href="/cica-art-fest"><img class="logo" src="/images/logo.png" alt="Podrážděná číča"></a>
+
+        <h1>Vašima <em>slovama</em></h1>
+        <p class="intro">
+            Jaký byl první ročník Číča Art Festu jednou větou? Tohle nám napsali
+            ti, co u toho byli. Nic jsme nepřebarvili, jen zarámovali.
+        </p>
+
+        <div class="quote-grid" id="quoteGrid"></div>
+        <p class="state" id="state">Načítám…</p>
+
+        <div class="actions">
+            <a class="btn btn-pink" href="/dotaznik">Přidat svoji větu</a>
+            <a class="btn btn-ghost" href="/cica-art-fest">Zpátky na fest</a>
+        </div>
+    </div>
+
+    <script>
+        fetch('/api/feedback').then(r => r.json()).then(d => {
+            const quotes = (d && d.quotes) || [];
+            const state = document.getElementById('state');
+            if (!quotes.length) {
+                state.textContent = 'Zatím tu žádná věta není. Buď první!';
+                return;
+            }
+            const grid = document.getElementById('quoteGrid');
+            for (const q of quotes) {
+                const card = document.createElement('div');
+                card.className = 'quote-card';
+                const bq = document.createElement('blockquote');
+                bq.textContent = q.quote;
+                const cite = document.createElement('cite');
+                cite.textContent = '— ' + (q.author || 'Anonymní číča');
+                card.append(bq, cite);
+                grid.append(card);
+            }
+            state.hidden = true;
+        }).catch(() => {
+            document.getElementById('state').textContent =
+                'Reference se teď nepodařilo načíst. Zkus to prosím za chvilku.';
+        });
+    </script>
+</body>
+</html>

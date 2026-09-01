@@ -1151,6 +1151,9 @@
             max-width: 720px;
             margin: 0 auto;
         }
+        .quote-more {
+            margin-top: 30px;
+        }
         /* Highlight karta fotoalba */
         .album-card {
             position: relative;
@@ -1436,6 +1439,9 @@
                 v dotazníku. A my to rámujeme.
             </p>
             <div class="quote-grid" id="quoteGrid"></div>
+            <p class="quote-more" id="quoteMore" hidden>
+                <a href="/reference" class="btn-secondary">Ukázat všechny reference</a>
+            </p>
         </div>
     </section>
 
@@ -1815,7 +1821,9 @@
             const quotes = (d && d.quotes) || [];
             if (!quotes.length) return;
             const grid = document.getElementById('quoteGrid');
-            for (const q of quotes) {
+            // Na festové stránce ukazujeme 12 kousků, zbytek je na /reference
+            const NA_UVODU = 12;
+            for (const q of quotes.slice(0, NA_UVODU)) {
                 const card = document.createElement('div');
                 card.className = 'quote-card';
                 const bq = document.createElement('blockquote');
@@ -1825,6 +1833,7 @@
                 card.append(bq, cite);
                 grid.append(card);
             }
+            if (quotes.length > NA_UVODU) document.getElementById('quoteMore').hidden = false;
             document.getElementById('reference').hidden = false;
         }).catch(() => {});
 

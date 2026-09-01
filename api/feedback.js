@@ -9,14 +9,16 @@ const ALLOWED_HIGHLIGHTS = [
 ];
 
 module.exports = async (req, res) => {
-    // GET vrací veřejné reference (věty se souhlasem) pro web festu
+    // GET vrací veřejné reference (věty se souhlasem) pro web festu.
+    // Napřed ručně připnuté (pin_order 1..N), pak zbytek od nejnovější.
     if (req.method === 'GET') {
         try {
             const quotes = await withDb(async (c) => {
                 const { rows } = await c.query(
                     `select quote, quote_author as author from caf_feedback
                      where quote_public and quote is not null
-                     order by created_at desc limit 60`);
+                     order by pin_order nulls last, created_at desc
+                     limit 200`);
                 return rows;
             });
             res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=3600');
