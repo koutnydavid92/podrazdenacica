@@ -240,7 +240,7 @@
         const STATUS_LABEL = { novy: 'Nové', resime: 'Řešíme', hotovo: 'Hotovo', nedame: 'Nedáme' };
 
         async function api(payload) {
-            const res = await fetch('/api/tym', {
+            const res = await fetch('/api/admin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(Object.assign({ pin }, payload))
@@ -291,7 +291,7 @@
                 if (!me()) { alert('Napiš nahoře, kdo jsi — ať víme, čí je srdíčko.'); el('meInput').focus(); return; }
                 localStorage.setItem('tymJmeno', me());
                 try {
-                    const r = await api({ action: 'toggle_heart', card_id: b.dataset.heart, person: me() });
+                    const r = await api({ action: 'tym_toggle_heart', card_id: b.dataset.heart, person: me() });
                     if (r.ok) {
                         const card = cards.find(c => c.id === b.dataset.heart);
                         card.hearts = r.hearts;
@@ -303,7 +303,7 @@
             }));
             list.querySelectorAll('select[data-status]').forEach(s => s.addEventListener('change', async () => {
                 try {
-                    const r = await api({ action: 'set_status', card_id: s.dataset.status, status: s.value });
+                    const r = await api({ action: 'tym_set_status', card_id: s.dataset.status, status: s.value });
                     if (r.ok) {
                         cards.find(c => c.id === s.dataset.status).status = s.value;
                         render();
@@ -313,7 +313,7 @@
         }
 
         async function load() {
-            const r = await api({ action: 'overview', person: me() || null });
+            const r = await api({ action: 'tym_overview', person: me() || null });
             cards = r.cards || [];
             render();
         }
@@ -345,7 +345,7 @@
             el('addButton').disabled = true;
             try {
                 const r = await api({
-                    action: 'add_card',
+                    action: 'tym_add_card',
                     title: title,
                     description: el('addDesc').value,
                     author: me(),

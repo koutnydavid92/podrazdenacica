@@ -11,6 +11,109 @@ function pinOk(pin) {
     return pinEquals(pin, process.env.ADMIN_PIN);
 }
 
+// ---- Týmová nástěnka (/tym) ----
+// Žije tady, ne ve vlastním souboru: Vercel Hobby povoluje max 12
+// serverless funkcí a všechny sloty jsou obsazené. Akce mají prefix
+// tym_ a stačí na ně TEAM_PIN (admin PIN funguje taky).
+const TYM_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const TYM_KINDS = ['povedlo', 'zlepsit', 'napad'];
+const TYM_CATEGORIES = ['program', 'jidlo', 'organizace', 'prostor', 'marketing', 'jine'];
+const TYM_STATUSES = ['novy', 'resime', 'hotovo', 'nedame'];
+
+function teamPinOk(pin) {
+    return [process.env.TEAM_PIN, process.env.ADMIN_PIN]
+        .filter(Boolean).some(p => pinEquals(pin, p));
+}
+
+// Jméno pro srdíčka: normalizované, ať "Katka" a "katka " je jeden člověk
+function tymCleanPerson(v) {
+    const p = String(v || '').trim().replace(/\s+/g, ' ').toLowerCase();
+    return p.length >= 2 && p.length <= 60 ? p : null;
+}
+
+const tymClip = (v, max) => String(v || '').trim().slice(0, max) || null;
+
+// Nové odpovědi z dotazníku se na nástěnku přidávají samy.
+// Idempotentní přes feedback_ref, opakované volání nic nezdvojí.
+async function tymSyncFromFeedback(c) {
+    await c.query(`
+        insert into team_cards (kind, title, description, author, source, feedback_ref, created_at)
+        select 'zlepsit',
+               left(regexp_replace(trim(f.improve), '\\s+', ' ', 'g'), 90)
+                 || case when char_length(regexp_replace(trim(f.improve), '\\s+', ' ', 'g')) > 90 then '…' else '' end,
+               trim(f.improve), 'Návštěvníci (dotazník)', 'navstevnici', 'fb:' || f.id || ':improve', f.created_at
+        from caf_feedback f
+        where f.improve is not null and trim(f.improve) <> ''
+        on conflict (feedback_ref) do nothing`);
+    await c.query(`
+        insert into team_cards (kind, title, description, author, source, feedback_ref, created_at)
+        select 'povedlo',
+               left(regexp_replace(trim(f.quote), '\\s+', ' ', 'g'), 90)
+                 || case when char_length(regexp_replace(trim(f.quote), '\\s+', ' ', 'g')) > 90 then '…' else '' end,
+               trim(f.quote),
+               case when f.quote_public then coalesce(f.quote_author, 'Anonymní číča') else 'Návštěvníci (dotazník)' end,
+               'navstevnici', 'fb:' || f.id || ':quote', f.created_at
+        from caf_feedback f
+        where f.quote is not null and trim(f.quote) <> ''
+        on conflict (feedback_ref) do nothing`);
+}
+
+async function handleTym(c, body) {
+    if (body.action === 'tym_add_card') {
+        const title = tymClip(body.title, 120);
+        if (!title) return { ok: false, error: 'missing_title' };
+        const kind = TYM_KINDS.includes(body.kind) ? body.kind : 'napad';
+        const category = TYM_CATEGORIES.includes(body.category) ? body.category : null;
+        const { rows } = await c.query(
+            `insert into team_cards (kind, title, description, author, source, category)
+             values ($1, $2, $3, $4, 'tym', $5) returning id`,
+            [kind, title, tymClip(body.description, 2000), tymClip(body.author, 60), category]
+        );
+        return { ok: true, id: rows[0].id };
+    }
+    if (body.action === 'tym_toggle_heart') {
+        const person = tymCleanPerson(body.person);
+        const cardId = String(body.card_id || '').trim();
+        if (!person) return { ok: false, error: 'missing_person' };
+        if (!TYM_UUID_RE.test(cardId)) return { ok: false, error: 'bad_card' };
+        const del = await c.query(
+            'delete from team_hearts where card_id = $1 and person = $2', [cardId, person]);
+        if (del.rowCount === 0) {
+            await c.query(
+                'insert into team_hearts (card_id, person) values ($1, $2) on conflict do nothing',
+                [cardId, person]);
+        }
+        const { rows } = await c.query(
+            'select count(*)::int as n from team_hearts where card_id = $1', [cardId]);
+        return { ok: true, hearts: rows[0].n, mine: del.rowCount === 0 };
+    }
+    if (body.action === 'tym_set_status') {
+        const cardId = String(body.card_id || '').trim();
+        if (!TYM_UUID_RE.test(cardId)) return { ok: false, error: 'bad_card' };
+        if (!TYM_STATUSES.includes(body.status)) return { ok: false, error: 'bad_status' };
+        await c.query('update team_cards set status = $2 where id = $1', [cardId, body.status]);
+        return { ok: true };
+    }
+    // tym_overview (výchozí)
+    await tymSyncFromFeedback(c);
+    const person = tymCleanPerson(body.person);
+    const { rows: cards } = await c.query(
+        `select c.id, c.kind, c.title, c.description, c.author, c.source,
+                c.category, c.status, c.created_at,
+                coalesce(h.n, 0) as hearts,
+                case when $1::text is null then false
+                     else exists (select 1 from team_hearts
+                                  where card_id = c.id and person = $1) end as mine
+         from team_cards c
+         left join lateral (
+             select count(*)::int as n from team_hearts where card_id = c.id
+         ) h on true
+         order by coalesce(h.n, 0) desc, c.created_at desc`,
+        [person]
+    );
+    return { ok: true, cards };
+}
+
 // Kód pozvánky: KATKA-X7QF (jméno + náhodný ocásek, bez matoucích znaků)
 function makeCode(fullName) {
     const first = String(fullName || 'HOST').trim().split(/\s+/)[0]
@@ -35,10 +138,14 @@ module.exports = async (req, res) => {
         const out = await withDb(async (c) => {
             // Rate limit před ověřením PINu - krátký PIN chrání počítadlo pokusů
             if (await pinRateLimited(c, ip)) return { __status: 429, error: 'rate_limited' };
-            if (!pinOk(body.pin)) {
-                await recordPinFailure(c, ip, 'admin');
+            // Akce tym_* patří týmové nástěnce a stačí na ně TEAM_PIN;
+            // všechno ostatní zůstává jen pro admin PIN.
+            const isTymAction = typeof body.action === 'string' && body.action.startsWith('tym_');
+            if (isTymAction ? !teamPinOk(body.pin) : !pinOk(body.pin)) {
+                await recordPinFailure(c, ip, isTymAction ? 'tym' : 'admin');
                 return { __status: 401, error: 'bad_pin' };
             }
+            if (isTymAction) return handleTym(c, body);
             if (body.action === 'toggle_guestlist') {
                 const { rows } = await c.query(
                     'update guestlist set visible = not visible where id = $1 returning id, visible',
