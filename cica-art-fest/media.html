@@ -75,6 +75,27 @@
 
         .media-lead strong { color: var(--accent-neon); }
 
+        /* Úvodní fotka článku */
+        .hero-figure {
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .hero-figure img {
+            width: 100%;
+            height: auto;
+            border-radius: 14px;
+            display: block;
+        }
+
+        .hero-figure figcaption {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-top: 0.7rem;
+            text-align: center;
+        }
+
         .media-section { padding: 4rem 0; }
 
         .media-note {
@@ -449,6 +470,17 @@
                     Většina výtěžku, <strong>73 116 Kč</strong>, putuje na dobročinné účely.
                     Největší část získává pacientská organizace LYMFOM HELP, z. s.
                 </p>
+                <figure class="hero-figure">
+                    <img src="/images/caf-media-hero.webp?v=1"
+                         srcset="/images/caf-media-hero-sm.webp?v=1 800w, /images/caf-media-hero.webp?v=1 1600w"
+                         sizes="(max-width: 880px) 92vw, 800px"
+                         alt="Zaplněný co.labs_park během Číča Art Festu 2026, nad hlavami návštěvníků barevné fáborky"
+                         width="1600" height="1065" fetchpriority="high">
+                    <figcaption>
+                        První ročník Číča Art Festu zaplnil co.labs_park v Brně.
+                        Foto: <a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.7);">Adelice</a>
+                    </figcaption>
+                </figure>
                 <p class="media-lead">
                     Festival pořádá brněnský umělecký brand Podrážděná číča výtvarnice a humoristky
                     Kristýny Mlynář Koutné. Program spojil vernisáž obrazové série Královny Brno-venkov,
@@ -911,21 +943,33 @@
             <h2 class="section-title reveal">Řekli o festu</h2>
             <div class="press-quotes">
                 <div class="press-quote reveal">
-                    <blockquote>„Mňauózní zážitek. To se nedá popsat, to se musí zažít."</blockquote>
-                    <cite>Zuzka od Rosic, návštěvnice</cite>
+                    <blockquote>„Inspirativní silné ženy, příběhy, zábava, umění a vtip na jednom místě, pobavíš se, pokecáš s kámoškami a zjistíš, co nového frčí v Brně."</blockquote>
+                    <cite>Romča</cite>
+                </div>
+                <div class="press-quote reveal">
+                    <blockquote>„Bylo to úžasný spojení ženství a provokativního umění i pro ty, co nemají číču."</blockquote>
+                    <cite>Brejlovec</cite>
+                </div>
+                <div class="press-quote reveal">
+                    <blockquote>„Bylo to naprosto epicky užité odpoledne, které bez přestání trvalo do noci. Každá chvíle byla famózní."</blockquote>
+                    <cite>Rory z Jihlavy</cite>
                 </div>
                 <div class="press-quote reveal">
                     <blockquote>„Burning man, teda vlastně Burning cat, verze Brno-venkov."</blockquote>
-                    <cite>návštěvník festivalu</cite>
+                    <cite>Anonymní číča</cite>
                 </div>
                 <div class="press-quote reveal">
-                    <blockquote>„Inspirativní silné ženy, příběhy, zábava, umění a vtip na jednom místě."</blockquote>
-                    <cite>Romča, návštěvnice</cite>
+                    <blockquote>„Díky festu se do mýho slovníku zařadilo slovo číčovina."</blockquote>
+                    <cite>Anonymní číča</cite>
+                </div>
+                <div class="press-quote reveal">
+                    <blockquote>„Mňauózní zážitek – to se nedá popsat, to se musí zažít."</blockquote>
+                    <cite>Zuzka od Rosic</cite>
                 </div>
             </div>
             <p class="media-note reveal" style="text-align: center; margin-top: 1.2rem;">
-                Citace pocházejí z pofestové zpětné vazby návštěvníků. Další najdete na
-                <a href="/cica-art-fest#reference" style="color: var(--accent-neon);">stránce festivalu</a>.
+                Citace pocházejí z pofestové zpětné vazby návštěvníků. Kompletní sbírka je na
+                <a href="/reference" style="color: var(--accent-neon);">podrazdenacica.cz/reference</a>.
             </p>
         </div>
     </section>
@@ -936,7 +980,7 @@
             <h2 class="section-title reveal">Mediakit ke stažení</h2>
             <div class="mediakit-box reveal">
                 <p>
-                    V balíčku (ZIP, 10 MB) najdete výběr 26 oficiálních fotografií z festivalu,
+                    V balíčku (ZIP, 11 MB) najdete výběr 27 oficiálních fotografií z festivalu,
                     logo Číča Art Festu a logo brandu Podrážděná číča. Fotografie jsou volné
                     k redakčnímu použití.
                 </p>
