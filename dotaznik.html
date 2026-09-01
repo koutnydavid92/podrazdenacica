@@ -221,6 +221,7 @@
                         <label><input type="checkbox" value="welcome">Welcome drink a atmosféra</label>
                         <label><input type="checkbox" value="tattoo">Breberka Tattoo</label>
                         <label><input type="checkbox" value="market">Číča Market</label>
+                        <label><input type="checkbox" value="tvurcici">Tvůrčičí koutek, sprejování</label>
                         <label><input type="checkbox" value="vernisaz">Vernisáž Královny Brno-venkov</label>
                         <label><input type="checkbox" value="vazky">Hudební soubor Vážky</label>
                         <label><input type="checkbox" value="panelovka">Panelovka o hlavě a číči</label>
@@ -258,6 +259,12 @@
                         <label for="quoteAuthor">Jak tě máme podepsat? (jméno, přezdívka… nech prázdné a budeš „Anonymní číča“)</label>
                         <input type="text" id="quoteAuthor" name="quote_author" maxlength="100" placeholder="např. Katka z Brna">
                     </div>
+                </div>
+
+                <div class="card">
+                    <h2>Dárek na doma 🎨</h2>
+                    <p class="hint">Nech nám svůj mail a zašlem ti na něj 5 stránek z Onanovánek k vymalovávání po večerech. Nepovinné, spam neposíláme.</p>
+                    <input type="email" name="email" maxlength="200" autocomplete="email" placeholder="tvuj@mail.cz">
                 </div>
 
                 <!-- past na roboty, lidi ji nevidí -->
@@ -323,6 +330,7 @@
                         quote: f.quote.value,
                         quote_public: f.quote_public.checked,
                         quote_author: f.quote_author.value,
+                        email: f.email.value,
                         website: f.website.value
                     })
                 });

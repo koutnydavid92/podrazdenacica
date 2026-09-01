@@ -280,6 +280,7 @@
             const fb = data.feedback || [];
             const fbLabels = {
                 welcome: 'Welcome drink a atmosféra', tattoo: 'Breberka Tattoo', market: 'Číča Market',
+                tvurcici: 'Tvůrčičí koutek, sprejování',
                 vernisaz: 'Vernisáž', vazky: 'Vážky', panelovka: 'Panelovka', standup: 'Stand-up Terezy',
                 krupicafaja: 'Krupicafaja', prehlidka: 'Módní přehlídka', drazba: 'Dražba',
                 onanovanky: 'Onanovánky', misspetty: 'Miss Petty', lokalita: 'Lokalita akce'
@@ -294,16 +295,19 @@
             } else {
                 el('fbSummary').textContent = 'Zatím žádná odpověď.';
             }
+            const withEmail = fb.filter(f => f.email).length;
             el('feedbackTable').innerHTML =
-                '<tr><th>Kdy</th><th>🐾</th><th>Nej</th><th>Zlepšit</th><th>Interpret</th><th>Věta</th></tr>'
+                '<tr><th>Kdy</th><th>🐾</th><th>Nej</th><th>Zlepšit</th><th>Interpret</th><th>Věta</th>'
+                + `<th>Mail pro Onanovánky${withEmail ? ' (' + withEmail + ')' : ''}</th></tr>`
                 + (fb.length ? fb.map(f =>
                     `<tr><td class="muted">${fmtDate(f.created_at)}</td>`
                     + `<td>${f.rating}/5</td>`
                     + `<td>${esc((f.highlights || []).map(h => fbLabels[h] || h).join(', '))}</td>`
                     + `<td>${esc(f.improve || '')}</td>`
                     + `<td>${esc(f.artist_tip || '')}</td>`
-                    + `<td>${esc(f.quote || '')}${f.quote_public ? '<br><span class="pill ok">zveřejnit ok</span> <span class="muted">' + esc(f.quote_author || 'bez podpisu') + '</span>' : ''}</td></tr>`
-                ).join('') : '<tr><td colspan="6" class="muted">Zatím prázdno.</td></tr>');
+                    + `<td>${esc(f.quote || '')}${f.quote_public ? '<br><span class="pill ok">zveřejnit ok</span> <span class="muted">' + esc(f.quote_author || 'bez podpisu') + '</span>' : ''}</td>`
+                    + `<td>${f.email ? esc(f.email) : '<span class="muted">—</span>'}</td></tr>`
+                ).join('') : '<tr><td colspan="7" class="muted">Zatím prázdno.</td></tr>');
 
             document.querySelectorAll('[data-copy]').forEach(b =>
                 b.addEventListener('click', () => {

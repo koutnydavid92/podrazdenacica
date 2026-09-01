@@ -178,7 +178,7 @@ module.exports = async (req, res) => {
             )).rows;
 
             const feedback = (await c.query(
-                `select created_at, rating, highlights, improve, quote, quote_public, quote_author, artist_tip
+                `select created_at, rating, highlights, improve, quote, quote_public, quote_author, artist_tip, email
                  from caf_feedback order by created_at desc limit 500`
             )).rows;
             stats.feedback_count = feedback.length;
