@@ -67,6 +67,27 @@
 
     <!-- Media stránka – styly jen pro tuhle stránku -->
     <style>
+        /* Odkazy v textu: jednotná neonová růžová i po navštívení
+           (sdílené CSS obecné pravidlo pro <a> nemá, jinak spadnou
+           do výchozí modré/fialové prohlížeče) */
+        #main-content p a,
+        #main-content p a:visited,
+        #main-content figcaption a,
+        #main-content figcaption a:visited,
+        #main-content blockquote a,
+        #main-content blockquote a:visited,
+        #main-content cite a,
+        #main-content cite a:visited,
+        .testimonial-author a,
+        .testimonial-author a:visited,
+        .person-card a.person-ig,
+        .person-card a.person-ig:visited,
+        .fashion-partner a,
+        .fashion-partner a:visited {
+            color: var(--accent-neon);
+            text-decoration: underline;
+        }
+
         .media-lead {
             max-width: 780px;
             margin: 0 auto 1.2rem;
@@ -624,7 +645,7 @@
                          width="1600" height="1065" fetchpriority="high">
                     <figcaption>
                         První ročník Číča Art Festu zaplnil co.labs_park v Brně.
-                        Foto: <a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.7);">Adelice</a>
+                        Foto: <a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">Adelice</a>
                     </figcaption>
                 </figure>
                 <p class="media-lead">
