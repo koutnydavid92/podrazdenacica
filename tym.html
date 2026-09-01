@@ -155,6 +155,40 @@
             background: var(--card);
         }
         .item.done { opacity: 0.55; }
+        /* komentáře pod kartou */
+        .cmt-toggle {
+            border: none;
+            background: none;
+            color: var(--faint);
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            padding: 0;
+            margin-top: 10px;
+        }
+        .cmt-toggle:hover { color: var(--pink); }
+        .cmt-box {
+            border-left: 2px solid var(--divider);
+            margin-top: 10px;
+            padding-left: 12px;
+        }
+        .comment { margin-bottom: 10px; font-size: 0.9rem; }
+        .comment b { font-size: 0.85rem; }
+        .comment .when { color: var(--faint); font-size: 0.75rem; margin-left: 6px; }
+        .comment .txt { color: var(--muted); white-space: pre-wrap; }
+        .cmt-add { display: flex; gap: 8px; margin-top: 4px; }
+        .cmt-add input { flex: 1; padding: 8px 12px; font-size: 0.9rem; }
+        .cmt-add button {
+            border: 1px solid var(--pink);
+            background: transparent;
+            color: var(--pink);
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
         [hidden] { display: none !important; }
     </style>
 </head>
@@ -254,6 +288,12 @@
         function fmtDate(d) {
             return d ? new Date(d).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) : '';
         }
+        function fmtDT(d) {
+            return d ? new Date(d).toLocaleString('cs-CZ',
+                { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+        }
+        // rozbalené komentáře přežijí překreslení seznamu
+        const openCmts = new Set();
 
         function render() {
             const list = el('list');
@@ -284,6 +324,20 @@
                                     `<option value="${v}" ${c.status === v ? 'selected' : ''}>${l}</option>`).join('')}
                             </select>
                         </div>
+                        <button class="cmt-toggle" data-cmt="${c.id}" type="button">
+                            💬 ${(c.comments || []).length || 'komentovat'}
+                        </button>
+                        <div class="cmt-box" ${openCmts.has(c.id) ? '' : 'hidden'}>
+                            ${(c.comments || []).map(m => `
+                                <div class="comment">
+                                    <b>${esc(m.author)}</b><span class="when">${fmtDT(m.created_at)}</span>
+                                    <div class="txt">${esc(m.text)}</div>
+                                </div>`).join('')}
+                            <div class="cmt-add">
+                                <input type="text" maxlength="1000" placeholder="Napiš komentář…" data-cmtinput="${c.id}">
+                                <button data-cmtsend="${c.id}" type="button">Odeslat</button>
+                            </div>
+                        </div>
                     </div>
                 </div>`).join('');
 
@@ -310,6 +364,34 @@
                     }
                 } catch (e) { alert('Výpadek spojení, zkus to znovu.'); }
             }));
+            list.querySelectorAll('[data-cmt]').forEach(b => b.addEventListener('click', () => {
+                const id = b.dataset.cmt;
+                if (openCmts.has(id)) openCmts.delete(id); else openCmts.add(id);
+                render();
+                if (openCmts.has(id)) {
+                    const inp = list.querySelector(`[data-cmtinput="${id}"]`);
+                    if (inp) inp.focus();
+                }
+            }));
+            async function sendComment(id) {
+                const inp = list.querySelector(`[data-cmtinput="${id}"]`);
+                const text = (inp.value || '').trim();
+                if (!text) return;
+                if (!me()) { alert('Napiš nahoře, kdo jsi — ať víme, čí je komentář.'); el('meInput').focus(); return; }
+                localStorage.setItem('tymJmeno', me());
+                try {
+                    const r = await api({ action: 'tym_add_comment', card_id: id, author: me(), text: text });
+                    if (r.ok) {
+                        const card = cards.find(c => c.id === id);
+                        card.comments = (card.comments || []).concat([r.comment]);
+                        render();
+                    }
+                } catch (e) { alert('Výpadek spojení, zkus to znovu.'); }
+            }
+            list.querySelectorAll('[data-cmtsend]').forEach(b =>
+                b.addEventListener('click', () => sendComment(b.dataset.cmtsend)));
+            list.querySelectorAll('[data-cmtinput]').forEach(i =>
+                i.addEventListener('keydown', e => { if (e.key === 'Enter') sendComment(i.dataset.cmtinput); }));
         }
 
         async function load() {

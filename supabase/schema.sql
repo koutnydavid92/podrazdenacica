@@ -360,3 +360,14 @@ create table if not exists team_hearts (
 
 alter table team_cards enable row level security;
 alter table team_hearts enable row level security;
+
+-- Komentáře ke kartičkám týmové nástěnky
+create table if not exists team_comments (
+    id uuid primary key default gen_random_uuid(),
+    card_id uuid not null references team_cards(id) on delete cascade,
+    author text not null,
+    text text not null check (char_length(text) <= 1000),
+    created_at timestamptz not null default now()
+);
+
+alter table team_comments enable row level security;

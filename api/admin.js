@@ -87,6 +87,20 @@ async function handleTym(c, body) {
             'select count(*)::int as n from team_hearts where card_id = $1', [cardId]);
         return { ok: true, hearts: rows[0].n, mine: del.rowCount === 0 };
     }
+    if (body.action === 'tym_add_comment') {
+        const cardId = String(body.card_id || '').trim();
+        const author = tymClip(body.author, 60);
+        const text = tymClip(body.text, 1000);
+        if (!TYM_UUID_RE.test(cardId)) return { ok: false, error: 'bad_card' };
+        if (!author) return { ok: false, error: 'missing_author' };
+        if (!text) return { ok: false, error: 'missing_text' };
+        const { rows } = await c.query(
+            `insert into team_comments (card_id, author, text)
+             values ($1, $2, $3) returning id, author, text, created_at`,
+            [cardId, author, text]
+        );
+        return { ok: true, comment: rows[0] };
+    }
     if (body.action === 'tym_set_status') {
         const cardId = String(body.card_id || '').trim();
         if (!TYM_UUID_RE.test(cardId)) return { ok: false, error: 'bad_card' };
@@ -103,11 +117,18 @@ async function handleTym(c, body) {
                 coalesce(h.n, 0) as hearts,
                 case when $1::text is null then false
                      else exists (select 1 from team_hearts
-                                  where card_id = c.id and person = $1) end as mine
+                                  where card_id = c.id and person = $1) end as mine,
+                coalesce(cm.list, '[]'::json) as comments
          from team_cards c
          left join lateral (
              select count(*)::int as n from team_hearts where card_id = c.id
          ) h on true
+         left join lateral (
+             select json_agg(json_build_object(
+                        'author', author, 'text', text, 'created_at', created_at)
+                    order by created_at) as list
+             from team_comments where card_id = c.id
+         ) cm on true
          order by coalesce(h.n, 0) desc, c.created_at desc`,
         [person]
     );
