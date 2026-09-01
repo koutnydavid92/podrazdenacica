@@ -36,6 +36,11 @@ const VYBRANA_REELS = [
         permalink: 'https://www.instagram.com/reel/Dcs0p0tMu3j/',
         cover: '/images/reel-niftyminds.webp',
         titulek: 'První ČAF očima @niftyminds.cz'
+    },
+    {
+        permalink: 'https://www.instagram.com/reel/DcspsLLsiK0/',
+        cover: '/images/reel-hulkarna.webp',
+        titulek: 'Hůlkárna na ČAF: a byla to jízda'
     }
 ];
 
