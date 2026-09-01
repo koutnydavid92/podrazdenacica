@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Nástěnka týmu – Číča Art Fest</title>
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0D0D0D;
+            --card: #111111;
+            --divider: #2A2A2A;
+            --text: #F5F5F5;
+            --muted: #CCCCCC;
+            --faint: #8A8A8A;
+            --pink: #FE45E8;
+            --ok: #2ECC71;
+            --bad: #E74C3C;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px 16px 80px;
+        }
+        .wrap { max-width: 760px; margin: 0 auto; }
+        h1 { font-size: 1.35rem; margin: 8px 0 18px; }
+        h1 span { color: var(--pink); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--divider);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        input[type="password"], input[type="text"], textarea, select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 11px 13px;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--pink); }
+        textarea { resize: vertical; min-height: 70px; }
+        .btn {
+            border: none;
+            border-radius: 999px;
+            background: var(--pink);
+            color: #0D0D0D;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 24px;
+            margin-top: 12px;
+            cursor: pointer;
+        }
+        .muted { color: var(--muted); font-size: 0.9rem; }
+
+        /* jméno nahoře */
+        .me {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .me label { color: var(--muted); font-size: 0.9rem; white-space: nowrap; }
+        .me input { max-width: 220px; padding: 8px 12px; font-size: 0.95rem; }
+
+        /* filtry */
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+        .fbtn {
+            border: 1px solid var(--divider);
+            background: transparent;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+        }
+        .fbtn:hover { border-color: var(--pink); color: var(--pink); }
+        .fbtn.active { background: var(--pink); border-color: var(--pink); color: #0D0D0D; font-weight: 700; }
+
+        /* přidávací formulář */
+        .add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        @media (max-width: 560px) { .add-grid { grid-template-columns: 1fr; } }
+        details.add summary {
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--pink);
+            list-style: none;
+        }
+        details.add summary::before { content: '+ '; }
+        details.add[open] summary::before { content: '− '; }
+
+        /* kartičky */
+        .item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .heart {
+            border: 1px solid var(--divider);
+            background: transparent;
+            color: var(--muted);
+            border-radius: 12px;
+            min-width: 58px;
+            padding: 10px 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-align: center;
+            line-height: 1.2;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        .heart:hover { border-color: var(--pink); }
+        .heart.mine { border-color: var(--pink); color: var(--pink); font-weight: 700; }
+        .heart .n { display: block; font-size: 1.1rem; }
+        .item h3 { font-size: 1.02rem; line-height: 1.35; }
+        .item .desc { color: var(--muted); font-size: 0.92rem; margin-top: 5px; white-space: pre-wrap; }
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            align-items: center;
+            margin-top: 9px;
+            font-size: 0.78rem;
+            color: var(--faint);
+        }
+        .pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            border: 1px solid var(--divider);
+            color: var(--muted);
+        }
+        .pill.povedlo { border-color: var(--ok); color: var(--ok); }
+        .pill.zlepsit { border-color: var(--bad); color: var(--bad); }
+        .pill.napad { border-color: var(--pink); color: var(--pink); }
+        .item select {
+            width: auto;
+            padding: 3px 8px;
+            font-size: 0.78rem;
+            border-radius: 999px;
+            background: var(--card);
+        }
+        .item.done { opacity: 0.55; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Nástěnka <span>ČAF týmu</span></h1>
+
+        <!-- PIN brána -->
+        <div class="card" id="pinView">
+            <p class="muted" style="margin-bottom: 10px;">Zadej týmový PIN.</p>
+            <input type="password" id="pinInput" autocomplete="off" placeholder="PIN">
+            <button class="btn" id="pinButton" type="button">Odemknout</button>
+            <p class="muted" id="pinError" style="color: var(--bad); margin-top: 8px;" hidden>Špatný PIN.</p>
+        </div>
+
+        <div id="boardView" hidden>
+            <div class="me">
+                <label for="meInput">Kdo jsi?</label>
+                <input type="text" id="meInput" maxlength="60" placeholder="tvoje jméno">
+                <span class="muted">Kvůli srdíčkům a podpisu nápadů.</span>
+            </div>
+
+            <div class="card">
+                <details class="add" id="addBox">
+                    <summary>Přihodit nápad nebo postřeh</summary>
+                    <div style="margin-top: 12px;">
+                        <input type="text" id="addTitle" maxlength="120" placeholder="Název (krátce a jasně)">
+                        <div class="add-grid">
+                            <select id="addKind">
+                                <option value="napad">💡 Nápad</option>
+                                <option value="povedlo">💚 Povedlo se</option>
+                                <option value="zlepsit">🔧 Zlepšit</option>
+                            </select>
+                            <select id="addCategory">
+                                <option value="">Kategorie (nepovinné)</option>
+                                <option value="program">Program</option>
+                                <option value="jidlo">Jídlo a bar</option>
+                                <option value="organizace">Organizace</option>
+                                <option value="prostor">Prostor</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="jine">Jiné</option>
+                            </select>
+                        </div>
+                        <textarea id="addDesc" maxlength="2000" placeholder="Krátký popis (nepovinné)" style="margin-top: 10px;"></textarea>
+                        <button class="btn" id="addButton" type="button">Přidat na nástěnku</button>
+                        <p class="muted" id="addMsg" style="margin-top: 8px;" hidden></p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="filters" id="kindFilter">
+                <button class="fbtn active" data-kind="all" type="button">Vše</button>
+                <button class="fbtn" data-kind="povedlo" type="button">💚 Povedlo se</button>
+                <button class="fbtn" data-kind="zlepsit" type="button">🔧 Zlepšit</button>
+                <button class="fbtn" data-kind="napad" type="button">💡 Nápady</button>
+            </div>
+            <div class="filters" id="statusFilter">
+                <button class="fbtn active" data-status="all" type="button">Všechny stavy</button>
+                <button class="fbtn" data-status="novy" type="button">Nové</button>
+                <button class="fbtn" data-status="resime" type="button">Řešíme</button>
+                <button class="fbtn" data-status="hotovo" type="button">Hotovo</button>
+                <button class="fbtn" data-status="nedame" type="button">Nedáme</button>
+            </div>
+
+            <div id="list"></div>
+        </div>
+    </div>
+
+    <script>
+        let pin = sessionStorage.getItem('tymPin') || '';
+        let cards = [];
+        let kindF = 'all';
+        let statusF = 'all';
+
+        const el = id => document.getElementById(id);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const me = () => el('meInput').value.trim();
+
+        const KIND_LABEL = { povedlo: '💚 povedlo se', zlepsit: '🔧 zlepšit', napad: '💡 nápad' };
+        const CAT_LABEL = { program: 'Program', jidlo: 'Jídlo a bar', organizace: 'Organizace',
+                            prostor: 'Prostor', marketing: 'Marketing', jine: 'Jiné' };
+        const STATUS_LABEL = { novy: 'Nové', resime: 'Řešíme', hotovo: 'Hotovo', nedame: 'Nedáme' };
+
+        async function api(payload) {
+            const res = await fetch('/api/tym', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ pin }, payload))
+            });
+            if (res.status === 401) throw new Error('bad_pin');
+            if (res.status === 429) throw new Error('rate_limited');
+            if (!res.ok) throw new Error('server');
+            return res.json();
+        }
+
+        function fmtDate(d) {
+            return d ? new Date(d).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) : '';
+        }
+
+        function render() {
+            const list = el('list');
+            const shown = cards.filter(c =>
+                (kindF === 'all' || c.kind === kindF) &&
+                (statusF === 'all' || c.status === statusF));
+            if (!shown.length) {
+                list.innerHTML = '<p class="muted" style="text-align:center;margin-top:24px;">Nic tu není. Přihoď něco!</p>';
+                return;
+            }
+            list.innerHTML = shown.map(c => `
+                <div class="card item ${c.status === 'hotovo' || c.status === 'nedame' ? 'done' : ''}">
+                    <button class="heart ${c.mine ? 'mine' : ''}" data-heart="${c.id}" type="button"
+                            title="Srdíčko = tohle má prioritu">
+                        ${c.mine ? '♥' : '♡'}<span class="n">${c.hearts}</span>
+                    </button>
+                    <div style="flex:1;">
+                        <h3>${esc(c.title)}</h3>
+                        ${c.description && c.description !== c.title ? `<div class="desc">${esc(c.description)}</div>` : ''}
+                        <div class="meta">
+                            <span class="pill ${c.kind}">${KIND_LABEL[c.kind] || c.kind}</span>
+                            ${c.category ? `<span class="pill">${CAT_LABEL[c.category] || c.category}</span>` : ''}
+                            ${c.source === 'navstevnici' ? '<span class="pill">z dotazníku</span>' : ''}
+                            <span>${esc(c.author || '')}</span>
+                            <span>${fmtDate(c.created_at)}</span>
+                            <select data-status="${c.id}">
+                                ${Object.entries(STATUS_LABEL).map(([v, l]) =>
+                                    `<option value="${v}" ${c.status === v ? 'selected' : ''}>${l}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                </div>`).join('');
+
+            list.querySelectorAll('[data-heart]').forEach(b => b.addEventListener('click', async () => {
+                if (!me()) { alert('Napiš nahoře, kdo jsi — ať víme, čí je srdíčko.'); el('meInput').focus(); return; }
+                localStorage.setItem('tymJmeno', me());
+                try {
+                    const r = await api({ action: 'toggle_heart', card_id: b.dataset.heart, person: me() });
+                    if (r.ok) {
+                        const card = cards.find(c => c.id === b.dataset.heart);
+                        card.hearts = r.hearts;
+                        card.mine = r.mine;
+                        cards.sort((a, x) => x.hearts - a.hearts || new Date(x.created_at) - new Date(a.created_at));
+                        render();
+                    }
+                } catch (e) { alert('Výpadek spojení, zkus to znovu.'); }
+            }));
+            list.querySelectorAll('select[data-status]').forEach(s => s.addEventListener('change', async () => {
+                try {
+                    const r = await api({ action: 'set_status', card_id: s.dataset.status, status: s.value });
+                    if (r.ok) {
+                        cards.find(c => c.id === s.dataset.status).status = s.value;
+                        render();
+                    }
+                } catch (e) { alert('Výpadek spojení, zkus to znovu.'); }
+            }));
+        }
+
+        async function load() {
+            const r = await api({ action: 'overview', person: me() || null });
+            cards = r.cards || [];
+            render();
+        }
+
+        async function unlock() {
+            pin = el('pinInput').value.trim();
+            if (!pin) return;
+            try {
+                await load();
+                sessionStorage.setItem('tymPin', pin);
+                el('pinView').hidden = true;
+                el('boardView').hidden = false;
+            } catch (e) {
+                el('pinError').textContent = e.message === 'rate_limited'
+                    ? 'Moc pokusů. Počkej 15 minut.' : 'Špatný PIN.';
+                el('pinError').hidden = false;
+            }
+        }
+
+        el('pinButton').addEventListener('click', unlock);
+        el('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+        el('addButton').addEventListener('click', async () => {
+            const title = el('addTitle').value.trim();
+            const msg = el('addMsg');
+            if (!title) { msg.textContent = 'Bez názvu to nedáme.'; msg.hidden = false; return; }
+            if (!me()) { msg.textContent = 'Napiš nahoře, kdo jsi.'; msg.hidden = false; el('meInput').focus(); return; }
+            localStorage.setItem('tymJmeno', me());
+            el('addButton').disabled = true;
+            try {
+                const r = await api({
+                    action: 'add_card',
+                    title: title,
+                    description: el('addDesc').value,
+                    author: me(),
+                    category: el('addCategory').value || null,
+                    kind: el('addKind').value
+                });
+                if (r.ok) {
+                    el('addTitle').value = '';
+                    el('addDesc').value = '';
+                    msg.textContent = 'Přidáno. Mňau.';
+                    msg.hidden = false;
+                    setTimeout(() => { msg.hidden = true; }, 2500);
+                    await load();
+                }
+            } catch (e) { msg.textContent = 'Výpadek spojení, zkus to znovu.'; msg.hidden = false; }
+            el('addButton').disabled = false;
+        });
+
+        el('kindFilter').addEventListener('click', e => {
+            const b = e.target.closest('[data-kind]');
+            if (!b) return;
+            kindF = b.dataset.kind;
+            el('kindFilter').querySelectorAll('.fbtn').forEach(x => x.classList.toggle('active', x === b));
+            render();
+        });
+        el('statusFilter').addEventListener('click', e => {
+            const b = e.target.closest('[data-status]');
+            if (!b) return;
+            statusF = b.dataset.status;
+            el('statusFilter').querySelectorAll('.fbtn').forEach(x => x.classList.toggle('active', x === b));
+            render();
+        });
+
+        el('meInput').value = localStorage.getItem('tymJmeno') || '';
+        if (pin) { el('pinInput').value = pin; unlock(); }
+    </script>
+</body>
+</html>

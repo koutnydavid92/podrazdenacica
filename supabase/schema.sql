@@ -328,5 +328,35 @@ create table if not exists caf_feedback (
     quote_public boolean not null default false,
     quote_author text,
     artist_tip text,
+    come_again text check (come_again in ('ano','mozna','ne')),
+    bring_who text[],
     ip inet
 );
+
+-- ============================================================
+-- Týmová nástěnka zpětné vazby (/tym, api/tym.js)
+-- Kartičky z dotazníku (import přes feedback_ref) + nápady týmu,
+-- prioritizace srdíčky (jedno na osobu a kartu).
+-- ============================================================
+create table if not exists team_cards (
+    id uuid primary key default gen_random_uuid(),
+    kind text not null default 'napad' check (kind in ('povedlo', 'zlepsit', 'napad')),
+    title text not null check (char_length(title) <= 120),
+    description text check (char_length(description) <= 2000),
+    author text,
+    source text not null default 'tym' check (source in ('tym', 'navstevnici')),
+    category text check (category in ('program', 'jidlo', 'organizace', 'prostor', 'marketing', 'jine')),
+    status text not null default 'novy' check (status in ('novy', 'resime', 'hotovo', 'nedame')),
+    feedback_ref text unique,
+    created_at timestamptz not null default now()
+);
+
+create table if not exists team_hearts (
+    card_id uuid not null references team_cards(id) on delete cascade,
+    person text not null,
+    created_at timestamptz not null default now(),
+    primary key (card_id, person)
+);
+
+alter table team_cards enable row level security;
+alter table team_hearts enable row level security;
