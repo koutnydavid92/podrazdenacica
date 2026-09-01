@@ -21,14 +21,33 @@ const SKRYTE_POSTY = [
     '18107013845152440'
 ];
 
+// Vybraná reelska pro sekci na stránce festu - pořadí tady určuje pořadí
+// na webu. Titulek je náš vlastní (popisky z Instagramu jsou na kartu dlouhé);
+// když ho necháš prázdný, vezme se začátek popisku z Instagramu.
+// ID reelu zjistíš z Graph API, nebo o přidání řekni Claudovi.
+// Dva tvary zápisu:
+//   { id: '...', titulek: '...' }                     - reel z našeho účtu (náhled z Instagramu)
+//   { permalink: '...', cover: '/images/...', titulek: '...' }
+//        - reel z cizího účtu (spolupráce). Instagram nám k cizím médiím náhled
+//          nedá, proto se obrázek uloží k nám do images/ a servíruje se z webu.
+const VYBRANA_REELS = [
+    { id: '17901296379561167', titulek: 'Když ti na večičírek dovalí tvořiví lidi' },
+    {
+        permalink: 'https://www.instagram.com/reel/Dcs0p0tMu3j/',
+        cover: '/images/reel-niftyminds.webp',
+        titulek: 'První ČAF očima @niftyminds.cz'
+    }
+];
+
 // Bereme s rezervou, ať po vynechání zbyde plných devět
-const FETCH_LIMIT = LIMIT + SKRYTE_POSTY.length + 3;
+// a ať se ve výběru najdou i starší reelska
+const FETCH_LIMIT = Math.max(LIMIT + SKRYTE_POSTY.length + 3, 60);
 
 module.exports = async (req, res) => {
     const token = process.env.META_IG_TOKEN;
     if (!token) {
         console.warn('Instagram: chybí META_IG_TOKEN, feed se nenačte');
-        res.status(200).json({ posts: [] });
+        res.status(200).json({ posts: [], reels: [] });
         return;
     }
 
@@ -53,7 +72,7 @@ module.exports = async (req, res) => {
                 (data.error && data.error.message) || ('HTTP ' + r.status));
             // Prázdný seznam, ne chyba: mřížka se prostě neukáže
             // a zbytek stránky funguje dál.
-            res.status(200).json({ posts: [] });
+            res.status(200).json({ posts: [], reels: [] });
             return;
         }
 
@@ -72,14 +91,40 @@ module.exports = async (req, res) => {
             isAlbum: p.media_type === 'CAROUSEL_ALBUM'
         })).filter(p => p.image && p.permalink);
 
+        // Vybraná reelska v pořadí podle VYBRANA_REELS (co se nenajde, přeskočíme -
+        // třeba když se reel na Instagramu smaže, sekce se prostě zkrátí).
+        const podleId = new Map((data.data || []).map(p => [p.id, p]));
+        const reels = VYBRANA_REELS.map(v => {
+            // Cizí reel s vlastním náhledem: Instagram se na nic ptát nemusíme
+            if (v.permalink && v.cover) {
+                return {
+                    id: v.permalink,
+                    image: v.cover,
+                    permalink: v.permalink,
+                    title: v.titulek || '',
+                    caption: v.titulek || ''
+                };
+            }
+            const p = podleId.get(v.id);
+            if (!p || !p.permalink) return null;
+            const popisek = (p.caption || '').replace(/\s+/g, ' ').trim();
+            return {
+                id: p.id,
+                image: p.thumbnail_url || p.media_url || null,
+                permalink: p.permalink,
+                title: v.titulek || popisek.slice(0, 70),
+                caption: popisek.slice(0, 160)
+            };
+        }).filter(r => r && r.image);
+
         // 3 minuty čerstvé, dalších 10 minut smí CDN servírovat starou verzi,
         // zatímco si na pozadí stahuje novou. Návštěvník tak nikdy nečeká
         // a nový příspěvek se na webu objeví do pár minut. Instagram to unese:
         // i při plném provozu je to nanejvýš 20 dotazů za hodinu.
         res.setHeader('Cache-Control', 's-maxage=180, stale-while-revalidate=600');
-        res.status(200).json({ posts });
+        res.status(200).json({ posts, reels });
     } catch (e) {
         console.error('Instagram: feed se nenačetl:', e.message);
-        res.status(200).json({ posts: [] });
+        res.status(200).json({ posts: [], reels: [] });
     }
 };

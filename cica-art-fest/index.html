@@ -1154,6 +1154,71 @@
         .quote-more {
             margin-top: 30px;
         }
+        /* Reelska: náhledy na výšku, přehrávají se na Instagramu */
+        .reel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+            gap: 18px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .reel-card {
+            position: relative;
+            display: block;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--accent-neon);
+            box-shadow: 0 0 22px rgba(254, 69, 232, 0.16);
+            aspect-ratio: 9 / 16;
+            background: var(--bg-card);
+            text-decoration: none;
+        }
+        .reel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .reel-card:hover img { transform: scale(1.05); }
+        .reel-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: rgba(13, 13, 13, 0.6);
+            border: 2px solid var(--accent-neon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+        .reel-play::after {
+            content: '';
+            margin-left: 4px;
+            border-left: 16px solid var(--accent-neon);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+        }
+        .reel-card:hover .reel-play {
+            background: var(--accent-neon);
+            transform: translate(-50%, -50%) scale(1.08);
+        }
+        .reel-card:hover .reel-play::after { border-left-color: #0D0D0D; }
+        .reel-title {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 16px 14px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: #FFFFFF;
+            text-align: left;
+            background: linear-gradient(to top, rgba(13, 13, 13, 0.94), rgba(13, 13, 13, 0));
+        }
         /* Highlight karta fotoalba */
         .album-card {
             position: relative;
@@ -1470,6 +1535,21 @@
                 <a href="https://drive.google.com/drive/folders/1cxcVQoiVQvmxZgTDXblnXdBYhZmy-KKi" target="_blank" rel="noopener" class="btn-primary">Nahrát fotky a videa</a>
                 <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener" class="btn-secondary">Střípky na Instagramu</a>
             </div>
+        </div>
+    </section>
+
+    <!-- Reelska z Instagramu festu -->
+    <section id="reelska" class="after-center" hidden>
+        <div class="container">
+            <h2 class="section-title reveal">Reelska z festu</h2>
+            <p class="section-intro reveal">
+                Souhrny a reportáže z prvního ročníku. Klikni a přehraje se
+                na Instagramu festu.
+            </p>
+            <div class="reel-grid" id="reelGrid"></div>
+            <p class="quote-more reveal">
+                <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener" class="btn-secondary">Všechna reelska na @cicaartfest</a>
+            </p>
         </div>
     </section>
 
@@ -1835,6 +1915,33 @@
             }
             if (quotes.length > NA_UVODU) document.getElementById('quoteMore').hidden = false;
             document.getElementById('reference').hidden = false;
+        }).catch(() => {});
+
+        // Reelska z Instagramu: náhled u nás, přehrání na Instagramu
+        // (žádný cizí skript, jen obrázek a odkaz)
+        fetch('/api/instagram').then(r => r.json()).then(d => {
+            const reels = (d && d.reels) || [];
+            if (!reels.length) return;
+            const grid = document.getElementById('reelGrid');
+            for (const r of reels) {
+                const a = document.createElement('a');
+                a.className = 'reel-card';
+                a.href = r.permalink;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                const img = document.createElement('img');
+                img.src = r.image;
+                img.loading = 'lazy';
+                img.alt = r.caption || 'Reel z Číča Art Festu';
+                const play = document.createElement('span');
+                play.className = 'reel-play';
+                const t = document.createElement('span');
+                t.className = 'reel-title';
+                t.textContent = r.title;
+                a.append(img, play, t);
+                grid.append(a);
+            }
+            document.getElementById('reelska').hidden = false;
         }).catch(() => {});
 
         // Vydražená díla: rozbalení detailu
