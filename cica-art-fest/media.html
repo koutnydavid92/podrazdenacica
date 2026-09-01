@@ -98,6 +98,85 @@
             text-align: center;
         }
 
+        /* Výrazná citace v úvodu */
+        .hero-pullquote {
+            max-width: 780px;
+            margin: 2.2rem auto 0;
+            border-left: 4px solid var(--accent-neon);
+            padding: 0.4rem 0 0.4rem 1.4rem;
+        }
+
+        .hero-pullquote blockquote {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1.35;
+            color: #fff;
+        }
+
+        .hero-pullquote cite {
+            display: block;
+            margin-top: 0.8rem;
+            font-style: normal;
+            font-size: 0.98rem;
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .hero-pullquote cite a { color: var(--accent-neon); }
+
+        @media (max-width: 600px) {
+            .hero-pullquote blockquote { font-size: 1.2rem; }
+        }
+
+        /* Delší ohlasy z Instagramu */
+        .testimonials {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.4rem;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(254, 69, 232, 0.25);
+            border-radius: 14px;
+            padding: 1.6rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial blockquote p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            line-height: 1.65;
+            margin-bottom: 0.9rem;
+        }
+
+        .testimonial-author {
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 0.9rem;
+            margin-top: auto;
+        }
+
+        .testimonial-author b {
+            display: block;
+            color: #fff;
+            font-size: 1.02rem;
+        }
+
+        .testimonial-author span {
+            display: block;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 0.15rem;
+        }
+
+        .testimonial-author a {
+            color: var(--accent-neon);
+            text-decoration: underline;
+            font-size: 0.92rem;
+        }
+
         .media-section { padding: 4rem 0; }
 
         /* Reelska: náhledy na výšku, přehrávají se na Instagramu */
@@ -554,6 +633,13 @@
                     panelovou diskuzi o ženské psychice a sexualitě, stand-up comedy, lidový rap,
                     módní přehlídku a vystoupení drag queen Miss Petty.
                 </p>
+                <div class="hero-pullquote">
+                    <blockquote>„Akcička na pomezí sesterství a erotiky, která v Brně chyběla."</blockquote>
+                    <cite>
+                        Olga Vlachynská, terapeutka a panelistka festivalu ·
+                        <a href="https://www.olinkavlachynska.cz/" target="_blank" rel="noopener">olinkavlachynska.cz</a>
+                    </cite>
+                </div>
             </div>
         </div>
     </section>
@@ -1049,6 +1135,59 @@
             <p class="media-note reveal" style="text-align: center; margin-top: 1.2rem;">
                 Citace pocházejí z pofestové zpětné vazby návštěvníků. Kompletní sbírka je na
                 <a href="/reference" style="color: var(--accent-neon);">podrazdenacica.cz/reference</a>.
+            </p>
+
+            <h2 class="section-title reveal" style="margin-top: 4rem;">Ohlasy vystupujících</h2>
+            <p class="media-lead reveal" style="text-align: center;">
+                Co o prvním ročníku napsaly na Instagramu ženy, které na festivalu vystoupily.
+            </p>
+            <div class="testimonials">
+                <div class="testimonial reveal">
+                    <blockquote>
+                        <p>„Fesťák, kde můžete říct i svůj bodycount, a nebudou vás soudit.</p>
+                        <p>Moc díky za prostor v debatě, díky za čas na ukázku z knihy a vůbec
+                        za příležitost si užít naplno ženskost, ať to znamená pro kohokoliv
+                        cokoliv. Fakt super atmoška.</p>
+                        <p>Číča v diskusi zmínila top myšlenku: umění je skvělá metoda, jak
+                        mluvit o intimitě. Jo! Zdar číči, i když co je v číči, je nejdřív
+                        v hlavě!"</p>
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <b>Hana Vacková</b>
+                        <span>Novinářka a autorka knihy Česká touha, panelistka festivalu</span>
+                        <a href="https://www.instagram.com/hana_vackova_sxinteligence/" target="_blank" rel="noopener">@hana_vackova_sxinteligence</a>
+                    </div>
+                </div>
+
+                <div class="testimonial reveal">
+                    <blockquote>
+                        <p>„Připadá ti, že tvůj život jede v zajetých kolejích, je ti v těch
+                        kolejích dobře a říkáš si, proč bys to měla měnit? Pusť si do života
+                        Podrážděnou číču a ta tě donutí z těch kolejí vyjet, totálně tě dostane
+                        mimo tvoji komfortní zónu a ty zjistíš, že ty koleje jsou sice super,
+                        ale mimo ně tě čekají ještě super věci.</p>
+                        <p>A tak se tak stalo, že jsem se během 3 měsíců nechala zvěčnit na
+                        plátno v poloze, která by mě dřív ani nenapadla, a veřejně se přiznala,
+                        že jsem to já. Oblíkla si upnutý catsuit od skvělé Zuzany Křížové
+                        s průstřihy v místech, která jsem radši nechtěla ukazovat, a rozhodla
+                        se postavit se v něm i před lidi. Ještě před těmi třemi měsíci bych
+                        dala ruku do ohně, že nic takového přece nikdy neudělám.</p>
+                        <p>Podrážděná číča a její Číča Art Fest ale vytvořili tak úžasné
+                        prostředí, že ač jsem byla až do poslední chvíle nejistá, tak když jsem
+                        viděla reakce návštěvníků na holky jdoucí přede mnou a pustil se můj
+                        Hype song, tak to nešlo jinak, než se utrhnout ze řetězu, prostě se
+                        ukázat a kašlat na to, co si o sobě myslím já a co si o mě může myslet
+                        okolí. A povím vám, velký zážitek."</p>
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <b>Tereza</b>
+                        <span>Modelka módní přehlídky a jedna z Královen Brno-venkov</span>
+                        <a href="https://www.instagram.com/walking_with_tereza/" target="_blank" rel="noopener">@walking_with_tereza</a>
+                    </div>
+                </div>
+            </div>
+            <p class="media-note reveal" style="text-align: center; margin-top: 1.2rem;">
+                Ohlasy jsou zkrácené výňatky z veřejných příspěvků na Instagramu.
             </p>
         </div>
     </section>
