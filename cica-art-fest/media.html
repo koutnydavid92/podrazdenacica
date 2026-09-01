@@ -219,6 +219,113 @@
             word-break: break-all;
         }
 
+        /* Módní přehlídka */
+        .fashion-partners {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            max-width: 1000px;
+            margin: 2rem auto 0;
+        }
+
+        .fashion-partner {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.2rem;
+        }
+
+        .fashion-partner h3 {
+            font-size: 1.05rem;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+
+        .fashion-partner p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .fashion-partner a {
+            color: var(--accent-neon);
+            text-decoration: underline;
+            font-size: 0.95rem;
+        }
+
+        /* Prodaná díla */
+        .works-list {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .work-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: grid;
+            grid-template-columns: 96px 1fr auto;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .work-card img {
+            width: 96px;
+            height: 96px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .work-card h3 {
+            font-size: 1.15rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .work-meta {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0.25rem;
+        }
+
+        .work-meta a {
+            color: var(--accent-neon);
+            text-decoration: underline;
+        }
+
+        .work-charity {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.88rem;
+        }
+
+        .work-price {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.35rem;
+            color: var(--accent-neon);
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        @media (max-width: 700px) {
+            .work-card {
+                grid-template-columns: 72px 1fr;
+                gap: 0.9rem;
+            }
+
+            .work-card img { width: 72px; height: 72px; }
+
+            .work-price {
+                grid-column: 2;
+                text-align: left;
+                font-size: 1.2rem;
+            }
+        }
+
         /* Reference */
         .press-quotes {
             display: grid;
@@ -454,7 +561,7 @@
                 Vedle výtvarného umění nabídl fest panelovou diskuzi „Všechno je to v hlavě
                 a v číči" o ženské psychice a sexualitě, stand-up, koncerty, tetovací studio,
                 market lokálních tvůrců, módní přehlídku devíti žen se silnými příběhy
-                a závěrečnou show drag queen Miss Petty. Akce je „kids friendly" a otevřená všem.
+                a závěrečnou show drag queen Miss Petty.
                 Druhý ročník je v plánu na rok 2027.
             </p>
         </div>
@@ -481,8 +588,54 @@
         </div>
     </section>
 
+    <!-- Módní přehlídka -->
+    <section id="prehlidka" class="media-section">
+        <div class="container">
+            <h2 class="section-title reveal">Módní přehlídka: devět žen, devět příběhů</h2>
+            <p class="media-lead reveal">
+                Na molo v parku nevyšly profesionální modelky, ale devět skutečných žen:
+                vědkyně, podnikatelky, umělkyně a matky. Každá přišla s vlastním příběhem,
+                který k přehlídce zazněl. Outfity, šperky a make-up pro ně připravily
+                spolupracující značky.
+            </p>
+            <div class="fashion-partners">
+                <div class="fashion-partner reveal">
+                    <h3>CZESKA</h3>
+                    <p>Brněnská autorská móda. Malé kolekce a jedinečné kousky šité ručně.</p>
+                    <a href="https://www.czeska.cz/" target="_blank" rel="noopener">czeska.cz</a>
+                </div>
+                <div class="fashion-partner reveal">
+                    <h3>Furiosa</h3>
+                    <p>Šperky, parfémy a brýle s odvážným designem.</p>
+                    <a href="https://furiosa.cz/" target="_blank" rel="noopener">furiosa.cz</a>
+                </div>
+                <div class="fashion-partner reveal">
+                    <h3>Hůlkárna</h3>
+                    <p>Designové vycházkové hůlky. Pro festival vznikla i dražená
+                    Podrážděná hůlka.</p>
+                    <a href="https://www.hulkarna.cz" target="_blank" rel="noopener">hulkarna.cz</a>
+                </div>
+                <div class="fashion-partner reveal">
+                    <h3>Orera Bags</h3>
+                    <p>Autorské kabelky a doplňky.</p>
+                    <a href="https://www.instagram.com/orera_bags/" target="_blank" rel="noopener">@orera_bags</a>
+                </div>
+                <div class="fashion-partner reveal">
+                    <h3>Rozkoššš</h3>
+                    <p>Projekt sex koučky Zuzany Křížové, partner přehlídky i aukce.</p>
+                    <a href="https://www.rozkosss.cz" target="_blank" rel="noopener">rozkosss.cz</a>
+                </div>
+                <div class="fashion-partner reveal">
+                    <h3>Make Up Institute Prague</h3>
+                    <p>Vizážistky, které se postaraly o make-up všech modelek.</p>
+                    <a href="https://www.makeupinstitute.cz/" target="_blank" rel="noopener">makeupinstitute.cz</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Performeři -->
-    <section id="performeri" class="media-section">
+    <section id="performeri" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Kdo vystoupil</h2>
             <div class="people-grid">
@@ -579,62 +732,155 @@
         </div>
     </section>
 
-    <!-- Umělci aukce -->
-    <section id="umelci" class="media-section" style="background: rgba(255,255,255,0.02);">
+    <!-- Prodaná díla -->
+    <section id="umelci" class="media-section">
         <div class="container">
-            <h2 class="section-title reveal">Umělci a umělkyně aukce</h2>
+            <h2 class="section-title reveal">Deset děl, deset autorských rukopisů</h2>
             <p class="media-lead reveal" style="text-align: center;">
-                V benefiční aukci se prodalo deset děl od pěti autorů a autorek:
+                Všechna díla se prodala během živého finále. U každého uvádíme autora,
+                případnou spolupráci, dosaženou cenu a určení výtěžku.
             </p>
-            <div class="people-grid">
-                <div class="person-card reveal">
-                    <img src="/images/drazba/bad-nun-sm.webp" alt="Obraz Bad Nun od Podrážděné číči" loading="lazy" width="450" height="600">
+            <div class="works-list">
+                <article class="work-card reveal">
+                    <img src="/images/drazba/sila-tisice-cecek-sm.webp" alt="Síla tisíce cecek, kombinovaná technika na plátně" loading="lazy" width="450" height="288">
                     <div>
-                        <h3>Podrážděná číča</h3>
-                        <p>Šest děl včetně obrazů Bad Nun, Kurwa bober a Síla tisíce cecek.
-                        Kabelku Balenčičiaga a další artefakty vytvořila v kolaboraci
-                        s Hůlkárnou a projektem Rozkoššš.</p>
-                        <a class="person-ig" href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">@podrazdena_cica</a>
+                        <h3>Síla tisíce cecek</h3>
+                        <p class="work-meta">
+                            Kombinovaná technika na plátně, 130 × 190 cm ·
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro LYMFOM HELP</p>
                     </div>
-                </div>
-                <div class="person-card reveal">
-                    <img src="/images/drazba/euforie-sm.webp" alt="Obraz EUFORIE od Šárky Motyčkové" loading="lazy" width="450" height="600">
+                    <div class="work-price">46 666 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/vaclav-havel-sm.webp" alt="Václav Havel, akryl na plátně ze série DEMOkraté" loading="lazy" width="435" height="600">
                     <div>
-                        <h3>Šárka Motyčková</h3>
-                        <p>Autorka obrazu EUFORIE.</p>
-                        <a class="person-ig" href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">@chae_personally</a>
+                        <h3>Václav Havel</h3>
+                        <p class="work-meta">
+                            Akryl na plátně ze série DEMOkraté, 60 × 90 cm ·
+                            Autor: <a href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">Joe Pisttone</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro LYMFOM HELP</p>
                     </div>
-                </div>
-                <div class="person-card reveal">
-                    <img src="/images/drazba/vaclav-havel-sm.webp" alt="Dílo Václav Havel od Joea Pisttonea" loading="lazy" width="450" height="600">
+                    <div class="work-price">13 000 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/bad-nun-sm.webp" alt="Bad Nun, kombinovaná technika na papíře" loading="lazy" width="450" height="600">
                     <div>
-                        <h3>Joe Pisttone</h3>
-                        <p>Autor díla Václav Havel, nejdráže prodaného kousku večera (13 000 Kč).</p>
-                        <a class="person-ig" href="https://www.instagram.com/pisttone_/" target="_blank" rel="noopener">@pisttone_</a>
+                        <h3>Bad Nun</h3>
+                        <p class="work-meta">
+                            Kombinovaná technika na papíře, 70 × 100 cm, série Královny Brno-venkov ·
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku na Číča Art Fest 2027</p>
                     </div>
-                </div>
-                <div class="person-card reveal">
-                    <img src="/images/drazba/cica-broz-sm.webp" alt="Číča brož od Jany Dúbravčíkové" loading="lazy" width="450" height="600">
+                    <div class="work-price">7 500 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/black-sheep-sm.webp" alt="Black sheep, akryl a tuš na sololitové desce" loading="lazy" width="515" height="600">
                     <div>
-                        <h3>Jana Dúbravčíková</h3>
-                        <p>Autorka šperku Číča brož.</p>
-                        <a class="person-ig" href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">@jdubra</a>
+                        <h3>Black sheep</h3>
+                        <p class="work-meta">
+                            Akryl a tuš na sololitové desce, 34 × 41 cm ·
+                            Autor: <a href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">Frank Abdulov</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro Nadaci Veronica</p>
                     </div>
-                </div>
-                <div class="person-card reveal">
-                    <img src="/images/drazba/black-sheep-sm.webp" alt="Obraz Black sheep od Franka Abdulova" loading="lazy" width="450" height="600">
+                    <div class="work-price">4 500 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/kurwa-bober-sm.webp" alt="Kurwa bober, interaktivní obraz s magnetickou fólií" loading="lazy" width="450" height="600">
                     <div>
-                        <h3>Frank Abdulov</h3>
-                        <p>Autor obrazu Black sheep.</p>
-                        <a class="person-ig" href="https://www.instagram.com/abdulovart/" target="_blank" rel="noopener">@abdulovart</a>
+                        <h3>Kurwa bober</h3>
+                        <p class="work-meta">
+                            Kombinovaná technika na plátně s magnetickou fólií, 70 × 100 cm,
+                            série Královny Brno-venkov ·
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku na Číča Art Fest 2027</p>
                     </div>
-                </div>
+                    <div class="work-price">3 500 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/euforie-sm.webp" alt="EUFORIE, akvarel, Molotow a akryl na plátně" loading="lazy" width="450" height="600">
+                    <div>
+                        <h3>EUFORIE</h3>
+                        <p class="work-meta">
+                            Akvarel, Molotow a akryl na plátně, 70 × 90 cm ·
+                            Autorka: <a href="https://www.instagram.com/chae_personally/" target="_blank" rel="noopener">Šárka Motyčková</a>
+                        </p>
+                        <p class="work-charity">50 % výtěžku pro Opuštěné kočičí tlapky, 50 % autorce</p>
+                    </div>
+                    <div class="work-price">3 500 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/balencicaga-sm.webp" alt="Balenčičiaga, ručně pomalovaná kabelka" loading="lazy" width="450" height="600">
+                    <div>
+                        <h3>Balenčičiaga</h3>
+                        <p class="work-meta">
+                            Ručně pomalovaná kabelka ·
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku na Číča Art Fest 2027</p>
+                    </div>
+                    <div class="work-price">3 000 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/klitty-sm.webp" alt="Klitty s fotečkama, balíček od Podrážděné číči a Rozkoššš" loading="lazy" width="462" height="462">
+                    <div>
+                        <h3>Klitty s fotečkama</h3>
+                        <p class="work-meta">
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                            v kolaboraci s <a href="https://www.instagram.com/rozkosss/" target="_blank" rel="noopener">Rozkoššš</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro Opuštěné kočičí tlapky</p>
+                    </div>
+                    <div class="work-price">3 000 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/hulka-sm.webp" alt="Podrážděná hůlka, holografická vycházková hůlka" loading="lazy" width="450" height="600">
+                    <div>
+                        <h3>Podrážděná hůlka</h3>
+                        <p class="work-meta">
+                            Holografická vycházková hůlka ·
+                            Autorka: <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">Podrážděná číča</a>
+                            v kolaboraci s <a href="https://www.instagram.com/hulkarna.cz/" target="_blank" rel="noopener">Hůlkárnou</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro Útulok Tuláčik Brezno</p>
+                    </div>
+                    <div class="work-price">2 200 Kč</div>
+                </article>
+
+                <article class="work-card reveal">
+                    <img src="/images/drazba/cica-broz-sm.webp" alt="Číča brož, ručně vyrobený korálkový šperk" loading="lazy" width="600" height="401">
+                    <div>
+                        <h3>Číča brož</h3>
+                        <p class="work-meta">
+                            Ručně vyrobený korálkový šperk, 10 × 10 cm ·
+                            Autorka: <a href="https://www.instagram.com/jdubra/" target="_blank" rel="noopener">Jana Dúbravčíková</a>
+                        </p>
+                        <p class="work-charity">100 % výtěžku pro Nadaci Veronica</p>
+                    </div>
+                    <div class="work-price">2 000 Kč</div>
+                </article>
             </div>
+            <p class="media-note reveal" style="text-align: center; margin-top: 1.5rem;">
+                Fotografie děl ve vysokém rozlišení dodáme na vyžádání.
+            </p>
         </div>
     </section>
 
     <!-- Reference -->
-    <section id="reference" class="media-section">
+    <section id="reference" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Řekli o festu</h2>
             <div class="press-quotes">
@@ -659,7 +905,7 @@
     </section>
 
     <!-- Mediakit -->
-    <section id="mediakit" class="media-section" style="background: rgba(255,255,255,0.02);">
+    <section id="mediakit" class="media-section">
         <div class="container">
             <h2 class="section-title reveal">Mediakit ke stažení</h2>
             <div class="mediakit-box reveal">
@@ -681,7 +927,7 @@
     </section>
 
     <!-- Kontakt pro média -->
-    <section id="kontakt" class="media-section">
+    <section id="kontakt" class="media-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Kontakt pro média</h2>
             <div class="press-contact reveal" style="text-align: center;">
