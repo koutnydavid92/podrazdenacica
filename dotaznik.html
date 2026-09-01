@@ -188,6 +188,28 @@
         }
         #done p { color: var(--text-secondary); }
         #done a { color: var(--accent-neon); }
+        /* odemčený bonus po odeslání */
+        .unlock {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 14px;
+            padding: 26px 24px;
+            margin: 28px 0;
+        }
+        .unlock h3 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .btn.link {
+            display: inline-block;
+            width: auto;
+            text-decoration: none;
+            color: #0D0D0D !important;
+            padding: 15px 28px;
+            margin-top: 18px;
+        }
+        .unlock .small { font-size: 0.85rem; color: #888; margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -198,7 +220,8 @@
             <h1>Jaký byl <em>Číča Art Fest?</em></h1>
             <p class="intro">
                 První ročník máme za sebou a tvoje upřímná slova rozhodnou, jaký
-                bude ten další. Dvě minuty, anonymně, od srdce. Mňau.
+                bude ten další. Dvě minuty, anonymně, od srdce.<br>
+                Na konci ti odemkneme dalších pět Onanovánek. Mňau.
             </p>
 
             <form id="f">
@@ -287,8 +310,7 @@
 
                 <div class="card">
                     <h2>Dárek na doma 🎨</h2>
-                    <p class="hint">Nech nám svůj mail a zašlem ti na něj 5 stránek z Onanovánek k vymalovávání po večerech. Nepovinné, spam neposíláme.</p>
-                    <input type="email" name="email" maxlength="200" autocomplete="email" placeholder="tvuj@mail.cz">
+                    <p class="hint">Hned po odeslání ti odemkneme dalších 5 stránek z Onanovánek k vymalovávání po večerech. Žádný mail, žádný háček.</p>
                 </div>
 
                 <!-- past na roboty, lidi ji nevidí -->
@@ -302,10 +324,19 @@
         <div id="done">
             <div class="big">₍^. .^₎⟆</div>
             <h2>Díky. Tohle fakt pomáhá.</h2>
-            <p>
-                Přečteme každé slovo a příští ročník bude zase o kus divočejší.<br>
-                Zatím sleduj <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>. Mňau.
-            </p>
+            <p>Přečteme každé slovo a příští ročník bude zase o kus divočejší.</p>
+
+            <div class="unlock">
+                <h3>Odemkli jsme ti dalších pět Onanovánek</h3>
+                <p>
+                    Kozy s kozama, Královny Brna, Miss Petty, Radegasta a You look good.
+                    Připravené na tisk, A4, ostré na 300 dpi.
+                </p>
+                <a class="btn link" href="/onanovanky-odemceno">Stáhnout bonusových 5 →</a>
+                <p class="small">Ulož si odkaz: podrazdenacica.cz/onanovanky-odemceno</p>
+            </div>
+
+            <p>Zatím sleduj <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>. Mňau.</p>
         </div>
     </div>
 
@@ -364,7 +395,6 @@
                         quote: f.quote.value,
                         quote_public: f.quote_public.checked,
                         quote_author: f.quote_author.value,
-                        email: f.email.value,
                         website: f.website.value
                     })
                 });
