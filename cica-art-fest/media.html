@@ -690,6 +690,32 @@
             .pl-track { animation: none; }
             .pl-viewport { overflow-x: auto; }
         }
+
+        /* Na mobilu se pás nehodí (jede pomalu a spousta log nikdy nedojede),
+           proto se rozpadne na statickou mřížku všech partnerů jako na fest stránce.
+           Zdvojená sada log se tam skryje, ať se nikdo neopakuje. */
+        @media (max-width: 700px) {
+            .partner-marquee { padding: 2.5rem 0 3rem; }
+
+            .pl-viewport {
+                overflow: visible;
+                -webkit-mask-image: none;
+                mask-image: none;
+                padding: 0 20px;
+            }
+
+            .pl-track {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+                width: auto;
+                animation: none;
+            }
+
+            .pl-track > [aria-hidden="true"] { display: none; }
+
+            .pl-item { width: auto; }
+        }
     </style>
 </head>
 <body>
@@ -1429,166 +1455,166 @@
         <div class="pl-viewport">
             <div class="pl-track">
                     <a class="pl-item" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-label="Hůlkárna.cz">
-                        <img src="/images/partneri/hulkarna.png" alt="Hůlkárna.cz" loading="lazy" width="1021" height="216">
+                        <img src="/images/partneri/mini/hulkarna.webp" alt="Hůlkárna.cz" decoding="async" fetchpriority="low" width="300" height="63">
                     </a>
                     <a class="pl-item pl-square" href="https://www.rozkosss.cz" target="_blank" rel="noopener" aria-label="Rozkoššš">
-                        <img src="/images/partneri/rozkosss.png" alt="Rozkoššš" loading="lazy" width="397" height="600">
+                        <img src="/images/partneri/mini/rozkosss.webp" alt="Rozkoššš" decoding="async" fetchpriority="low" width="198" height="300">
                     </a>
                     <a class="pl-item" href="https://www.undergroundcomedy.cz" target="_blank" rel="noopener" aria-label="Underground Comedy Club">
-                        <img src="/images/partneri/underground-comedy.png" alt="Underground Comedy Club" loading="lazy" width="256" height="101">
+                        <img src="/images/partneri/mini/underground-comedy.webp" alt="Underground Comedy Club" decoding="async" fetchpriority="low" width="300" height="118">
                     </a>
                     <a class="pl-item" href="https://www.linkedin.com/in/kristynasuranova/" target="_blank" rel="noopener" aria-label="Prokristýnace event">
-                        <img src="/images/partneri/prokristynace.svg" alt="Prokristýnace event" loading="lazy" width="1324" height="304">
+                        <img src="/images/partneri/mini/prokristynace.svg" alt="Prokristýnace event" decoding="async" fetchpriority="low" width="1324" height="304">
                     </a>
                     <a class="pl-item" href="https://imperiongroup.eu/" target="_blank" rel="noopener" aria-label="Cafe Imperion">
-                        <img src="/images/partneri/cafe-imperion.png" alt="Cafe Imperion" loading="lazy" width="800" height="177">
+                        <img src="/images/partneri/mini/cafe-imperion.webp" alt="Cafe Imperion" decoding="async" fetchpriority="low" width="300" height="66">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/sladke_neresti_brno/" target="_blank" rel="noopener" aria-label="Sladké neřesti Brno">
-                        <img src="/images/partneri/sladke-neresti.png" alt="Sladké neřesti Brno" loading="lazy" width="600" height="592">
+                        <img src="/images/partneri/mini/sladke-neresti.webp" alt="Sladké neřesti Brno" decoding="async" fetchpriority="low" width="300" height="296">
                     </a>
                     <a class="pl-item" href="https://www.instagram.com/mimo.hru/" target="_blank" rel="noopener" aria-label="Mimo hru">
-                        <img src="/images/partneri/mimo-hru.png" alt="Mimo hru" loading="lazy" width="800" height="247">
+                        <img src="/images/partneri/mini/mimo-hru.webp" alt="Mimo hru" decoding="async" fetchpriority="low" width="300" height="92">
                     </a>
                     <a class="pl-item pl-square" href="https://www.breberkatattoo.cz/" target="_blank" rel="noopener" aria-label="Breberka Tattoo">
-                        <img src="/images/partneri/breberka-tattoo.png" alt="Breberka Tattoo" loading="lazy" width="522" height="413">
+                        <img src="/images/partneri/mini/breberka-tattoo.webp" alt="Breberka Tattoo" decoding="async" fetchpriority="low" width="300" height="237">
                     </a>
                     <a class="pl-item" href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" aria-label="Adelice">
-                        <img src="/images/partneri/adelice.png" alt="Adelice" loading="lazy" width="800" height="280">
+                        <img src="/images/partneri/mini/adelice.webp" alt="Adelice" decoding="async" fetchpriority="low" width="300" height="105">
                     </a>
                     <a class="pl-item pl-square" href="https://amitydrinks.cz/" target="_blank" rel="noopener" aria-label="Amity Drinks">
-                        <img src="/images/partneri/amity-drinks.svg" alt="Amity Drinks" loading="lazy" width="2156" height="1241">
+                        <img src="/images/partneri/mini/amity-drinks.svg" alt="Amity Drinks" decoding="async" fetchpriority="low" width="2156" height="1241">
                     </a>
                     <a class="pl-item" href="https://www.colabs.cz/" target="_blank" rel="noopener" aria-label="CO.LABS">
-                        <img src="/images/partneri/colabs.png" alt="CO.LABS" loading="lazy" width="841" height="191">
+                        <img src="/images/partneri/mini/colabs.webp" alt="CO.LABS" decoding="async" fetchpriority="low" width="300" height="68">
                     </a>
                     <a class="pl-item" href="https://www.pragers.cz/" target="_blank" rel="noopener" aria-label="Prager's">
-                        <img src="/images/partneri/pragers.svg" alt="Prager's" loading="lazy" width="1792" height="170">
+                        <img src="/images/partneri/mini/pragers.svg" alt="Prager's" decoding="async" fetchpriority="low" width="1792" height="170">
                     </a>
                     <a class="pl-item pl-square" href="https://www.bertycky.cz/" target="_blank" rel="noopener" aria-label="Bertyčky">
-                        <img src="/images/partneri/bertycky.png" alt="Bertyčky" loading="lazy" width="631" height="316">
+                        <img src="/images/partneri/mini/bertycky.webp" alt="Bertyčky" decoding="async" fetchpriority="low" width="300" height="150">
                     </a>
                     <a class="pl-item" href="https://furiosa.cz/" target="_blank" rel="noopener" aria-label="Furiosa">
-                        <img src="/images/partneri/furiosa.png" alt="Furiosa" loading="lazy" width="800" height="133">
+                        <img src="/images/partneri/mini/furiosa.webp" alt="Furiosa" decoding="async" fetchpriority="low" width="300" height="50">
                     </a>
                     <a class="pl-item pl-square" href="https://www.lymfomhelp.cz/" target="_blank" rel="noopener" aria-label="Lymfom Help">
-                        <img src="/images/partneri/lymfom-help.png" alt="Lymfom Help" loading="lazy" width="299" height="152">
+                        <img src="/images/partneri/mini/lymfom-help.webp" alt="Lymfom Help" decoding="async" fetchpriority="low" width="300" height="152">
                     </a>
                     <a class="pl-item" href="https://konferencezenyzenam.cz/" target="_blank" rel="noopener" aria-label="Konference Ženy ženám">
-                        <img src="/images/partneri/zeny-zenam.png" alt="Konference Ženy ženám" loading="lazy" width="800" height="342">
+                        <img src="/images/partneri/mini/zeny-zenam.webp" alt="Konference Ženy ženám" decoding="async" fetchpriority="low" width="300" height="128">
                     </a>
                     <a class="pl-item" href="https://www.epicture.cz/" target="_blank" rel="noopener" aria-label="Epicture">
-                        <img src="/images/partneri/epicture.png" alt="Epicture" loading="lazy" width="800" height="92">
+                        <img src="/images/partneri/mini/epicture.webp" alt="Epicture" decoding="async" fetchpriority="low" width="300" height="34">
                     </a>
                     <a class="pl-item" href="https://www.melvil.cz/" target="_blank" rel="noopener" aria-label="Jan Melvil Publishing">
-                        <img src="/images/partneri/melvil.png" alt="Jan Melvil Publishing" loading="lazy" width="800" height="323">
+                        <img src="/images/partneri/mini/melvil.webp" alt="Jan Melvil Publishing" decoding="async" fetchpriority="low" width="300" height="121">
                     </a>
                     <a class="pl-item" href="https://nadace.veronica.cz/" target="_blank" rel="noopener" aria-label="Nadace Veronica">
-                        <img src="/images/partneri/nadace-veronica.png" alt="Nadace Veronica" loading="lazy" width="800" height="345">
+                        <img src="/images/partneri/mini/nadace-veronica.webp" alt="Nadace Veronica" decoding="async" fetchpriority="low" width="300" height="129">
                     </a>
                     <a class="pl-item pl-square" href="https://www.czeska.cz/" target="_blank" rel="noopener" aria-label="CZESKA">
-                        <img src="/images/partneri/czeska.png" alt="CZESKA" loading="lazy" width="600" height="599">
+                        <img src="/images/partneri/mini/czeska.webp" alt="CZESKA" decoding="async" fetchpriority="low" width="300" height="299">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/orera_bags/" target="_blank" rel="noopener" aria-label="Orera Bags">
-                        <img src="/images/partneri/orera-bags.png" alt="Orera Bags" loading="lazy" width="600" height="445">
+                        <img src="/images/partneri/mini/orera-bags.webp" alt="Orera Bags" decoding="async" fetchpriority="low" width="300" height="222">
                     </a>
                     <a class="pl-item" href="https://sxinteligence.cz/" target="_blank" rel="noopener" aria-label="Sexinteligence">
-                        <img src="/images/partneri/sx-inteligence.svg" alt="Sexinteligence" loading="lazy" width="792" height="154">
+                        <img src="/images/partneri/mini/sx-inteligence.svg" alt="Sexinteligence" decoding="async" fetchpriority="low" width="792" height="154">
                     </a>
                     <a class="pl-item pl-square" href="https://www.makeupinstitute.cz/" target="_blank" rel="noopener" aria-label="Make Up Institute Prague">
-                        <img src="/images/partneri/makeup-institute-prague.png" alt="Make Up Institute Prague" loading="lazy" width="800" height="371">
+                        <img src="/images/partneri/mini/makeup-institute-prague.webp" alt="Make Up Institute Prague" decoding="async" fetchpriority="low" width="300" height="139">
                     </a>
                     <a class="pl-item" href="https://www.jakko.cz/" target="_blank" rel="noopener" aria-label="JAKKO candles">
-                        <img src="/images/partneri/jakko-candles.png" alt="JAKKO candles" loading="lazy" width="800" height="133">
+                        <img src="/images/partneri/mini/jakko-candles.webp" alt="JAKKO candles" decoding="async" fetchpriority="low" width="300" height="50">
                     </a>
                     <a class="pl-item" href="https://www.niftyminds.cz" target="_blank" rel="noopener" aria-label="Nifty Minds">
-                        <img src="/images/partneri/nifty-minds.png" alt="Nifty Minds" loading="lazy" width="1200" height="244">
+                        <img src="/images/partneri/mini/nifty-minds.webp" alt="Nifty Minds" decoding="async" fetchpriority="low" width="300" height="61">
                     </a>
                     <a class="pl-item" href="https://www.kudyznudy.cz/" target="_blank" rel="noopener" aria-label="Kudy z nudy">
-                        <img src="/images/partneri/kudyznudy.png" alt="Kudy z nudy" loading="lazy" width="370" height="84">
+                        <img src="/images/partneri/mini/kudyznudy.webp" alt="Kudy z nudy" decoding="async" fetchpriority="low" width="300" height="68">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/psychobitches_club/" target="_blank" rel="noopener" aria-label="Psychobitches">
-                        <img src="/images/partneri/psychobitches.png" alt="Psychobitches" loading="lazy" width="500" height="500">
+                        <img src="/images/partneri/mini/psychobitches.webp" alt="Psychobitches" decoding="async" fetchpriority="low" width="300" height="300">
                     </a>
                     <a class="pl-item" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/hulkarna.png" alt="" loading="lazy" width="1021" height="216">
+                        <img src="/images/partneri/mini/hulkarna.webp" alt="" decoding="async" fetchpriority="low" width="300" height="63">
                     </a>
                     <a class="pl-item pl-square" href="https://www.rozkosss.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/rozkosss.png" alt="" loading="lazy" width="397" height="600">
+                        <img src="/images/partneri/mini/rozkosss.webp" alt="" decoding="async" fetchpriority="low" width="198" height="300">
                     </a>
                     <a class="pl-item" href="https://www.undergroundcomedy.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/underground-comedy.png" alt="" loading="lazy" width="256" height="101">
+                        <img src="/images/partneri/mini/underground-comedy.webp" alt="" decoding="async" fetchpriority="low" width="300" height="118">
                     </a>
                     <a class="pl-item" href="https://www.linkedin.com/in/kristynasuranova/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/prokristynace.svg" alt="" loading="lazy" width="1324" height="304">
+                        <img src="/images/partneri/mini/prokristynace.svg" alt="" decoding="async" fetchpriority="low" width="1324" height="304">
                     </a>
                     <a class="pl-item" href="https://imperiongroup.eu/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/cafe-imperion.png" alt="" loading="lazy" width="800" height="177">
+                        <img src="/images/partneri/mini/cafe-imperion.webp" alt="" decoding="async" fetchpriority="low" width="300" height="66">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/sladke_neresti_brno/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/sladke-neresti.png" alt="" loading="lazy" width="600" height="592">
+                        <img src="/images/partneri/mini/sladke-neresti.webp" alt="" decoding="async" fetchpriority="low" width="300" height="296">
                     </a>
                     <a class="pl-item" href="https://www.instagram.com/mimo.hru/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/mimo-hru.png" alt="" loading="lazy" width="800" height="247">
+                        <img src="/images/partneri/mini/mimo-hru.webp" alt="" decoding="async" fetchpriority="low" width="300" height="92">
                     </a>
                     <a class="pl-item pl-square" href="https://www.breberkatattoo.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/breberka-tattoo.png" alt="" loading="lazy" width="522" height="413">
+                        <img src="/images/partneri/mini/breberka-tattoo.webp" alt="" decoding="async" fetchpriority="low" width="300" height="237">
                     </a>
                     <a class="pl-item" href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/adelice.png" alt="" loading="lazy" width="800" height="280">
+                        <img src="/images/partneri/mini/adelice.webp" alt="" decoding="async" fetchpriority="low" width="300" height="105">
                     </a>
                     <a class="pl-item pl-square" href="https://amitydrinks.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/amity-drinks.svg" alt="" loading="lazy" width="2156" height="1241">
+                        <img src="/images/partneri/mini/amity-drinks.svg" alt="" decoding="async" fetchpriority="low" width="2156" height="1241">
                     </a>
                     <a class="pl-item" href="https://www.colabs.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/colabs.png" alt="" loading="lazy" width="841" height="191">
+                        <img src="/images/partneri/mini/colabs.webp" alt="" decoding="async" fetchpriority="low" width="300" height="68">
                     </a>
                     <a class="pl-item" href="https://www.pragers.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/pragers.svg" alt="" loading="lazy" width="1792" height="170">
+                        <img src="/images/partneri/mini/pragers.svg" alt="" decoding="async" fetchpriority="low" width="1792" height="170">
                     </a>
                     <a class="pl-item pl-square" href="https://www.bertycky.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/bertycky.png" alt="" loading="lazy" width="631" height="316">
+                        <img src="/images/partneri/mini/bertycky.webp" alt="" decoding="async" fetchpriority="low" width="300" height="150">
                     </a>
                     <a class="pl-item" href="https://furiosa.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/furiosa.png" alt="" loading="lazy" width="800" height="133">
+                        <img src="/images/partneri/mini/furiosa.webp" alt="" decoding="async" fetchpriority="low" width="300" height="50">
                     </a>
                     <a class="pl-item pl-square" href="https://www.lymfomhelp.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/lymfom-help.png" alt="" loading="lazy" width="299" height="152">
+                        <img src="/images/partneri/mini/lymfom-help.webp" alt="" decoding="async" fetchpriority="low" width="300" height="152">
                     </a>
                     <a class="pl-item" href="https://konferencezenyzenam.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/zeny-zenam.png" alt="" loading="lazy" width="800" height="342">
+                        <img src="/images/partneri/mini/zeny-zenam.webp" alt="" decoding="async" fetchpriority="low" width="300" height="128">
                     </a>
                     <a class="pl-item" href="https://www.epicture.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/epicture.png" alt="" loading="lazy" width="800" height="92">
+                        <img src="/images/partneri/mini/epicture.webp" alt="" decoding="async" fetchpriority="low" width="300" height="34">
                     </a>
                     <a class="pl-item" href="https://www.melvil.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/melvil.png" alt="" loading="lazy" width="800" height="323">
+                        <img src="/images/partneri/mini/melvil.webp" alt="" decoding="async" fetchpriority="low" width="300" height="121">
                     </a>
                     <a class="pl-item" href="https://nadace.veronica.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/nadace-veronica.png" alt="" loading="lazy" width="800" height="345">
+                        <img src="/images/partneri/mini/nadace-veronica.webp" alt="" decoding="async" fetchpriority="low" width="300" height="129">
                     </a>
                     <a class="pl-item pl-square" href="https://www.czeska.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/czeska.png" alt="" loading="lazy" width="600" height="599">
+                        <img src="/images/partneri/mini/czeska.webp" alt="" decoding="async" fetchpriority="low" width="300" height="299">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/orera_bags/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/orera-bags.png" alt="" loading="lazy" width="600" height="445">
+                        <img src="/images/partneri/mini/orera-bags.webp" alt="" decoding="async" fetchpriority="low" width="300" height="222">
                     </a>
                     <a class="pl-item" href="https://sxinteligence.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/sx-inteligence.svg" alt="" loading="lazy" width="792" height="154">
+                        <img src="/images/partneri/mini/sx-inteligence.svg" alt="" decoding="async" fetchpriority="low" width="792" height="154">
                     </a>
                     <a class="pl-item pl-square" href="https://www.makeupinstitute.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/makeup-institute-prague.png" alt="" loading="lazy" width="800" height="371">
+                        <img src="/images/partneri/mini/makeup-institute-prague.webp" alt="" decoding="async" fetchpriority="low" width="300" height="139">
                     </a>
                     <a class="pl-item" href="https://www.jakko.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/jakko-candles.png" alt="" loading="lazy" width="800" height="133">
+                        <img src="/images/partneri/mini/jakko-candles.webp" alt="" decoding="async" fetchpriority="low" width="300" height="50">
                     </a>
                     <a class="pl-item" href="https://www.niftyminds.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/nifty-minds.png" alt="" loading="lazy" width="1200" height="244">
+                        <img src="/images/partneri/mini/nifty-minds.webp" alt="" decoding="async" fetchpriority="low" width="300" height="61">
                     </a>
                     <a class="pl-item" href="https://www.kudyznudy.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/kudyznudy.png" alt="" loading="lazy" width="370" height="84">
+                        <img src="/images/partneri/mini/kudyznudy.webp" alt="" decoding="async" fetchpriority="low" width="300" height="68">
                     </a>
                     <a class="pl-item pl-square" href="https://www.instagram.com/psychobitches_club/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
-                        <img src="/images/partneri/psychobitches.png" alt="" loading="lazy" width="500" height="500">
+                        <img src="/images/partneri/mini/psychobitches.webp" alt="" decoding="async" fetchpriority="low" width="300" height="300">
                     </a>
             </div>
         </div>
