@@ -385,6 +385,61 @@
             word-break: break-all;
         }
 
+        /* Módní přehlídka: galerie se smíšenou orientací fotek.
+           Fotky na šířku a na výšku mají vlastní řadu, aby se nemusely ořezávat
+           a nevznikala prázdná díra jako u sloupcového (masonry) rozvržení. */
+        .fashion-gallery {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .fg-row {
+            display: grid;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .fg-row--wide { grid-template-columns: repeat(3, 1fr); }
+
+        .fg-row--tall {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .fashion-gallery img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .fg-row--wide { grid-template-columns: 1fr; }
+            .fg-row--tall { max-width: none; }
+        }
+
+        @media (max-width: 520px) {
+            .fg-row--tall { grid-template-columns: 1fr; }
+        }
+
+        .fashion-gallery-credit {
+            max-width: 1000px;
+            margin: 0.4rem auto 2.5rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.88rem;
+        }
+
+        @media (max-width: 860px) {
+            .fashion-gallery { column-count: 2; }
+        }
+
+        @media (max-width: 520px) {
+            .fashion-gallery { column-count: 1; }
+        }
+
         /* Módní přehlídka */
         .fashion-partners {
             display: grid;
@@ -746,7 +801,7 @@
                         <td>2 200 Kč</td>
                     </tr>
                     <tr>
-                        <td>Autorka díla EUFORIE (podíl z prodeje)</td>
+                        <td>Autorka díla EUFORIE</td>
                         <td>1 750 Kč</td>
                     </tr>
                     <tr class="split-total">
@@ -776,7 +831,7 @@
             <p class="media-lead reveal">
                 Vedle výtvarného umění nabídl fest panelovou diskuzi „Všechno je to v hlavě
                 a v číči" o ženské psychice a sexualitě, stand-up, koncerty, tetovací studio,
-                market lokálních tvůrců, módní přehlídku devíti žen se silnými příběhy
+                design market českých značek a umělců, módní přehlídku devíti žen se silnými příběhy
                 a závěrečnou show drag queen Miss Petty.
                 Druhý ročník je v plánu na rok 2027.
             </p>
@@ -792,6 +847,20 @@
                 vědkyně, podnikatelky, umělkyně a matky. Každá přišla s vlastním příběhem,
                 který k přehlídce zazněl. Outfity, šperky a make-up pro ně připravily
                 spolupracující značky.
+            </p>
+            <div class="fashion-gallery">
+                <div class="fg-row fg-row--wide">
+                    <img src="/images/prehlidka/prehlidka-2253.webp" alt="Modelka v džínovém kabátě prochází mezi diváky pod barevnými fáborky" loading="lazy" width="1000" height="665">
+                    <img src="/images/prehlidka/prehlidka-2236.webp" alt="Modelka kráčí večerním parkem, diváci ji sledují ze židlí" loading="lazy" width="1000" height="665">
+                    <img src="/images/prehlidka/prehlidka-2269.webp" alt="Moderátorka s mikrofonem uvádí modelku na koberci uprostřed parku" loading="lazy" width="1000" height="665">
+                </div>
+                <div class="fg-row fg-row--tall">
+                    <img src="/images/prehlidka/prehlidka-2323.webp" alt="Modelka v růžové bundě s designovou vycházkovou holí od Hůlkárny" loading="lazy" width="665" height="1000">
+                    <img src="/images/prehlidka/prehlidka-2326.webp" alt="Modelka ve zlatých kalhotách s deštníkem na nočním molu" loading="lazy" width="665" height="1000">
+                </div>
+            </div>
+            <p class="fashion-gallery-credit">
+                Foto: <a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">Adelice</a>
             </p>
             <div class="fashion-partners">
                 <div class="fashion-partner reveal">
@@ -1252,7 +1321,7 @@
             <h2 class="section-title reveal">Mediakit ke stažení</h2>
             <div class="mediakit-box reveal">
                 <p>
-                    V balíčku (ZIP, 11 MB) najdete výběr 27 oficiálních fotografií z festivalu,
+                    V balíčku (ZIP, 11 MB) najdete výběr 30 oficiálních fotografií z festivalu,
                     logo Číča Art Festu a logo brandu Podrážděná číča. Fotografie jsou volné
                     k redakčnímu použití.
                 </p>
