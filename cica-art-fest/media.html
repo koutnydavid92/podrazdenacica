@@ -622,6 +622,74 @@
             .fact-number { font-size: 1.5rem; }
             .person-card { flex-direction: row; }
         }
+
+        /* Plovoucí pásek s logy partnerů */
+        .partner-marquee {
+            padding: 3rem 0 4rem;
+            overflow: hidden;
+        }
+
+        .pl-heading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.9rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1.6rem;
+        }
+
+        .pl-viewport {
+            overflow: hidden;
+            /* okraje pásu změkčené do ztracena */
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+        }
+
+        .pl-track {
+            display: flex;
+            gap: 14px;
+            width: max-content;
+            animation: pl-scroll 90s linear infinite;
+        }
+
+        .pl-viewport:hover .pl-track { animation-play-state: paused; }
+
+        @keyframes pl-scroll {
+            from { transform: translateX(0); }
+            /* posun o polovinu = přesně jedna sada log, proto navazuje bez švu */
+            to   { transform: translateX(calc(-50% - 7px)); }
+        }
+
+        .pl-item {
+            flex: 0 0 auto;
+            width: 150px;
+            height: 84px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .pl-item:hover { box-shadow: 0 0 20px rgba(254, 69, 232, 0.35); }
+
+        .pl-item img {
+            max-width: 100%;
+            max-height: 44px;
+            width: auto;
+            height: auto;
+        }
+
+        /* čtvercová loga potřebují víc výšky, jinak zaniknou */
+        .pl-item.pl-square { padding: 8px 18px; }
+        .pl-item.pl-square img { max-height: 66px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pl-track { animation: none; }
+            .pl-viewport { overflow-x: auto; }
+        }
     </style>
 </head>
 <body>
@@ -776,7 +844,8 @@
             <h2 class="section-title reveal">Kam jde výtěžek aukce</h2>
             <p class="media-lead reveal" style="text-align: center;">
                 Všech deset děl našlo své majitele během živého finále aukce.
-                Výtěžek se rozděluje takto:
+                Na dobročinné účely putuje <strong>73 116 Kč</strong>, tedy
+                <strong>82 % celého výtěžku</strong>. Rozdělení je následující:
             </p>
             <table class="split-table reveal">
                 <tbody>
@@ -1350,6 +1419,177 @@
                     nebo podklady. Festival najdete i na Instagramu:
                     <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>
                 </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plovoucí pásek s logy partnerů -->
+    <section id="partneri" class="partner-marquee">
+        <p class="pl-heading">Partneři a mediální partneři prvního ročníku</p>
+        <div class="pl-viewport">
+            <div class="pl-track">
+                    <a class="pl-item" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-label="Hůlkárna.cz">
+                        <img src="/images/partneri/hulkarna.png" alt="Hůlkárna.cz" loading="lazy" width="1021" height="216">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.rozkosss.cz" target="_blank" rel="noopener" aria-label="Rozkoššš">
+                        <img src="/images/partneri/rozkosss.png" alt="Rozkoššš" loading="lazy" width="397" height="600">
+                    </a>
+                    <a class="pl-item" href="https://www.undergroundcomedy.cz" target="_blank" rel="noopener" aria-label="Underground Comedy Club">
+                        <img src="/images/partneri/underground-comedy.png" alt="Underground Comedy Club" loading="lazy" width="256" height="101">
+                    </a>
+                    <a class="pl-item" href="https://www.linkedin.com/in/kristynasuranova/" target="_blank" rel="noopener" aria-label="Prokristýnace event">
+                        <img src="/images/partneri/prokristynace.svg" alt="Prokristýnace event" loading="lazy" width="1324" height="304">
+                    </a>
+                    <a class="pl-item" href="https://imperiongroup.eu/" target="_blank" rel="noopener" aria-label="Cafe Imperion">
+                        <img src="/images/partneri/cafe-imperion.png" alt="Cafe Imperion" loading="lazy" width="800" height="177">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/sladke_neresti_brno/" target="_blank" rel="noopener" aria-label="Sladké neřesti Brno">
+                        <img src="/images/partneri/sladke-neresti.png" alt="Sladké neřesti Brno" loading="lazy" width="600" height="592">
+                    </a>
+                    <a class="pl-item" href="https://www.instagram.com/mimo.hru/" target="_blank" rel="noopener" aria-label="Mimo hru">
+                        <img src="/images/partneri/mimo-hru.png" alt="Mimo hru" loading="lazy" width="800" height="247">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.breberkatattoo.cz/" target="_blank" rel="noopener" aria-label="Breberka Tattoo">
+                        <img src="/images/partneri/breberka-tattoo.png" alt="Breberka Tattoo" loading="lazy" width="522" height="413">
+                    </a>
+                    <a class="pl-item" href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" aria-label="Adelice">
+                        <img src="/images/partneri/adelice.png" alt="Adelice" loading="lazy" width="800" height="280">
+                    </a>
+                    <a class="pl-item pl-square" href="https://amitydrinks.cz/" target="_blank" rel="noopener" aria-label="Amity Drinks">
+                        <img src="/images/partneri/amity-drinks.svg" alt="Amity Drinks" loading="lazy" width="2156" height="1241">
+                    </a>
+                    <a class="pl-item" href="https://www.colabs.cz/" target="_blank" rel="noopener" aria-label="CO.LABS">
+                        <img src="/images/partneri/colabs.png" alt="CO.LABS" loading="lazy" width="841" height="191">
+                    </a>
+                    <a class="pl-item" href="https://www.pragers.cz/" target="_blank" rel="noopener" aria-label="Prager's">
+                        <img src="/images/partneri/pragers.svg" alt="Prager's" loading="lazy" width="1792" height="170">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.bertycky.cz/" target="_blank" rel="noopener" aria-label="Bertyčky">
+                        <img src="/images/partneri/bertycky.png" alt="Bertyčky" loading="lazy" width="631" height="316">
+                    </a>
+                    <a class="pl-item" href="https://furiosa.cz/" target="_blank" rel="noopener" aria-label="Furiosa">
+                        <img src="/images/partneri/furiosa.png" alt="Furiosa" loading="lazy" width="800" height="133">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.lymfomhelp.cz/" target="_blank" rel="noopener" aria-label="Lymfom Help">
+                        <img src="/images/partneri/lymfom-help.png" alt="Lymfom Help" loading="lazy" width="299" height="152">
+                    </a>
+                    <a class="pl-item" href="https://konferencezenyzenam.cz/" target="_blank" rel="noopener" aria-label="Konference Ženy ženám">
+                        <img src="/images/partneri/zeny-zenam.png" alt="Konference Ženy ženám" loading="lazy" width="800" height="342">
+                    </a>
+                    <a class="pl-item" href="https://www.epicture.cz/" target="_blank" rel="noopener" aria-label="Epicture">
+                        <img src="/images/partneri/epicture.png" alt="Epicture" loading="lazy" width="800" height="92">
+                    </a>
+                    <a class="pl-item" href="https://www.melvil.cz/" target="_blank" rel="noopener" aria-label="Jan Melvil Publishing">
+                        <img src="/images/partneri/melvil.png" alt="Jan Melvil Publishing" loading="lazy" width="800" height="323">
+                    </a>
+                    <a class="pl-item" href="https://nadace.veronica.cz/" target="_blank" rel="noopener" aria-label="Nadace Veronica">
+                        <img src="/images/partneri/nadace-veronica.png" alt="Nadace Veronica" loading="lazy" width="800" height="345">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.czeska.cz/" target="_blank" rel="noopener" aria-label="CZESKA">
+                        <img src="/images/partneri/czeska.png" alt="CZESKA" loading="lazy" width="600" height="599">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/orera_bags/" target="_blank" rel="noopener" aria-label="Orera Bags">
+                        <img src="/images/partneri/orera-bags.png" alt="Orera Bags" loading="lazy" width="600" height="445">
+                    </a>
+                    <a class="pl-item" href="https://sxinteligence.cz/" target="_blank" rel="noopener" aria-label="Sexinteligence">
+                        <img src="/images/partneri/sx-inteligence.svg" alt="Sexinteligence" loading="lazy" width="792" height="154">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.makeupinstitute.cz/" target="_blank" rel="noopener" aria-label="Make Up Institute Prague">
+                        <img src="/images/partneri/makeup-institute-prague.png" alt="Make Up Institute Prague" loading="lazy" width="800" height="371">
+                    </a>
+                    <a class="pl-item" href="https://www.jakko.cz/" target="_blank" rel="noopener" aria-label="JAKKO candles">
+                        <img src="/images/partneri/jakko-candles.png" alt="JAKKO candles" loading="lazy" width="800" height="133">
+                    </a>
+                    <a class="pl-item" href="https://www.niftyminds.cz" target="_blank" rel="noopener" aria-label="Nifty Minds">
+                        <img src="/images/partneri/nifty-minds.png" alt="Nifty Minds" loading="lazy" width="1200" height="244">
+                    </a>
+                    <a class="pl-item" href="https://www.kudyznudy.cz/" target="_blank" rel="noopener" aria-label="Kudy z nudy">
+                        <img src="/images/partneri/kudyznudy.png" alt="Kudy z nudy" loading="lazy" width="370" height="84">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/psychobitches_club/" target="_blank" rel="noopener" aria-label="Psychobitches">
+                        <img src="/images/partneri/psychobitches.png" alt="Psychobitches" loading="lazy" width="500" height="500">
+                    </a>
+                    <a class="pl-item" href="https://www.hulkarna.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/hulkarna.png" alt="" loading="lazy" width="1021" height="216">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.rozkosss.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/rozkosss.png" alt="" loading="lazy" width="397" height="600">
+                    </a>
+                    <a class="pl-item" href="https://www.undergroundcomedy.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/underground-comedy.png" alt="" loading="lazy" width="256" height="101">
+                    </a>
+                    <a class="pl-item" href="https://www.linkedin.com/in/kristynasuranova/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/prokristynace.svg" alt="" loading="lazy" width="1324" height="304">
+                    </a>
+                    <a class="pl-item" href="https://imperiongroup.eu/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/cafe-imperion.png" alt="" loading="lazy" width="800" height="177">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/sladke_neresti_brno/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/sladke-neresti.png" alt="" loading="lazy" width="600" height="592">
+                    </a>
+                    <a class="pl-item" href="https://www.instagram.com/mimo.hru/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/mimo-hru.png" alt="" loading="lazy" width="800" height="247">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.breberkatattoo.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/breberka-tattoo.png" alt="" loading="lazy" width="522" height="413">
+                    </a>
+                    <a class="pl-item" href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/adelice.png" alt="" loading="lazy" width="800" height="280">
+                    </a>
+                    <a class="pl-item pl-square" href="https://amitydrinks.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/amity-drinks.svg" alt="" loading="lazy" width="2156" height="1241">
+                    </a>
+                    <a class="pl-item" href="https://www.colabs.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/colabs.png" alt="" loading="lazy" width="841" height="191">
+                    </a>
+                    <a class="pl-item" href="https://www.pragers.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/pragers.svg" alt="" loading="lazy" width="1792" height="170">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.bertycky.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/bertycky.png" alt="" loading="lazy" width="631" height="316">
+                    </a>
+                    <a class="pl-item" href="https://furiosa.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/furiosa.png" alt="" loading="lazy" width="800" height="133">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.lymfomhelp.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/lymfom-help.png" alt="" loading="lazy" width="299" height="152">
+                    </a>
+                    <a class="pl-item" href="https://konferencezenyzenam.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/zeny-zenam.png" alt="" loading="lazy" width="800" height="342">
+                    </a>
+                    <a class="pl-item" href="https://www.epicture.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/epicture.png" alt="" loading="lazy" width="800" height="92">
+                    </a>
+                    <a class="pl-item" href="https://www.melvil.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/melvil.png" alt="" loading="lazy" width="800" height="323">
+                    </a>
+                    <a class="pl-item" href="https://nadace.veronica.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/nadace-veronica.png" alt="" loading="lazy" width="800" height="345">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.czeska.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/czeska.png" alt="" loading="lazy" width="600" height="599">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/orera_bags/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/orera-bags.png" alt="" loading="lazy" width="600" height="445">
+                    </a>
+                    <a class="pl-item" href="https://sxinteligence.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/sx-inteligence.svg" alt="" loading="lazy" width="792" height="154">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.makeupinstitute.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/makeup-institute-prague.png" alt="" loading="lazy" width="800" height="371">
+                    </a>
+                    <a class="pl-item" href="https://www.jakko.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/jakko-candles.png" alt="" loading="lazy" width="800" height="133">
+                    </a>
+                    <a class="pl-item" href="https://www.niftyminds.cz" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/nifty-minds.png" alt="" loading="lazy" width="1200" height="244">
+                    </a>
+                    <a class="pl-item" href="https://www.kudyznudy.cz/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/kudyznudy.png" alt="" loading="lazy" width="370" height="84">
+                    </a>
+                    <a class="pl-item pl-square" href="https://www.instagram.com/psychobitches_club/" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">
+                        <img src="/images/partneri/psychobitches.png" alt="" loading="lazy" width="500" height="500">
+                    </a>
             </div>
         </div>
     </section>
