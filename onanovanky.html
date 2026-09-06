@@ -147,6 +147,7 @@
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
         }
         .shop-hero .hero-title { font-size: clamp(2.2rem, 5vw, 3.6rem); }
+        .shop-hero .hero-title em { font-style: normal; color: var(--accent-neon); }
         .shop-price-row {
             display: flex;
             flex-wrap: wrap;
@@ -162,6 +163,15 @@
         }
         .shop-price-note { color: var(--text-secondary); font-size: 1rem; }
         .shop-price-note b { color: var(--white); }
+
+        /* Specifikace */
+        #co-dostanes { padding-top: 0; }
+        .spec-wrap { max-width: 820px; margin: 0 auto; }
+        .spec { width: 100%; border-collapse: collapse; }
+        .spec th, .spec td { padding: 0.9rem 0.8rem; border-bottom: 1px solid var(--divider); text-align: left; vertical-align: top; line-height: 1.5; }
+        .spec th { color: var(--accent-neon); font-family: 'Archivo Black', sans-serif; font-weight: 400; white-space: nowrap; width: 120px; font-size: 0.95rem; }
+        .spec td { color: var(--text-secondary); }
+        .spec tr:first-child th, .spec tr:first-child td { border-top: 1px solid var(--divider); }
 
         /* Fakta */
         .fact-grid {
@@ -216,6 +226,7 @@
             padding: 0.4rem 0.6rem;
             text-align: center;
         }
+        .sheet-grid.five { grid-template-columns: repeat(5, 1fr); max-width: 1000px; margin: 0 auto 2rem; }
         .sheet-more {
             text-align: center;
             color: var(--text-secondary);
@@ -470,11 +481,13 @@
             border: 1px solid var(--divider);
             border-radius: 16px;
             padding: 1.8rem 1.6rem;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             gap: 0.4rem;
         }
         .partner h3 { color: var(--white); font-size: 1.25rem; }
+        .partner-photo { width: calc(100% + 3.2rem); margin: -1.8rem -1.6rem 0.8rem; max-width: none; border-radius: 16px 16px 0 0; display: block; aspect-ratio: 3 / 2; object-fit: cover; }
         .partner .city { color: var(--accent-neon); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         .partner p { color: var(--text-secondary); line-height: 1.6; }
         .partner a { color: var(--accent-neon); }
@@ -491,6 +504,8 @@
             .shop-cover { max-width: 320px; margin: 0 auto; transform: rotate(-2deg); }
             .order-box, .sample-box { padding: 1.8rem 1.2rem; border-radius: 18px; }
             .sample-form { flex-direction: column; }
+            .sheet-grid.five { grid-template-columns: repeat(3, 1fr); }
+            .spec th { width: 90px; }
             .ship { grid-template-columns: auto 1fr; }
             .ship .p { grid-column: 2; justify-self: start; }
         }
@@ -519,8 +534,8 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="/#art">Art</a></li>
-                    <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
                     <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
+                    <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
                     <li><a href="/cica-art-fest">Číča Art Fest</a></li>
                     <li><a href="/#words">Slova</a></li>
                     <li><a href="/#podcast">Podcast</a></li>
@@ -545,8 +560,8 @@
     <div class="mobile-menu" role="navigation" aria-label="Mobilní navigace">
         <ul>
             <li><a href="/#art">Art</a></li>
-            <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
             <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
+            <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
             <li><a href="/cica-art-fest">Číča Art Fest</a></li>
             <li><a href="/#words">Slova</a></li>
             <li><a href="/#podcast">Podcast</a></li>
@@ -567,16 +582,17 @@
                     <div class="age" aria-label="Jen pro dospělé">18+</div>
                 </div>
                 <div class="hero-text">
-                    <div class="hero-label">Z ateliéru na Veselé · vytištěno, ne staženo</div>
-                    <h1 class="hero-title">Onanovánky 2026. Antisystémové omalovánky pro dospělé.</h1>
+                    <div class="hero-label">Z dílny Podrážděné číči</div>
+                    <h1 class="hero-title"><em>Onanovánky 2026.</em> Antisystémové omalovánky pro dospělé.</h1>
                     <p class="hero-description">
-                        Třicet motivů podle skutečných fotek, které nám poslala číča komunita.
-                        Nakreslila je Podrážděná číča, vytiskly se na spirálu, ať můžeš stránku
-                        odtrhnout a pověsit na zeď. Pastelky, fixy, akvarel, rtěnka. Co dům dal.
+                        Třicet žhavých motivů podle skutečných fotek z naší číča komunity.
+                        Art by Podrážděná číča, vytištěné na spirálu, ať můžeš stránku odtrhnout
+                        a pověsit na zeď. K vymalování použij pastelky, fixy, akvarel, rtěnku.
+                        Vhodné na doma, do parku i do šaliny.
                     </p>
                     <div class="shop-price-row">
                         <div class="shop-price">333 Kč</div>
-                        <div class="shop-price-note">od tří kusů <b>plátěná číča taška zdarma</b></div>
+                        <div class="shop-price-note">Kup alespoň tři kusy (pro tebe, pro kámošku, pro mámu) a získej <b>plátěnou číča tašku jako dárek</b>.</div>
                     </div>
                     <div class="hero-buttons">
                         <a href="#koupit" class="btn-primary" data-cta="onanovanky_hero_koupit">Chci Onanovánky</a>
@@ -587,62 +603,48 @@
         </div>
     </section>
 
-    <!-- Co dostaneš -->
+    <!-- Specifikace -->
     <section id="co-dostanes">
         <div class="container">
-            <h2 class="section-title reveal">Co ti přijde do ruky</h2>
-            <div class="fact-grid">
-                <div class="fact reveal" data-delay="0">
-                    <div class="num">30</div>
-                    <h3>motivů ze skutečných fotek</h3>
-                    <p>Charizard GO, Kozy s kozama, Královny Brna, Miss Petty, Furiosa a dalších pětadvacet. Každý podle fotky, co nám poslal někdo z vás.</p>
-                </div>
-                <div class="fact reveal" data-delay="60">
-                    <div class="num">A4</div>
-                    <h3>na spirále nahoře</h3>
-                    <p>Černá twin wire vazba. Stránka se dá vymalovat, odtrhnout, zarámovat, poslat kámošce nebo pověsit na ledničku.</p>
-                </div>
-                <div class="fact reveal" data-delay="120">
-                    <div class="num">350 g</div>
-                    <h3>obálka, co něco vydrží</h3>
-                    <p>Matná laminace na tvrdé křídě, zadní strana karton. Snese kabelku, šalinu i tvoje nálady.</p>
-                </div>
-                <div class="fact reveal" data-delay="180">
-                    <div class="num">1/1</div>
-                    <h3>čistá linka, žádný předtisk</h3>
-                    <p>Vnitřek černobíle, oboustranně. Barvy jsou na tobě. Pastelky, fixy, akvarel, rtěnka, kafe.</p>
-                </div>
-                <div class="fact reveal" data-delay="240">
-                    <div class="num">18+</div>
-                    <h3>není to pro děti</h3>
-                    <p>Nahota, sebevědomí, žádné cukrování. Kupuješ jen, když ti bylo osmnáct. Tečka.</p>
-                </div>
-                <div class="fact reveal" data-delay="300">
-                    <div class="num">₍^. .^₎⟆</div>
-                    <h3>nakreslila Podrážděná číča</h3>
-                    <p>V ateliéru na Veselé 5 v Brně. Poprvé se představily na Číča Art Festu, teď jdou do světa.</p>
-                </div>
+            <div class="spec-wrap reveal">
+                <table class="spec">
+                    <tr><th>Motivy</th><td>30, podle skutečných fotek z číča komunity. Art by Podrážděná číča.</td></tr>
+                    <tr><th>Formát</th><td>A4, černá spirála nahoře. Stránku odtrhneš, zarámuješ, pověsíš.</td></tr>
+                    <tr><th>Obálka</th><td>Matná laminace na 350g křídě, zadní strana karton.</td></tr>
+                    <tr><th>Vnitřek</th><td>Černobílý tisk, oboustranně. Barvy jsou na tobě.</td></tr>
+                    <tr><th>Věk</th><td>18+. Není to pro děti.</td></tr>
+                    <tr><th>Cena</th><td>333 Kč. Od tří kusů plátěná číča taška jako dárek.</td></tr>
+                </table>
             </div>
         </div>
     </section>
 
-    <!-- Ukázky -->
+    <!-- Ukázka: 5 stran + na mail -->
     <section id="ukazky">
         <div class="container">
-            <h2 class="section-title reveal">Deset z třiceti. Zbytek až v ruce.</h2>
-            <div class="sheet-grid reveal">
+            <h2 class="section-title reveal">Pět stránek na zkoušku. Zdarma na mail.</h2>
+            <div class="sheet-grid five reveal">
                 <div class="sheet"><img src="/images/onanovanky/charizard-go.webp" alt="Onanovánky: Charizard GO" loading="lazy" width="705" height="1000"><span>Charizard GO</span></div>
                 <div class="sheet"><img src="/images/onanovanky/viva-las-cicas.webp" alt="Onanovánky: Viva las číčas" loading="lazy" width="704" height="1000"><span>Viva las číčas</span></div>
                 <div class="sheet"><img src="/images/onanovanky/labudusumu.webp" alt="Onanovánky: Labudusumu" loading="lazy" width="704" height="1000"><span>Labudusumu</span></div>
                 <div class="sheet"><img src="/images/onanovanky/furiosa.webp" alt="Onanovánky: Furiosa" loading="lazy" width="704" height="1000"><span>Furiosa</span></div>
-                <div class="sheet"><img src="/images/onanovanky/kozy-s-kozama.webp" alt="Onanovánky: Kozy s kozama" loading="lazy" width="704" height="1000"><span>Kozy s kozama</span></div>
-                <div class="sheet"><img src="/images/onanovanky/kralovny-brna.webp" alt="Onanovánky: Královny Brna" loading="lazy" width="706" height="1000"><span>Královny Brna</span></div>
-                <div class="sheet"><img src="/images/onanovanky/miss-petty.webp" alt="Onanovánky: Miss Petty" loading="lazy" width="704" height="1000"><span>Miss Petty</span></div>
-                <div class="sheet"><img src="/images/onanovanky/radegasta.webp" alt="Onanovánky: Radegasta" loading="lazy" width="704" height="1000"><span>Radegasta</span></div>
-                <div class="sheet"><img src="/images/onanovanky/you-look-good.webp" alt="Onanovánky: You look good" loading="lazy" width="704" height="1000"><span>You look good</span></div>
                 <div class="sheet"><img src="/images/onanovanky/chivalry.webp" alt="Onanovánky: Chivalry" loading="lazy" width="1000" height="703"><span>Chivalry</span></div>
             </div>
-            <p class="sheet-more">Dalších dvacet motivů si necháváme pro ty, co si Onanovánky koupí. Tak.</p>
+            <div class="sample-box reveal" id="ukazka">
+                <p>
+                    Těchhle pět ti pošleme v PDF. Vytiskneš, vymaluješ a poznáš, jestli si sedneme.
+                    Dalších pětadvacet je jen v tištěných Onanovánkách.
+                </p>
+                <form class="sample-form" id="sampleForm" novalidate>
+                    <label class="honey" aria-hidden="true">Web <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                    <input type="email" id="sampleEmail" name="email" placeholder="tvuj@mail.cz" required autocomplete="email" inputmode="email">
+                    <button type="submit" id="sampleButton" data-cta="onanovanky_ukazka_odeslat">Poslat 5 stránek</button>
+                </form>
+                <div class="sample-done" id="sampleDone" role="status"></div>
+                <p style="font-size:.8rem;color:#888;margin:1rem auto 0;">
+                    Mail použijeme na poslání ukázky a občasné zprávy z ateliéru. Odhlásit se dá jedním klikem.
+                </p>
+            </div>
         </div>
     </section>
 
@@ -737,34 +739,13 @@
         </div>
     </section>
 
-    <!-- Ukázka na mail -->
-    <section id="ukazka">
-        <div class="container">
-            <div class="sample-box reveal">
-                <h2>Nejdřív okoštovat?</h2>
-                <p>
-                    Pošleme ti pět stránek zdarma. Vytiskneš, vymaluješ a poznáš, jestli si sedneme.
-                    Jestli jo, celé Onanovánky čekají o kousek výš.
-                </p>
-                <form class="sample-form" id="sampleForm" novalidate>
-                    <label class="honey" aria-hidden="true">Web <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-                    <input type="email" id="sampleEmail" name="email" placeholder="tvuj@mail.cz" required autocomplete="email" inputmode="email">
-                    <button type="submit" id="sampleButton" data-cta="onanovanky_ukazka_odeslat">Poslat 5 stránek</button>
-                </form>
-                <div class="sample-done" id="sampleDone" role="status"></div>
-                <p style="font-size:.8rem;color:#888;margin:1rem auto 0;">
-                    Mail použijeme na poslání ukázky a občasné zprávy z ateliéru. Odhlásit se dá jedním klikem.
-                </p>
-            </div>
-        </div>
-    </section>
-
     <!-- Prodejny -->
     <section id="prodejny">
         <div class="container">
             <h2 class="section-title reveal">Kde je koupíš naživo</h2>
             <div class="partner-grid">
                 <div class="partner reveal" data-delay="0">
+                    <img class="partner-photo" src="/images/prodejny/rozkosss.webp" alt="Prodejna Rozkoššš, Starobrněnská 15, Brno" loading="lazy" width="800" height="533">
                     <div class="city">Brno</div>
                     <h3>Rozkoššš</h3>
                     <p>
@@ -785,7 +766,7 @@
     <!-- FAQ -->
     <section id="otazky">
         <div class="container">
-            <h2 class="section-title reveal">Co se ptáte</h2>
+            <h2 class="section-title reveal">Na co se ptáte</h2>
             <div class="faq-list">
                 <div class="faq-item reveal">
                     <h3>Kdy mi to přijde?</h3>
@@ -805,11 +786,11 @@
                 </div>
                 <div class="faq-item reveal">
                     <h3>Co když se mi nebudou líbit?</h3>
-                    <p>Do 14 dnů je můžeš vrátit bez udání důvodu, pokud jsou nepomalované. Detaily v <a href="/obchodni-podminky" style="color:var(--accent-neon);">obchodních podmínkách</a>. Ale nebudou se ti nelíbit.</p>
+                    <p>Do 14 dnů je můžeš vrátit bez udání důvodu, pokud jsou nepomalované. Detaily v <a href="/obchodni-podminky" style="color:var(--accent-neon);">obchodních podmínkách</a>.</p>
                 </div>
                 <div class="faq-item reveal">
                     <h3>Prodáváte je i digitálně?</h3>
-                    <p>Ne. Chceme, abys držel*a papír a špinil*a si ruce. Pět stránek na zkoušku ti ale pošleme zdarma, viz výš.</p>
+                    <p>Ne. Chceme, ať si na to šáhneš a zašpiníš si ruce. Pět stránek na zkoušku ti ale pošleme zdarma, viz výš.</p>
                 </div>
             </div>
         </div>
@@ -923,7 +904,7 @@
                 });
             });
         });
-        const trackedSections = ['co-dostanes', 'ukazky', 'koupit', 'ukazka', 'prodejny', 'otazky'];
+        const trackedSections = ['co-dostanes', 'ukazky', 'koupit', 'prodejny', 'otazky'];
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
