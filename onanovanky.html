@@ -311,6 +311,16 @@
         }
         .bag-hint.ok { color: var(--accent-neon); font-weight: 700; }
 
+        .ship-notice {
+            border: 1px solid var(--accent-neon);
+            background: rgba(254, 69, 232, 0.08);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin-bottom: 0.9rem;
+        }
         .ship-list { display: grid; gap: 0.7rem; }
         .ship {
             display: grid;
@@ -667,6 +677,7 @@
 
                     <div class="order-step">
                         <h3><span class="n">2</span> Jak ti je doručit</h3>
+                        <p class="ship-notice">Zásilkovnu právě zapojujeme, naplno pojede během pár dnů. Objednat můžeš už teď, balíky vyrazí hned, jak to sepne.</p>
                         <div class="ship-list" id="shipList">
                             <label class="ship on">
                                 <input type="radio" name="ship" value="pickup_atelier" checked>
