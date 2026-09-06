@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const { withDb, CAPACITY, currentPriceCzk, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
 const { sendTicketEmail, subscribeToEventListSafe, sendShopShippedEmail } = require('./_email');
 const shop = require('./_shop');
+const packeta = require('./_packeta');
 
 function pinOk(pin) {
     return pinEquals(pin, process.env.ADMIN_PIN);
@@ -193,6 +194,71 @@ async function handleShop(c, body) {
             [body.id, body.status]);
         return rows.length ? { ok: true, status: rows[0].status } : { ok: false, error: 'not_found' };
     }
+    if (body.action === 'shop_packeta_create') {
+        // Založí zásilku v Zásilkovně pro jednu nebo všechny objednávky k odeslání.
+        // Číslo zásilky se uloží, objednávka přejde na 'shipped' a zákazníkovi
+        // odejde mail se sledováním. Objednávka, která už zásilku má, se přeskočí.
+        let where, params;
+        if (body.id === 'all') {
+            where = "status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null";
+            params = [];
+        } else {
+            if (!SHOP_UUID_RE.test(String(body.id || ''))) return { ok: false, error: 'bad_id' };
+            where = 'id = $1';
+            params = [body.id];
+        }
+        const { rows } = await c.query(`select * from shop_orders where ${where} order by order_no`, params);
+        const results = [];
+        for (const order of rows) {
+            if (order.packeta_tracking) { results.push({ order_no: order.order_no, skipped: 'má zásilku' }); continue; }
+            if (order.shipping_method === 'pickup_atelier') { results.push({ order_no: order.order_no, skipped: 'osobní odběr' }); continue; }
+            try {
+                const packet = await packeta.createPacket(order);
+                const { rows: upd } = await c.query(
+                    `update shop_orders
+                     set packeta_tracking = $2, status = 'shipped', shipped_at = coalesce(shipped_at, now())
+                     where id = $1 returning *`,
+                    [order.id, packet.id]);
+                let mailed = false;
+                if (upd[0].email && !upd[0].shipped_mail_sent_at) {
+                    try {
+                        await sendShopShippedEmail({ order: upd[0] });
+                        await c.query('update shop_orders set shipped_mail_sent_at = now() where id = $1', [order.id]);
+                        mailed = true;
+                    } catch (e) {
+                        console.error('shipped mail failed', order.order_no, e.message);
+                    }
+                }
+                results.push({ order_no: order.order_no, packet_id: packet.id, mailed });
+            } catch (e) {
+                console.error('packeta create failed', order.order_no, e.message);
+                results.push({ order_no: order.order_no, error: e.message });
+            }
+        }
+        return { ok: true, results };
+    }
+    if (body.action === 'shop_packeta_labels') {
+        // PDF se štítky (base64) pro zadané objednávky, nebo pro všechny odeslané
+        // za posledních 7 dní. format: 'A6 on A6' (termotiskárna) / 'A6 on A4'.
+        const format = ['A6 on A6', 'A6 on A4', 'A7 on A4', '105x35mm on A4'].includes(body.format) ? body.format : 'A6 on A6';
+        let rows;
+        if (Array.isArray(body.ids) && body.ids.length) {
+            const ids = body.ids.filter(x => SHOP_UUID_RE.test(String(x))).slice(0, 100);
+            rows = (await c.query('select order_no, packeta_tracking from shop_orders where id = any($1::uuid[]) and packeta_tracking is not null', [ids])).rows;
+        } else {
+            rows = (await c.query(`select order_no, packeta_tracking from shop_orders
+                where packeta_tracking is not null and shipped_at > now() - interval '7 days' order by order_no`)).rows;
+        }
+        if (!rows.length) return { ok: false, error: 'no_packets' };
+        const pdf = await packeta.labelsPdf(rows.map(r => r.packeta_tracking), format);
+        return { ok: true, pdf, count: rows.length, orders: rows.map(r => r.order_no) };
+    }
+    if (body.action === 'shop_packeta_csv') {
+        // Záložní cesta: CSV pro hromadný import v klientské sekci Zásilkovny
+        const { rows } = await c.query(`select * from shop_orders
+            where status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null order by order_no`);
+        return { ok: true, csv: packeta.csvFile(rows), count: rows.length };
+    }
     if (body.action === 'shop_set_stock') {
         const stock = parseInt(body.stock, 10);
         if (!(stock >= 0 && stock <= 100000)) return { ok: false, error: 'bad_stock' };
@@ -228,7 +294,7 @@ async function handleShop(c, body) {
     };
     const samples = (await c.query(
         'select email, created_at from shop_samples order by created_at desc limit 500')).rows;
-    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING };
+    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING, packeta_api: Boolean(process.env.PACKETA_API_PASSWORD) };
 }
 
 module.exports = async (req, res) => {

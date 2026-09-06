@@ -91,6 +91,22 @@
                 <p class="msg" id="stockMsg"></p>
             </div>
 
+            <h2>Zásilkovna</h2>
+            <div class="card">
+                <p class="muted" id="packetaInfo" style="margin-bottom:10px;"></p>
+                <div class="filter-row" style="margin-bottom:6px;">
+                    <button class="btn" id="packetaAllButton" type="button">Založit zásilky pro vše k odeslání</button>
+                    <select id="labelFormat" style="width:auto;margin:0;">
+                        <option value="A6 on A6">Štítky: termotiskárna (A6)</option>
+                        <option value="A6 on A4">Štítky: 4 na A4</option>
+                        <option value="A7 on A4">Štítky: 8 na A4</option>
+                    </select>
+                    <button class="btn secondary" id="labelsAllButton" type="button">Štítky za 7 dní (PDF)</button>
+                    <button class="btn secondary" id="packetaCsvButton" type="button">CSV pro ruční import</button>
+                </div>
+                <p class="msg" id="packetaMsg"></p>
+            </div>
+
             <h2>Objednávky</h2>
             <div class="filter-row" id="orderFilter">
                 <button class="filterbtn active" data-filter="todo" type="button">K vyřízení</button>
@@ -180,6 +196,11 @@
                 ['Ukázek', s.samples]
             ].map(t => `<div class="tile${t[2] ? ' attention' : ''}"><div class="num">${esc(t[1])}</div><div class="lbl">${esc(t[0])}</div></div>`).join('');
             el('stockInput').value = s.stock;
+            el('packetaInfo').textContent = data.packeta_api
+                ? 'Napojeno na API Zásilkovny. Založení zásilky uloží číslo, označí objednávku jako odeslanou a pošle zákazníkovi mail se sledováním.'
+                : 'API Zásilkovny není nastavené (chybí heslo na Vercelu). Použij CSV nebo ruční zadání čísla zásilky.';
+            el('packetaAllButton').disabled = !data.packeta_api;
+            el('labelsAllButton').disabled = !data.packeta_api;
 
             const rows = data.orders.filter(matches);
             el('ordersTable').innerHTML = '<tr><th>Č.</th><th>Kdy</th><th>Kdo</th><th>Co</th><th>Doručení</th><th>Stav</th><th>Akce</th></tr>'
@@ -210,8 +231,14 @@
             const pickup = o.shipping_method === 'pickup_atelier';
             let html = '';
             if (o.status === 'paid' && !pickup) {
+                if (data.packeta_api && !o.packeta_tracking) {
+                    html += `<button class="rowbtn" data-packeta="${esc(o.id)}" type="button">Založit zásilku v Zásilkovně</button>`;
+                }
                 html += `<div class="ship-input"><input type="text" placeholder="Z 123 456 7890" data-tracking="${esc(o.id)}" value="${esc(o.packeta_tracking || '')}">
-                    <button class="rowbtn" data-ship="${esc(o.id)}" type="button">Odesláno</button></div>`;
+                    <button class="rowbtn plain" data-ship="${esc(o.id)}" type="button">Odesláno (ručně)</button></div>`;
+            }
+            if (o.packeta_tracking && data.packeta_api) {
+                html += `<button class="rowbtn plain" data-label="${esc(o.id)}" type="button">Štítek PDF</button>`;
             }
             if (o.status === 'paid' && pickup) {
                 html += `<button class="rowbtn" data-status="picked_up" data-id="${esc(o.id)}" type="button">Vyzvednuto</button>`;
@@ -231,7 +258,48 @@
             return html;
         }
 
+        function downloadBase64Pdf(b64, filename) {
+            const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+            a.download = filename;
+            a.click();
+        }
+        function describeResults(results) {
+            return results.map(r => 'č. ' + r.order_no + ': '
+                + (r.packet_id ? 'zásilka ' + r.packet_id + (r.mailed ? ', mail odešel' : '')
+                    : (r.skipped ? 'přeskočeno (' + r.skipped + ')' : 'CHYBA ' + r.error))).join(' · ');
+        }
+        async function createPackets(id, btn, msgEl) {
+            btn.disabled = true;
+            msgEl.textContent = 'Zakládám v Zásilkovně…';
+            try {
+                const r = await api({ action: 'shop_packeta_create', id });
+                if (!r.ok) throw new Error(r.error || 'chyba');
+                msgEl.textContent = r.results.length ? describeResults(r.results) : 'Nic k založení.';
+                await load();
+            } catch (e) {
+                msgEl.textContent = 'Nepovedlo se: ' + e.message;
+                btn.disabled = false;
+            }
+        }
+        async function fetchLabels(ids, msgEl) {
+            msgEl.textContent = 'Stahuju štítky…';
+            try {
+                const r = await api({ action: 'shop_packeta_labels', ids, format: el('labelFormat').value });
+                if (!r.ok) throw new Error(r.error === 'no_packets' ? 'žádné zásilky se štítkem' : (r.error || 'chyba'));
+                downloadBase64Pdf(r.pdf, 'zasilkovna-stitky-' + new Date().toISOString().slice(0, 10) + '.pdf');
+                msgEl.textContent = 'Štítky: ' + r.count + ' (obj. ' + r.orders.join(', ') + ').';
+            } catch (e) {
+                msgEl.textContent = 'Nepovedlo se: ' + e.message;
+            }
+        }
+
         function bindActions() {
+            document.querySelectorAll('[data-packeta]').forEach(b => b.addEventListener('click', () =>
+                createPackets(b.dataset.packeta, b, document.querySelector(`[data-msg="${b.dataset.packeta}"]`))));
+            document.querySelectorAll('[data-label]').forEach(b => b.addEventListener('click', () =>
+                fetchLabels([b.dataset.label], document.querySelector(`[data-msg="${b.dataset.label}"]`))));
             document.querySelectorAll('[data-ship]').forEach(b => b.addEventListener('click', async () => {
                 const id = b.dataset.ship;
                 const input = document.querySelector(`input[data-tracking="${id}"]`);
@@ -289,6 +357,24 @@
         el('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
         el('reloadButton').addEventListener('click', load);
         document.querySelectorAll('#orderFilter .filterbtn').forEach(b => b.addEventListener('click', () => { filter = b.dataset.filter; render(); }));
+
+        el('packetaAllButton').addEventListener('click', () => createPackets('all', el('packetaAllButton'), el('packetaMsg')));
+        el('labelsAllButton').addEventListener('click', () => fetchLabels([], el('packetaMsg')));
+        el('packetaCsvButton').addEventListener('click', async () => {
+            el('packetaMsg').textContent = 'Připravuju CSV…';
+            try {
+                const r = await api({ action: 'shop_packeta_csv' });
+                if (!r.ok) throw new Error(r.error || 'chyba');
+                const blob = new Blob([r.csv], { type: 'text/csv;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'zasilkovna-import.csv';
+                a.click();
+                el('packetaMsg').textContent = 'CSV s ' + r.count + ' zásilkami. Nahraj v klientské sekci: Zásilky → Hromadný import.';
+            } catch (e) {
+                el('packetaMsg').textContent = 'Nepovedlo se: ' + e.message;
+            }
+        });
 
         el('stockButton').addEventListener('click', async () => {
             const stock = parseInt(el('stockInput').value, 10);
