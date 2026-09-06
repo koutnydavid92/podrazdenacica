@@ -147,7 +147,18 @@
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
         }
         .shop-hero .hero-title { font-size: clamp(2.2rem, 5vw, 3.6rem); }
-        .shop-hero .hero-title em { font-style: normal; color: var(--accent-neon); text-shadow: 0 0 10px rgba(254, 69, 232, 0.35); }
+        /* Nadpis má z style.css přechod přes text (transparentní výplň), proto
+           se em musí z přechodu vyjmout, jinak se růžová míchá s bílou. */
+        .shop-hero .hero-title em {
+            font-style: normal;
+            display: inline;
+            background: none;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+            -webkit-text-fill-color: var(--accent-neon);
+            color: var(--accent-neon);
+            text-shadow: 0 0 12px rgba(254, 69, 232, 0.45);
+        }
         .shop-price-row {
             display: flex;
             flex-wrap: wrap;
