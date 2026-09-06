@@ -1156,6 +1156,104 @@
         .quote-more {
             margin-top: 30px;
         }
+        /* Kalendář akcí, kam vyrážíme */
+        .akce-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            max-width: 940px;
+            margin: 8px auto 0;
+            text-align: left;
+        }
+        .akce-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            border: 1px solid var(--divider);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .akce-card:hover {
+            border-color: var(--accent-neon);
+            transform: translateY(-3px);
+            box-shadow: 0 0 26px rgba(254, 69, 232, 0.18);
+        }
+        .akce-foto {
+            position: relative;
+            display: block;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+        }
+        .akce-foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+        .akce-card:hover .akce-foto img { transform: scale(1.05); }
+        /* Datum je hlavní hrdina karty */
+        .akce-datum {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 82px;
+            padding: 10px 14px;
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            border-radius: 14px;
+            box-shadow: 0 0 22px rgba(254, 69, 232, 0.45);
+        }
+        .akce-datum b {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.35rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .akce-datum small {
+            font-size: 0.75rem;
+            font-weight: 700;
+            opacity: 0.75;
+            line-height: 1.4;
+        }
+        .akce-text {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 20px 20px 22px;
+            flex: 1;
+        }
+        .akce-kdy {
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent-neon);
+        }
+        .akce-nazev {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.3;
+        }
+        .akce-popis {
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.5;
+        }
+        .akce-odkaz {
+            margin-top: auto;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent-neon);
+        }
+        .akce-card:hover .akce-odkaz { text-decoration: underline; }
         /* Reelska: náhledy na výšku, přehrávají se na Instagramu */
         .reel-grid {
             display: grid;
@@ -1816,6 +1914,55 @@
             </p>
             <div class="hero-buttons reveal" style="justify-content: center;">
                 <a href="/cica-art-fest/guestlist" class="btn-secondary">Mrknout na guest list</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kde se můžeme potkat -->
+    <section id="potkat" class="after-center">
+        <div class="container">
+            <h2 class="section-title reveal">Kde se můžeme potkat</h2>
+            <p class="section-intro reveal">
+                Fest skončil, my ne. Tady jsou akce, na které s Týnou vyrážíme.
+                Přijď dát čau, mňau.
+            </p>
+            <div class="akce-grid">
+                <a class="akce-card reveal" href="https://www.nebal.cz/" target="_blank" rel="noopener">
+                    <span class="akce-foto">
+                        <img src="/images/akce/nebal.webp" alt="Nebál 2026 v Nové Zbrojovce" loading="lazy" width="800" height="450">
+                        <span class="akce-datum"><b>12. 9.</b><small>2026</small></span>
+                    </span>
+                    <span class="akce-text">
+                        <span class="akce-kdy">sobota · Nová Zbrojovka, Brno</span>
+                        <span class="akce-nazev">Nebál</span>
+                        <span class="akce-popis">Trochu bál, trochu párty, trochu cirkus, trochu art.</span>
+                        <span class="akce-odkaz">Web akce →</span>
+                    </span>
+                </a>
+                <a class="akce-card reveal" href="https://nextbigthing2026.forbes.cz/" target="_blank" rel="noopener">
+                    <span class="akce-foto">
+                        <img src="/images/akce/next-big-thing.webp" alt="Forbes Next Big Thing 2026" loading="lazy" width="800" height="450">
+                        <span class="akce-datum"><b>17. 9.</b><small>2026</small></span>
+                    </span>
+                    <span class="akce-text">
+                        <span class="akce-kdy">čtvrtek · Wannieck Gallery, Brno</span>
+                        <span class="akce-nazev">Forbes Next Big Thing</span>
+                        <span class="akce-popis">Tech festival Forbesu o inovacích, startupech a budoucnosti.</span>
+                        <span class="akce-odkaz">Web akce →</span>
+                    </span>
+                </a>
+                <a class="akce-card reveal" href="https://konferencezenyzenam.cz/" target="_blank" rel="noopener">
+                    <span class="akce-foto">
+                        <img src="/images/akce/zeny-zenam.webp" alt="Konference Ženy ženám" loading="lazy" width="800" height="450">
+                        <span class="akce-datum"><b>7. 11.</b><small>2026</small></span>
+                    </span>
+                    <span class="akce-text">
+                        <span class="akce-kdy">sobota · Hotel Passage, Brno</span>
+                        <span class="akce-nazev">Konference Ženy ženám</span>
+                        <span class="akce-popis">Celodenní konference o tématech, o kterých se běžně mlčí.</span>
+                        <span class="akce-odkaz">Web akce →</span>
+                    </span>
+                </a>
             </div>
         </div>
     </section>
