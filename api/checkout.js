@@ -1,10 +1,13 @@
-// POST /api/checkout - založí Stripe Checkout Session pro nákup vstupenek.
-// Hlídá kapacitu (200 veřejných vstupenek) ještě před přesměrováním na platbu.
+// POST /api/checkout - založí Stripe Checkout Session.
+//   {quantity}                        - vstupenky na Číča Art Fest (hlídá kapacitu 200)
+//   {product: 'onanovanky', ...}      - obchod s Onanovánkami (větev shopCheckout níže)
+// Obchod žije tady, ne ve vlastním souboru: Vercel Hobby povoluje 12 funkcí a jsou plné.
 const Stripe = require('stripe');
 const {
     withDb, remainingPublic, unitPriceCzk, quantityDiscount, MAX_TICKETS_PER_ORDER
 } = require('./_lib');
 const { trackInitiateCheckout } = require('./_meta');
+const shop = require('./_shop');
 
 // Tělo requestu: Vercel ho obvykle naparsuje sám, ale request bez těla
 // nebo bez hlavičky Content-Type sem dorazí jako undefined nebo jako řetězec.
@@ -54,6 +57,10 @@ module.exports = async (req, res) => {
         // ať webhook umí nákup nahlásit do analytiky i se správnou návštěvou.
         // Chybí, když kupující nedal souhlas s cookies - to je v pořádku.
         const body = await readJsonBody(req);
+        if (body.product === shop.PRODUCT) {
+            await shopCheckout(stripe, req, res, body);
+            return;
+        }
         const gaClientId = sanitizeGaClientId(body.ga_client_id);
         const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
         // Totéž pro Metu: _fbp drží prohlížeč, _fbc proklik z reklamy.
@@ -131,3 +138,131 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'server_error' });
     }
 };
+
+// ---- Obchod: Onanovánky ----
+// Tělo: {product, quantity, shipping_method, packeta_point?, note?, ga_*, fbp, fbc, ic_event_id}
+// Cenu, dopravu i tašku zdarma počítá server. Adresu a telefon vybírá Stripe
+// jen tam, kde jsou potřeba (na adresu / výdejní místo).
+async function shopCheckout(stripe, req, res, body) {
+    const quantity = shop.clampQuantity(body.quantity);
+    const methodKey = String(body.shipping_method || '');
+    const method = shop.shippingMethod(methodKey);
+    if (!method) {
+        res.status(400).json({ error: 'bad_shipping' });
+        return;
+    }
+    const point = method.needsPoint ? shop.sanitizePoint(body.packeta_point) : null;
+    if (method.needsPoint && !point) {
+        res.status(400).json({ error: 'missing_point' });
+        return;
+    }
+    const note = String(body.note || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+
+    const stock = await withDb(shop.stockAvailable);
+    if (stock <= 0) {
+        res.status(409).json({ error: 'sold_out' });
+        return;
+    }
+    if (quantity > stock) {
+        res.status(409).json({ error: 'not_enough_stock', remaining: stock });
+        return;
+    }
+
+    const gaClientId = sanitizeGaClientId(body.ga_client_id);
+    const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
+    const fbp = sanitizeFbCookie(body.fbp);
+    const fbc = sanitizeFbCookie(body.fbc);
+    const goods = shop.goodsTotal(quantity);
+    const giftBag = shop.giftBagIncluded(quantity);
+
+    const metaEvent = trackInitiateCheckout({
+        eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
+        value: goods + method.price,
+        quantity: quantity,
+        fbp: fbp,
+        fbc: fbc,
+        eventSourceUrl: 'https://www.podrazdenacica.cz/onanovanky'
+    }).catch(() => { /* měření nesmí shodit prodej */ });
+
+    const lineItems = [{
+        price_data: {
+            currency: 'czk',
+            unit_amount: shop.UNIT_PRICE_CZK * 100,
+            product_data: {
+                name: shop.PRODUCT_NAME,
+                description: 'Antisystémové omalovánky pro dospělé. A4, 30 motivů, spirála nahoře. 18+.',
+                images: ['https://www.podrazdenacica.cz/images/onanovanky/obalka-og.jpg']
+            }
+        },
+        quantity: quantity
+    }];
+    if (giftBag) {
+        lineItems.push({
+            price_data: {
+                currency: 'czk',
+                unit_amount: 0,
+                product_data: {
+                    name: 'Plátěná číča taška (dárek)',
+                    description: 'K nákupu od ' + shop.GIFT_BAG_FROM_CZK + ' Kč zdarma.'
+                }
+            },
+            quantity: 1
+        });
+    }
+    if (method.price > 0) {
+        lineItems.push({
+            price_data: {
+                currency: 'czk',
+                unit_amount: method.price * 100,
+                product_data: {
+                    name: 'Doprava: ' + method.label,
+                    description: point ? point.name + (point.address ? ', ' + point.address : '') : undefined
+                }
+            },
+            quantity: 1
+        });
+    }
+
+    const origin = req.headers.origin || 'https://www.podrazdenacica.cz';
+    const params = {
+        mode: 'payment',
+        locale: 'cs',
+        line_items: lineItems,
+        metadata: {
+            event: 'shop',
+            product: shop.PRODUCT,
+            quantity: String(quantity),
+            shipping_method: methodKey,
+            ...(point ? {
+                packeta_point_id: point.id,
+                packeta_point_name: point.name,
+                packeta_point_address: point.address
+            } : {}),
+            ...(note ? { note: note } : {}),
+            ...(gaClientId ? { ga_client_id: gaClientId } : {}),
+            ...(gaSessionId ? { ga_session_id: gaSessionId } : {}),
+            ...(fbp ? { fbp: fbp } : {}),
+            ...(fbc ? { fbc: fbc } : {})
+        },
+        // Telefon chce Zásilkovna kvůli SMS o doručení; u odběru v ateliéru
+        // se hodí pro domluvu, ale nevynucujeme ho.
+        phone_number_collection: { enabled: method.needsPoint || method.needsAddress },
+        custom_text: {
+            submit: {
+                message: method.needsAddress || method.needsPoint
+                    ? 'Balíme do 3 pracovních dnů. Zaplacením souhlasíš s obchodními podmínkami na podrazdenacica.cz/obchodni-podminky.'
+                    : 'Po zaplacení ti napíšeme, kdy si můžeš pro Onanovánky přijít na Veselou 5. Zaplacením souhlasíš s obchodními podmínkami na podrazdenacica.cz/obchodni-podminky.'
+            }
+        },
+        allow_promotion_codes: true,
+        success_url: origin + '/onanovanky-dekuji?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: origin + '/onanovanky#koupit'
+    };
+    if (method.needsAddress) {
+        params.shipping_address_collection = { allowed_countries: [method.country] };
+    }
+
+    const session = await stripe.checkout.sessions.create(params);
+    await metaEvent;
+    res.status(200).json({ url: session.url });
+}

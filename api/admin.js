@@ -5,7 +5,8 @@
 //   {pin, action: 'create_invite', full_name, greeting_name, email} - nová VIP pozvánka
 const crypto = require('crypto');
 const { withDb, CAPACITY, currentPriceCzk, pinEquals, clientIp, pinRateLimited, recordPinFailure } = require('./_lib');
-const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
+const { sendTicketEmail, subscribeToEventListSafe, sendShopShippedEmail } = require('./_email');
+const shop = require('./_shop');
 
 function pinOk(pin) {
     return pinEquals(pin, process.env.ADMIN_PIN);
@@ -148,6 +149,88 @@ function makeCode(fullName) {
     return `${first}-${tail}`;
 }
 
+// ---- Obchod: Onanovánky (/onanovanky-admin) ----
+// Akce shop_* vyžadují ADMIN_PIN. Objednávky vznikají jen ze Stripe
+// webhooku; tady se jen posouvá stav, zadává číslo zásilky a hlídá sklad.
+const SHOP_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const SHOP_STATUSES = ['paid', 'shipped', 'picked_up', 'cancelled', 'refunded'];
+
+async function handleShop(c, body) {
+    if (body.action === 'shop_ship') {
+        // Odesláno: uloží číslo zásilky a pošle zákazníkovi mail se sledováním
+        if (!SHOP_UUID_RE.test(String(body.id || ''))) return { ok: false, error: 'bad_id' };
+        const tracking = String(body.tracking || '').trim().replace(/\s+/g, '').slice(0, 40) || null;
+        if (tracking && !/^[A-Za-z0-9-]{4,40}$/.test(tracking)) return { ok: false, error: 'bad_tracking' };
+        const { rows } = await c.query(
+            `update shop_orders
+             set status = 'shipped', packeta_tracking = coalesce($2, packeta_tracking),
+                 shipped_at = coalesce(shipped_at, now())
+             where id = $1 returning *`,
+            [body.id, tracking]);
+        if (!rows.length) return { ok: false, error: 'not_found' };
+        const order = rows[0];
+        let mailed = false;
+        if (order.email && !order.shipped_mail_sent_at && body.send_mail !== false) {
+            try {
+                await sendShopShippedEmail({ order });
+                await c.query('update shop_orders set shipped_mail_sent_at = now() where id = $1', [order.id]);
+                mailed = true;
+            } catch (e) {
+                console.error('shipped mail failed', order.order_no, e.message);
+            }
+        }
+        return { ok: true, mailed };
+    }
+    if (body.action === 'shop_status') {
+        // Ruční změna stavu (vyzvednuto, storno, vráceno, zpět na zaplaceno)
+        if (!SHOP_UUID_RE.test(String(body.id || ''))) return { ok: false, error: 'bad_id' };
+        if (!SHOP_STATUSES.includes(body.status)) return { ok: false, error: 'bad_status' };
+        const { rows } = await c.query(
+            `update shop_orders
+             set status = $2,
+                 picked_up_at = case when $2 = 'picked_up' then coalesce(picked_up_at, now()) else picked_up_at end
+             where id = $1 returning id, status`,
+            [body.id, body.status]);
+        return rows.length ? { ok: true, status: rows[0].status } : { ok: false, error: 'not_found' };
+    }
+    if (body.action === 'shop_set_stock') {
+        const stock = parseInt(body.stock, 10);
+        if (!(stock >= 0 && stock <= 100000)) return { ok: false, error: 'bad_stock' };
+        await c.query(
+            `insert into shop_stock (product, stock) values ($1, $2)
+             on conflict (product) do update set stock = excluded.stock, updated_at = now()`,
+            [shop.PRODUCT, stock]);
+        return { ok: true, stock };
+    }
+
+    // shop_overview (výchozí)
+    const stockRow = (await c.query(
+        'select stock, sold, updated_at from shop_stock where product = $1', [shop.PRODUCT])).rows[0]
+        || { stock: 0, sold: 0 };
+    const orders = (await c.query(
+        `select id, order_no, created_at, quantity, unit_price_czk, shipping_method, shipping_price_czk,
+                total_czk, gift_bag, name, email, phone, address_line1, address_line2, address_city,
+                address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
+                note, status, packeta_tracking, shipped_at, picked_up_at, confirmation_sent_at,
+                shipped_mail_sent_at, stripe_session_id
+         from shop_orders order by created_at desc limit 1000`)).rows;
+    const one = async (sql) => (await c.query(sql)).rows[0];
+    const stats = {
+        stock: stockRow.stock,
+        sold: stockRow.sold,
+        to_ship: (await one("select count(*)::int as n from shop_orders where status = 'paid' and shipping_method <> 'pickup_atelier'")).n,
+        to_pickup: (await one("select count(*)::int as n from shop_orders where status = 'paid' and shipping_method = 'pickup_atelier'")).n,
+        orders: (await one("select count(*)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
+        pieces: (await one("select coalesce(sum(quantity),0)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
+        revenue: (await one("select coalesce(sum(total_czk),0)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
+        bags: (await one("select count(*)::int as n from shop_orders where gift_bag and status not in ('cancelled','refunded')")).n,
+        samples: (await one('select count(*)::int as n from shop_samples')).n
+    };
+    const samples = (await c.query(
+        'select email, created_at from shop_samples order by created_at desc limit 500')).rows;
+    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING };
+}
+
 module.exports = async (req, res) => {
     if (req.method !== 'POST') {
         res.status(405).json({ error: 'method_not_allowed' });
@@ -167,6 +250,9 @@ module.exports = async (req, res) => {
                 return { __status: 401, error: 'bad_pin' };
             }
             if (isTymAction) return handleTym(c, body);
+            if (typeof body.action === 'string' && body.action.startsWith('shop_')) {
+                return handleShop(c, body);
+            }
             if (body.action === 'toggle_guestlist') {
                 const { rows } = await c.query(
                     'update guestlist set visible = not visible where id = $1 returning id, visible',

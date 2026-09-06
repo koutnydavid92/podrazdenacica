@@ -283,8 +283,206 @@ async function sendWinnerEmail({ to, name, itemTitle, amount, qrUrl }) {
     });
 }
 
+
+// ============================================================
+// Obchod: Onanovánky (potvrzení objednávky, odesláno, ukázka na mail)
+// ============================================================
+
+const SHOP_TAG_BUYER = 'onanovanky-kupujici';
+const SHOP_TAG_SAMPLE = 'onanovanky-ukazka';
+
+function czk(n) {
+    return Number(n || 0).toLocaleString('cs-CZ') + ' Kč';
+}
+
+function shopFirstName(name) {
+    const first = String(name || '').trim().split(/\s+/)[0];
+    return first ? esc(first) : '';
+}
+
+// Popis doručení do mailu podle zvolené metody
+function shopDeliveryHtml(order) {
+    const m = order.shipping_method;
+    if (m === 'pickup_atelier') {
+        return `<p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0 0 12px;">
+            <b style="color:#F5F5F5;">Osobní odběr:</b> ateliér Podrážděné číči, Veselá 5, Brno (602 00).
+            Odpověz na tenhle mail nebo napiš na
+            <a href="mailto:${REPLY_TO}" style="color:#FE45E8;">${REPLY_TO}</a>,
+            domluvíme čas. Balíček ti držíme měsíc.</p>`;
+    }
+    if (m === 'packeta_point_cz' || m === 'packeta_point_sk') {
+        return `<p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0 0 12px;">
+            <b style="color:#F5F5F5;">Zásilkovna, výdejní místo:</b> ${esc(order.packeta_point_name || '')}${order.packeta_point_address ? ', ' + esc(order.packeta_point_address) : ''}.
+            Balíme do 3 pracovních dnů. O doručení ti dá vědět Zásilkovna SMSkou nebo v appce.</p>`;
+    }
+    const addr = [order.address_line1, order.address_line2, order.address_zip && order.address_city
+        ? order.address_zip + ' ' + order.address_city : order.address_city, order.address_country]
+        .filter(Boolean).join(', ');
+    return `<p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0 0 12px;">
+        <b style="color:#F5F5F5;">Zásilkovna, doručení na adresu:</b> ${esc(addr)}.
+        Balíme do 3 pracovních dnů. O doručení ti dá vědět Zásilkovna SMSkou nebo v appce.</p>`;
+}
+
+function shopSummaryHtml(order) {
+    const rows = [
+        [`${shopPlural(order.quantity)} × Onanovánky 2026`, czk(order.unit_price_czk * order.quantity)],
+        ...(order.gift_bag ? [['Plátěná číča taška (dárek)', '0 Kč']] : []),
+        ...(order.shipping_price_czk > 0 ? [['Doprava', czk(order.shipping_price_czk)]] : [['Doprava (osobní odběr)', '0 Kč']]),
+        ['Zaplaceno', czk(order.total_czk)]
+    ];
+    return `<table style="width:100%;border-collapse:collapse;margin:16px 0;">${rows.map(([l, v], i) => `
+        <tr>
+            <td style="padding:8px 0;border-top:1px solid #2A2A2A;color:${i === rows.length - 1 ? '#F5F5F5' : '#CCCCCC'};font-size:14px;${i === rows.length - 1 ? 'font-weight:bold;' : ''}">${l}</td>
+            <td style="padding:8px 0;border-top:1px solid #2A2A2A;color:${i === rows.length - 1 ? '#FE45E8' : '#F5F5F5'};font-size:14px;text-align:right;${i === rows.length - 1 ? 'font-weight:bold;' : ''}">${v}</td>
+        </tr>`).join('')}</table>`;
+}
+
+function shopPlural(n) {
+    return String(n);
+}
+
+// Potvrzení zaplacené objednávky
+async function sendShopConfirmationEmail({ order }) {
+    const first = shopFirstName(order.name);
+    const html = auctionShell({
+        heading: `Máš to${first ? ', ' + first : ''}. Onanovánky jsou tvoje.`,
+        bodyHtml: `
+            <p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0 0 8px;">
+                Objednávka <b style="color:#F5F5F5;">č. ${order.order_no}</b> je zaplacená. Díky, že podporuješ číču.
+            </p>
+            ${shopSummaryHtml(order)}
+            ${shopDeliveryHtml(order)}
+            ${order.note ? `<p style="color:#888888;font-size:13px;line-height:1.6;margin:0 0 12px;">Tvůj vzkaz: „${esc(order.note)}“</p>` : ''}
+            ${order.gift_bag ? `<p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0 0 12px;">
+                Do balíku přihazujeme <b style="color:#F5F5F5;">plátěnou číča tašku</b>. Ručně sprejovanou, každá trochu jiná.</p>` : ''}
+            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+                Onanovánky jsou 18+. Vybarvené kousky chceme vidět: označ
+                <a href="https://www.instagram.com/podrazdena_cica/" style="color:#FE45E8;">@podrazdena_cica</a>.
+                Cokoliv k objednávce: odpověz na tenhle mail.
+            </p>`,
+        footNote: 'Tenhle mail je potvrzení objednávky z podrazdenacica.cz/onanovanky. Prodávající: David Koutný, IČO 04356993. Obchodní podmínky: ' + BASE_URL + '/obchodni-podminky'
+    });
+    const text = `Objednávka č. ${order.order_no} je zaplacená.\n\n`
+        + `${order.quantity} × Onanovánky 2026: ${czk(order.unit_price_czk * order.quantity)}\n`
+        + (order.gift_bag ? 'Plátěná číča taška (dárek): 0 Kč\n' : '')
+        + `Doprava: ${czk(order.shipping_price_czk)}\nZaplaceno: ${czk(order.total_czk)}\n\n`
+        + (order.shipping_method === 'pickup_atelier'
+            ? `Osobní odběr: Veselá 5, Brno. Napiš na ${REPLY_TO}, domluvíme čas. Držíme měsíc.`
+            : 'Balíme do 3 pracovních dnů, o doručení dá vědět Zásilkovna.')
+        + '\n\nMňau.';
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: `Onanovánky jsou tvoje. Objednávka č. ${order.order_no} 🖤`,
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: order.email, name: order.name || '' }],
+            html,
+            text
+        }
+    });
+}
+
+// Balík je na cestě (posílá se z adminu po zadání čísla zásilky)
+async function sendShopShippedEmail({ order }) {
+    const first = shopFirstName(order.name);
+    const tracking = order.packeta_tracking
+        ? `https://tracking.packeta.com/cs/?id=${encodeURIComponent(order.packeta_tracking)}` : null;
+    const html = auctionShell({
+        heading: `Onanovánky vyrazily${first ? ', ' + first : ''}.`,
+        bodyHtml: `
+            <p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0 0 12px;">
+                Objednávka <b style="color:#F5F5F5;">č. ${order.order_no}</b> je zabalená a předaná Zásilkovně.
+                ${order.packeta_tracking ? `Číslo zásilky: <b style="color:#F5F5F5;">${esc(order.packeta_tracking)}</b>.` : ''}
+            </p>
+            ${tracking ? auctionButton(tracking, 'Sledovat zásilku') : ''}
+            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+                Zásilkovna ti pošle SMS nebo notifikaci, až bude balík na místě.
+                Pastelky připravit.
+            </p>`,
+        footNote: 'Tenhle mail se týká objednávky z podrazdenacica.cz/onanovanky.'
+    });
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: `Onanovánky jsou na cestě (obj. č. ${order.order_no}) 📦`,
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: order.email, name: order.name || '' }],
+            html,
+            text: `Objednávka č. ${order.order_no} je předaná Zásilkovně.`
+                + (order.packeta_tracking ? ` Číslo zásilky: ${order.packeta_tracking}. Sledování: ${tracking}` : '')
+                + '\n\nMňau.'
+        }
+    });
+}
+
+// Ukázka: 5 stránek na mail (stejných pět jako dárek po ČAF)
+async function sendShopSampleEmail({ to }) {
+    const pdf = `${BASE_URL}/files/onanovanky/onanovanky-darek.pdf`;
+    const html = auctionShell({
+        heading: 'Pět Onanovánek na zkoušku.',
+        bodyHtml: `
+            <p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0;">
+                Charizard GO, Viva las číčas, Labudusumu, Furiosa a Chivalry. A4, ostré na 300 dpi.
+                Vytiskni, vytáhni pastelky a uvidíš, jestli ti sedneme.
+            </p>
+            ${auctionButton(pdf, 'Stáhnout 5 stránek (PDF)')}
+            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+                Celé Onanovánky mají 30 motivů, spirálu nahoře a obálku, co snese pastelku i rtěnku.
+                Za 333 Kč na <a href="${BASE_URL}/onanovanky" style="color:#FE45E8;">podrazdenacica.cz/onanovanky</a>.
+                Od tří kusů přihazujeme plátěnou číča tašku.
+            </p>`,
+        footNote: 'Tenhle mail ti přišel, protože sis na podrazdenacica.cz/onanovanky vyžádal(a) ukázku. Odhlásit se můžeš kdykoliv odpovědí na tenhle mail.'
+    });
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: 'Pět Onanovánek na zkoušku 🎨',
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: to, name: '' }],
+            html,
+            text: `Pět Onanovánek na zkoušku (PDF): ${pdf}\n\nCelé Onanovánky za 333 Kč: ${BASE_URL}/onanovanky\n\nMňau.`
+        }
+    });
+}
+
+// Kupující a zájemci o ukázku do hlavního listu se štítkem. Bez
+// potvrzovacího mailu: kupující dostal potvrzení objednávky, zájemce
+// o ukázku si mail sám vyžádal. Odhlášení je v každé kampani.
+async function subscribeToShopList({ email, name, tag }) {
+    const parts = String(name || '').trim().split(/\s+/);
+    return ecomail(`/lists/${ECOMAIL_LIST_ID}/subscribe`, {
+        subscriber_data: {
+            email,
+            name: parts[0] || '',
+            surname: parts.slice(1).join(' ') || '',
+            tags: ['onanovanky', tag]
+        },
+        trigger_autoresponders: false,
+        trigger_notification: false,
+        update_existing: true,
+        resubscribe: false,
+        skip_confirmation: true
+    });
+}
+
+async function subscribeToShopListSafe(o) {
+    if (!o.email) return false;
+    try {
+        await subscribeToShopList(o);
+        return true;
+    } catch (e) {
+        console.error('shop list subscribe failed for', o.email, '->', e.message);
+        return false;
+    }
+}
+
 module.exports = {
     sendTicketEmail, subscribeToNewsletter,
     subscribeToEventList, subscribeToEventListSafe,
-    sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail
+    sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail,
+    sendShopConfirmationEmail, sendShopShippedEmail, sendShopSampleEmail,
+    subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE
 };

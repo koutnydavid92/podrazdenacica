@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP) -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+    (function() {
+        var loaded = false;
+        function loadGtm() {
+            if (loaded) return;
+            loaded = true;
+            var j = document.createElement('script');
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PBTC7F4W';
+            document.head.appendChild(j);
+        }
+        if (document.readyState === 'complete') {
+            setTimeout(loadGtm, 1500);
+        } else {
+            window.addEventListener('load', function() { setTimeout(loadGtm, 1500); });
+        }
+        ['scroll', 'touchstart', 'mousedown', 'keydown'].forEach(function(ev) {
+            window.addEventListener(ev, loadGtm, { once: true, passive: true });
+        });
+        setTimeout(loadGtm, 4000);
+    })();
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máš to! Onanovánky jsou tvoje | Podrážděná číča</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Google Analytics - jen po souhlasu s cookies -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        function loadGA() {
+            var gaScript = document.createElement('script');
+            gaScript.async = true;
+            gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-R06FFJPHLK';
+            document.head.appendChild(gaScript);
+            gtag('js', new Date());
+            // page_location bez query stringu - session_id nesmí do analytiky
+            gtag('config', 'G-R06FFJPHLK', {
+                page_location: window.location.origin + window.location.pathname
+            });
+        }
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+            loadGA();
+        }
+    </script>
+
+    <link rel="icon" type="image/png" href="/podrazdenacica/my-favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/podrazdenacica/my-favicon/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0D0D0D;
+            --bg-card: #111111;
+            --text-primary: #F5F5F5;
+            --text-secondary: #CCCCCC;
+            --divider: #2A2A2A;
+            --accent-neon: #FE45E8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px 80px;
+        }
+        .wrap { max-width: 620px; margin: 0 auto; }
+        .logo { display: block; width: 64px; margin: 0 auto 24px; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-neon);
+            border-radius: 20px;
+            padding: 36px 28px;
+            box-shadow: 0 0 60px rgba(254, 69, 232, 0.12);
+        }
+        h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: clamp(1.7rem, 5vw, 2.4rem);
+            line-height: 1.15;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        h1 em { font-style: normal; color: var(--accent-neon); }
+        p { color: var(--text-secondary); }
+        p + p { margin-top: 10px; }
+        a { color: var(--accent-neon); }
+        .lead { text-align: center; margin-bottom: 22px; }
+        table { width: 100%; border-collapse: collapse; margin: 18px 0; }
+        td { padding: 8px 0; border-top: 1px solid var(--divider); font-size: .95rem; color: var(--text-secondary); }
+        td:last-child { text-align: right; color: var(--text-primary); white-space: nowrap; }
+        tr.total td { color: var(--text-primary); font-weight: 700; font-size: 1.05rem; }
+        tr.total td:last-child { color: var(--accent-neon); }
+        .box {
+            border: 1px dashed var(--divider);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-top: 18px;
+        }
+        .box h2 { font-size: 1rem; margin-bottom: 6px; color: var(--text-primary); }
+        .btn {
+            display: inline-block;
+            background: var(--accent-neon);
+            color: #0D0D0D;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 14px 26px;
+            border-radius: 999px;
+            margin-top: 22px;
+        }
+        .btn.ghost { background: transparent; color: var(--text-primary); border: 1px solid var(--divider); }
+        .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .foot { text-align: center; color: #777; font-size: .85rem; margin-top: 30px; }
+        .foot .big { font-size: 1.4rem; color: var(--accent-neon); margin-bottom: 6px; }
+        [hidden] { display: none !important; }
+        @media (max-width: 480px) {
+            body { padding: 28px 14px 60px; }
+            .card { padding: 28px 18px; }
+            .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBTC7F4W"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <div class="wrap">
+        <a href="/"><img src="/images/logo.webp" alt="Podrážděná číča" class="logo" width="64" height="58"></a>
+
+        <div class="card" id="loadingView">
+            <h1>Moment…</h1>
+            <p class="lead">Ověřujeme platbu.</p>
+        </div>
+
+        <div class="card" id="paidView" hidden>
+            <h1>Máš to. <em>Onanovánky</em> jsou tvoje.</h1>
+            <p class="lead" id="paidLead">Objednávka je zaplacená, potvrzení ti letí na mail.</p>
+
+            <table id="summary"></table>
+
+            <div class="box" id="deliveryBox"></div>
+
+            <div class="box" id="bagBox" hidden>
+                <h2>A taška k tomu</h2>
+                <p>Od tří kusů přihazujeme plátěnou číča tašku. Ručně sprejovanou, každá trochu jiná.</p>
+            </div>
+
+            <p style="margin-top:18px;">
+                Vybarvené kousky chceme vidět. Označ
+                <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">@podrazdena_cica</a>,
+                nebo nám je pošli do zpráv. Cokoliv k objednávce: odpověz na potvrzovací mail.
+            </p>
+            <div class="actions">
+                <a class="btn" href="/" data-cta="onanovanky_dekuji_domu">Zpátky na web</a>
+                <a class="btn ghost" href="/onanovanky" data-cta="onanovanky_dekuji_zpet">Ještě jedny?</a>
+            </div>
+        </div>
+
+        <div class="card" id="pendingView" hidden>
+            <h1>Platba ještě doskakuje.</h1>
+            <p class="lead">
+                Stripe nám o ní řekne během pár vteřin. Kdyby potvrzení do půl hodiny nedorazilo,
+                napiš na <a href="mailto:jsem@podrazdenacica.cz">jsem@podrazdenacica.cz</a> a najdeme to.
+            </p>
+            <div class="actions">
+                <a class="btn ghost" href="/onanovanky-dekuji" id="retryLink">Zkusit načíst znovu</a>
+            </div>
+        </div>
+
+        <div class="foot">
+            <div class="big">₍^. .^₎⟆</div>
+            <p>mňau</p>
+            <p style="margin-top:8px;"><a href="/">podrazdenacica.cz</a> &middot; <a href="/obchodni-podminky">Obchodní podmínky</a></p>
+        </div>
+    </div>
+
+    <script src="/cica-art-fest/config.js"></script>
+    <script>
+        // session_id nepatří do adresy (jde přes něj dohledat jméno a e-mail
+        // kupujícího) - schováme ho do sessionStorage a z URL smažeme.
+        const params = new URLSearchParams(window.location.search);
+        let sessionId = (params.get('session_id') || '').trim();
+        if (sessionId) {
+            try { sessionStorage.setItem('shopSessionId', sessionId); } catch (e) {}
+            history.replaceState(null, '', window.location.pathname);
+        } else {
+            try { sessionId = (sessionStorage.getItem('shopSessionId') || '').trim(); } catch (e) {}
+        }
+
+        const views = ['loadingView', 'paidView', 'pendingView'];
+        function show(id) {
+            views.forEach(v => document.getElementById(v).hidden = (v !== id));
+        }
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const czk = n => Number(n || 0).toLocaleString('cs-CZ') + ' Kč';
+
+        async function rpc(fn, args) {
+            const cfg = window.CICA_CONFIG;
+            const res = await fetch(cfg.SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+                method: 'POST',
+                headers: {
+                    'apikey': cfg.SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + cfg.SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(args)
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }
+
+        const DELIVERY = {
+            pickup_atelier: (o) => `<h2>Osobní odběr v ateliéru</h2>
+                <p>Veselá 5, Brno (602 00). Odpověz na potvrzovací mail nebo napiš na
+                <a href="mailto:jsem@podrazdenacica.cz">jsem@podrazdenacica.cz</a> a domluvíme čas. Držíme měsíc.</p>`,
+            packeta_point_cz: (o) => `<h2>Zásilkovna, výdejní místo</h2>
+                <p>${esc(o.packeta_point_name)}${o.packeta_point_address ? ', ' + esc(o.packeta_point_address) : ''}.
+                Balíme do 3 pracovních dnů, o doručení ti dá vědět Zásilkovna.</p>`,
+            packeta_home_cz: () => `<h2>Zásilkovna až domů</h2>
+                <p>Na adresu, kterou jsi zadal*a při platbě. Balíme do 3 pracovních dnů, o doručení ti dá vědět Zásilkovna.</p>`
+        };
+        DELIVERY.packeta_point_sk = DELIVERY.packeta_point_cz;
+        DELIVERY.packeta_home_sk = DELIVERY.packeta_home_cz;
+
+        function renderOrder(o) {
+            const first = String(o.name || '').trim().split(/\s+/)[0];
+            document.getElementById('paidLead').textContent =
+                (first ? first + ', o' : 'O') + 'bjednávka č. ' + o.order_no + ' je zaplacená. Potvrzení ti letí na '
+                + (o.email || 'mail') + '.';
+            const rows = [
+                [o.quantity + ' × Onanovánky 2026', czk(o.unit_price_czk * o.quantity)],
+                ...(o.gift_bag ? [['Plátěná číča taška', 'dárek']] : []),
+                [o.shipping_price_czk > 0 ? 'Doprava' : 'Osobní odběr', czk(o.shipping_price_czk)],
+            ];
+            document.getElementById('summary').innerHTML = rows.map(r =>
+                `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')
+                + `<tr class="total"><td>Zaplaceno</td><td>${esc(czk(o.total_czk))}</td></tr>`;
+            document.getElementById('deliveryBox').innerHTML = (DELIVERY[o.shipping_method] || DELIVERY.pickup_atelier)(o);
+            document.getElementById('bagBox').hidden = !o.gift_bag;
+
+            // Nákup do GTM (Meta pixel a spol.). Do GA4 ho hlásí Stripe webhook
+            // (api/_ga.js), odsud by se počítal dvakrát.
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ ecommerce: null });
+            window.dataLayer.push({
+                event: 'purchase',
+                transaction_id: sessionId,
+                value: Number(o.total_czk) || 0,
+                currency: 'CZK',
+                ecommerce: {
+                    transaction_id: sessionId,
+                    value: Number(o.total_czk) || 0,
+                    currency: 'CZK',
+                    shipping: Number(o.shipping_price_czk) || 0,
+                    items: [{
+                        item_id: 'onanovanky',
+                        item_name: 'Onanovánky 2026',
+                        price: Number(o.unit_price_czk) || 333,
+                        quantity: Number(o.quantity) || 1
+                    }]
+                }
+            });
+        }
+
+        // Webhook zapisuje objednávku pár vteřin po platbě - zkoušíme opakovaně
+        async function load(attempt) {
+            if (!sessionId) { show('pendingView'); return; }
+            try {
+                const o = await rpc('get_shop_order', { p_session_id: sessionId });
+                if (o && o.order_no) {
+                    renderOrder(o);
+                    show('paidView');
+                    return;
+                }
+            } catch (e) { /* zkusíme znovu */ }
+            if (attempt < 8) {
+                setTimeout(() => load(attempt + 1), 1500 + attempt * 500);
+            } else {
+                show('pendingView');
+            }
+        }
+        document.getElementById('retryLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            show('loadingView');
+            load(0);
+        });
+        load(0);
+    </script>
+</body>
+</html>

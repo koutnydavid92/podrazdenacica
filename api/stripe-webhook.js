@@ -1,11 +1,17 @@
 // POST /api/stripe-webhook - Stripe sem posílá události o platbách.
-// Po zaplacené checkout session vytvoří vstupenky v Supabase.
+// Po zaplacené checkout session vytvoří vstupenky v Supabase
+// (metadata.event === 'cica-art-fest') nebo objednávku Onanovánek
+// (metadata.event === 'shop', viz handleShopSession níže).
 // Podpis se ověřuje proti STRIPE_WEBHOOK_SECRET, proto surové tělo requestu.
 const Stripe = require('stripe');
 const { withDb, fulfillSession } = require('./_lib');
-const { sendTicketEmail, subscribeToEventListSafe } = require('./_email');
+const {
+    sendTicketEmail, subscribeToEventListSafe,
+    sendShopConfirmationEmail, subscribeToShopListSafe, SHOP_TAG_BUYER
+} = require('./_email');
 const { trackPurchase } = require('./_ga');
 const { trackPurchase: trackPurchaseMeta } = require('./_meta');
+const shop = require('./_shop');
 
 module.exports.config = { api: { bodyParser: false } };
 
@@ -43,6 +49,9 @@ module.exports = async (req, res) => {
         if (event.type === 'checkout.session.completed') {
             const session = event.data.object;
             if (session.payment_status === 'paid'
+                && session.metadata && session.metadata.event === 'shop') {
+                await handleShopSession(stripe, session);
+            } else if (session.payment_status === 'paid'
                 && session.metadata && session.metadata.event === 'cica-art-fest') {
                 const items = await stripe.checkout.sessions.listLineItems(session.id);
                 const quantity = items.data.reduce((s, i) => s + (i.quantity || 0), 0) || 1;
@@ -108,3 +117,50 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'processing_error' });
     }
 };
+
+// ---- Obchod: Onanovánky ----
+// Zapíše objednávku, odečte sklad, nahlásí nákup do GA4 a Mety a pošle
+// potvrzení. Retry-safe: objednávka vzniká jen jednou (unikátní session),
+// mail jde jen když ještě nebyl odeslán.
+async function handleShopSession(stripe, session) {
+    const md = session.metadata || {};
+    const quantity = shop.clampQuantity(md.quantity);
+    const result = await withDb(c => shop.fulfillShopSession(c, session, quantity));
+    console.log('shop fulfilled', session.id, JSON.stringify(result));
+
+    if (result.created > 0) {
+        const value = session.amount_total ? session.amount_total / 100 : 0;
+        await trackPurchase({
+            transactionId: session.id,
+            value: value,
+            quantity: quantity,
+            clientId: md.ga_client_id || null,
+            sessionId: md.ga_session_id || null,
+            itemId: shop.PRODUCT,
+            itemName: shop.PRODUCT_NAME
+        });
+        await trackPurchaseMeta({
+            transactionId: session.id,
+            value: value,
+            quantity: quantity,
+            fbp: md.fbp || null,
+            fbc: md.fbc || null,
+            email: (session.customer_details && session.customer_details.email) || null,
+            eventSourceUrl: 'https://www.podrazdenacica.cz/onanovanky'
+        });
+    }
+
+    await withDb(async (c) => {
+        const { rows } = await c.query(
+            `select * from shop_orders
+             where stripe_session_id = $1 and confirmation_sent_at is null`,
+            [session.id]);
+        if (!rows.length || !rows[0].email) return;
+        const order = rows[0];
+        await sendShopConfirmationEmail({ order });
+        await c.query(
+            'update shop_orders set confirmation_sent_at = now() where id = $1', [order.id]);
+        console.log('shop confirmation sent', session.id, order.order_no);
+        await subscribeToShopListSafe({ email: order.email, name: order.name, tag: SHOP_TAG_BUYER });
+    });
+}
