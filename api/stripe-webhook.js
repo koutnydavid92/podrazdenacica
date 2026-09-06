@@ -7,7 +7,7 @@ const Stripe = require('stripe');
 const { withDb, fulfillSession } = require('./_lib');
 const {
     sendTicketEmail, subscribeToEventListSafe,
-    sendShopConfirmationEmail, subscribeToShopListSafe, SHOP_TAG_BUYER
+    sendShopConfirmationEmail, sendShopOrderNotification, subscribeToShopListSafe, SHOP_TAG_BUYER
 } = require('./_email');
 const { trackPurchase } = require('./_ga');
 const { trackPurchase: trackPurchaseMeta } = require('./_meta');
@@ -161,6 +161,12 @@ async function handleShopSession(stripe, session) {
         await c.query(
             'update shop_orders set confirmation_sent_at = now() where id = $1', [order.id]);
         console.log('shop confirmation sent', session.id, order.order_no);
+        // Upozornění pro Davida: nesmí shodit vyřízení, tak jen zalogovat
+        try {
+            await sendShopOrderNotification({ order });
+        } catch (e) {
+            console.error('shop notification failed', order.order_no, e.message);
+        }
         await subscribeToShopListSafe({ email: order.email, name: order.name, tag: SHOP_TAG_BUYER });
     });
 }

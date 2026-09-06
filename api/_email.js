@@ -383,6 +383,61 @@ async function sendShopConfirmationEmail({ order }) {
     });
 }
 
+// Upozornění pro Davida: nová zaplacená objednávka (jde na jsem@podrazdenacica.cz)
+const SHOP_NOTIFY_EMAIL = 'jsem@podrazdenacica.cz';
+const SHIP_LABEL = {
+    pickup_atelier: 'Osobní odběr, Veselá 5',
+    packeta_point_cz: 'Zásilkovna výdejní místo (ČR)',
+    packeta_point_sk: 'Zásilkovna výdejní místo (SK)',
+    packeta_home_cz: 'Zásilkovna na adresu (ČR)',
+    packeta_home_sk: 'Zásilkovna na adresu (SK)'
+};
+
+async function sendShopOrderNotification({ order }) {
+    const ship = SHIP_LABEL[order.shipping_method] || order.shipping_method;
+    let where = '';
+    if (order.packeta_point_id) {
+        where = `${esc(order.packeta_point_name || '')}${order.packeta_point_address ? ', ' + esc(order.packeta_point_address) : ''} (ID ${esc(order.packeta_point_id)})`;
+    } else if (order.address_line1) {
+        where = esc([order.address_line1, order.address_line2, [order.address_zip, order.address_city].filter(Boolean).join(' '), order.address_country].filter(Boolean).join(', '));
+    }
+    const row = (l, v) => `<tr><td style="padding:6px 0;color:#CCCCCC;font-size:14px;vertical-align:top;width:120px;">${l}</td><td style="padding:6px 0;color:#F5F5F5;font-size:14px;">${v}</td></tr>`;
+    const html = auctionShell({
+        heading: `Nová objednávka č. ${order.order_no}: ${order.quantity} × Onanovánky`,
+        bodyHtml: `
+            <table style="width:100%;border-collapse:collapse;margin:0 0 16px;">
+                ${row('Zákazník', esc(order.name || ''))}
+                ${row('E-mail', esc(order.email || ''))}
+                ${order.phone ? row('Telefon', esc(order.phone)) : ''}
+                ${row('Kusů', `${order.quantity}${order.gift_bag ? ' + plátěná taška' : ''}`)}
+                ${row('Zaplaceno', `<b style="color:#FE45E8;">${czk(order.total_czk)}</b> (doprava ${czk(order.shipping_price_czk)})`)}
+                ${row('Doručení', esc(ship) + (where ? '<br>' + where : ''))}
+                ${order.note ? row('Vzkaz', '„' + esc(order.note) + '“') : ''}
+            </table>
+            ${auctionButton(BASE_URL + '/onanovanky-admin', 'Otevřít objednávky')}
+            <p style="color:#888888;font-size:12px;line-height:1.6;text-align:center;margin:0;">
+                ${order.shipping_method === 'pickup_atelier'
+                    ? 'Osobní odběr: zákazník se ozve na jsem@ kvůli termínu, držíme měsíc.'
+                    : 'Balíme do 3 pracovních dnů. Zásilku založíš v adminu tlačítkem u objednávky.'}
+            </p>`,
+        footNote: 'Automatické upozornění z obchodu podrazdenacica.cz/onanovanky.'
+    });
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: `🛒 Objednávka č. ${order.order_no}: ${order.quantity} × Onanovánky, ${czk(order.total_czk)}, ${ship}`,
+            from_name: 'Obchod Podrážděná číča',
+            from_email: FROM_EMAIL,
+            reply_to: order.email || REPLY_TO,
+            to: [{ email: SHOP_NOTIFY_EMAIL, name: 'David' }],
+            html,
+            text: `Nová objednávka č. ${order.order_no}\n${order.name} <${order.email}>${order.phone ? ', ' + order.phone : ''}\n`
+                + `${order.quantity} × Onanovánky${order.gift_bag ? ' + taška' : ''}, zaplaceno ${czk(order.total_czk)}\n`
+                + `Doručení: ${ship}${where ? ', ' + where.replace(/<[^>]+>/g, '') : ''}\n`
+                + (order.note ? `Vzkaz: ${order.note}\n` : '') + `\nAdmin: ${BASE_URL}/onanovanky-admin`
+        }
+    });
+}
+
 // Balík je na cestě (posílá se z adminu po zadání čísla zásilky)
 async function sendShopShippedEmail({ order }) {
     const first = shopFirstName(order.name);
@@ -483,6 +538,6 @@ module.exports = {
     sendTicketEmail, subscribeToNewsletter,
     subscribeToEventList, subscribeToEventListSafe,
     sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail,
-    sendShopConfirmationEmail, sendShopShippedEmail, sendShopSampleEmail,
+    sendShopConfirmationEmail, sendShopShippedEmail, sendShopSampleEmail, sendShopOrderNotification,
     subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE
 };
