@@ -147,7 +147,7 @@
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
         }
         .shop-hero .hero-title { font-size: clamp(2.2rem, 5vw, 3.6rem); }
-        .shop-hero .hero-title em { font-style: normal; color: var(--accent-neon); }
+        .shop-hero .hero-title em { font-style: normal; color: var(--accent-neon); text-shadow: 0 0 18px rgba(254, 69, 232, 0.75), 0 0 40px rgba(254, 69, 232, 0.35); }
         .shop-price-row {
             display: flex;
             flex-wrap: wrap;
@@ -226,6 +226,7 @@
             padding: 0.4rem 0.6rem;
             text-align: center;
         }
+        #ukazky { padding-top: 1rem; }
         .sheet-grid.five { grid-template-columns: repeat(5, 1fr); max-width: 1000px; margin: 0 auto 2rem; }
         .sheet-more {
             text-align: center;
@@ -471,23 +472,25 @@
         /* Prodejny */
         .partner-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.4rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+            justify-content: center;
+            gap: 1.2rem;
             max-width: 1000px;
             margin: 0 auto;
         }
         .partner {
             background: var(--bg-card);
             border: 1px solid var(--divider);
-            border-radius: 16px;
-            padding: 1.8rem 1.6rem;
+            border-radius: 14px;
+            padding: 1.2rem 1.2rem 1.3rem;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.25rem;
         }
-        .partner h3 { color: var(--white); font-size: 1.25rem; }
-        .partner-photo { width: calc(100% + 3.2rem); margin: -1.8rem -1.6rem 0.8rem; max-width: none; border-radius: 16px 16px 0 0; display: block; aspect-ratio: 3 / 2; object-fit: cover; }
+        .partner h3 { color: var(--white); font-size: 1.15rem; }
+        .partner p { font-size: 0.92rem; }
+        .partner-photo { width: calc(100% + 2.4rem); margin: -1.2rem -1.2rem 0.8rem; max-width: none; height: auto; border-radius: 14px 14px 0 0; display: block; aspect-ratio: 16 / 10; object-fit: cover; }
         .partner .city { color: var(--accent-neon); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         .partner p { color: var(--text-secondary); line-height: 1.6; }
         .partner a { color: var(--accent-neon); }
@@ -596,25 +599,8 @@
                     </div>
                     <div class="hero-buttons">
                         <a href="#koupit" class="btn-primary" data-cta="onanovanky_hero_koupit">Chci Onanovánky</a>
-                        <a href="#ukazka" class="btn-secondary" data-cta="onanovanky_hero_ukazka">5 stránek zdarma na mail</a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Specifikace -->
-    <section id="co-dostanes">
-        <div class="container">
-            <div class="spec-wrap reveal">
-                <table class="spec">
-                    <tr><th>Motivy</th><td>30, podle skutečných fotek z číča komunity. Art by Podrážděná číča.</td></tr>
-                    <tr><th>Formát</th><td>A4, černá spirála nahoře. Stránku odtrhneš, zarámuješ, pověsíš.</td></tr>
-                    <tr><th>Obálka</th><td>Matná laminace na 350g křídě, zadní strana karton.</td></tr>
-                    <tr><th>Vnitřek</th><td>Černobílý tisk, oboustranně. Barvy jsou na tobě.</td></tr>
-                    <tr><th>Věk</th><td>18+. Není to pro děti.</td></tr>
-                    <tr><th>Cena</th><td>333 Kč. Od tří kusů plátěná číča taška jako dárek.</td></tr>
-                </table>
             </div>
         </div>
     </section>
@@ -748,15 +734,12 @@
                     <img class="partner-photo" src="/images/prodejny/rozkosss.webp" alt="Prodejna Rozkoššš, Starobrněnská 15, Brno" loading="lazy" width="800" height="533">
                     <div class="city">Brno</div>
                     <h3>Rozkoššš</h3>
-                    <p>
-                        Bezpečný prostor pro ženskou sexualitu a intimitu. Starobrněnská 15, Brno.
-                        Otevřeno pondělí až pátek 9 až 17.
-                    </p>
-                    <p><a href="https://www.rozkosss.cz/" target="_blank" rel="noopener" data-cta="onanovanky_prodejna_rozkosss">rozkosss.cz</a> · <a href="https://www.instagram.com/ROZKOSSS/" target="_blank" rel="noopener">@rozkosss</a></p>
+                    <p>Starobrněnská 285/15, 602 00 Brno<br>po až pá 9 až 17</p>
+                    <p><a href="https://www.rozkosss.cz/kamenna-prodejna" target="_blank" rel="noopener" data-cta="onanovanky_prodejna_rozkosss">Více o prodejně</a> · <a href="https://www.instagram.com/ROZKOSSS/" target="_blank" rel="noopener">@rozkosss</a></p>
                 </div>
                 <div class="partner invite reveal" data-delay="80">
                     <h3>Máš obchod a chceš Onanovánky na pult?</h3>
-                    <p>Komisní prodej nebo přímý odběr, prodejny i e-shopy. Napiš a domluvíme se.</p>
+                    <p>Komise nebo přímý odběr, prodejny i e-shopy.</p>
                     <a href="mailto:jsem@podrazdenacica.cz?subject=Onanov%C3%A1nky%20do%20prodejny" class="btn-secondary" data-cta="onanovanky_prodejna_zajem">Chci prodávat Onanovánky</a>
                 </div>
             </div>
@@ -792,6 +775,23 @@
                     <h3>Prodáváte je i digitálně?</h3>
                     <p>Ne. Chceme, ať si na to šáhneš a zašpiníš si ruce. Pět stránek na zkoušku ti ale pošleme zdarma, viz výš.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specifikace -->
+    <section id="co-dostanes">
+        <div class="container">
+            <h2 class="section-title reveal">Specifikace</h2>
+            <div class="spec-wrap reveal">
+                <table class="spec">
+                    <tr><th>Motivy</th><td>30, podle skutečných fotek z číča komunity. Art by Podrážděná číča.</td></tr>
+                    <tr><th>Formát</th><td>A4, černá spirála nahoře. Stránku odtrhneš, zarámuješ, pověsíš.</td></tr>
+                    <tr><th>Obálka</th><td>Matná laminace na 350g křídě, zadní strana karton.</td></tr>
+                    <tr><th>Vnitřek</th><td>Černobílý tisk. Barvy jsou na tobě.</td></tr>
+                    <tr><th>Věk</th><td>18+. Většina stránek není vhodná pro děti.</td></tr>
+                    <tr><th>Cena</th><td>333 Kč. Od tří kusů plátěná číča taška jako dárek.</td></tr>
+                </table>
             </div>
         </div>
     </section>
@@ -904,7 +904,7 @@
                 });
             });
         });
-        const trackedSections = ['co-dostanes', 'ukazky', 'koupit', 'prodejny', 'otazky'];
+        const trackedSections = ['ukazky', 'koupit', 'prodejny', 'otazky', 'co-dostanes'];
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
