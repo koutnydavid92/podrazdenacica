@@ -61,8 +61,9 @@ function packetAttributes(order) {
         currency: 'CZK',
         weight: weightKg(order.quantity),
         eshop: SENDER_LABEL,
-        adultContent: 0,
-        note: order.note ? String(order.note).slice(0, 128) : ''
+        adultContent: 0
+        // vzkaz zákazníka záměrně neposíláme: Zásilkovna ho tiskne na štítek
+        // a je určený nám, ne kurýrovi
     };
     if (isHome) {
         const { street, houseNumber } = splitStreet(order.address_line1, order.address_line2);
@@ -144,7 +145,7 @@ function csvRow(order) {
         isHome ? a.street : '', isHome ? a.houseNumber : '', isHome ? a.city : '', isHome ? a.zip : '',
         '',                       // výdejní místo dopravce
         '', '', '',               // rozměry
-        a.note,
+        '',                       // poznámka (vzkaz zákazníka na štítek nepatří)
         '', '', '', '', '', ''    // sledování, CIF, affiliate, daň, země původu
     ];
 }
