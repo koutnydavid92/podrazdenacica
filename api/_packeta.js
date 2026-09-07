@@ -8,8 +8,9 @@
 
 const API_URL = 'https://www.zasilkovna.cz/api/rest';
 
-// Označení odesílatele tak, jak je v klientské sekci (Nastavení -> Odesílatelé)
-const SENDER_LABEL = 'David Koutný | Podrážděná číča';
+// Označení odesílatele tak, jak je v klientské sekci (Nastavení -> Odesílatelé).
+// Ověřeno 7. 9. 2026: API bere jen 'podrazdenacica.cz'.
+const SENDER_LABEL = 'podrazdenacica.cz';
 
 // Doručení na adresu = "dopravce" s vlastním ID místo výdejního místa.
 // 106 = Zásilkovna domů ČR, 131 = Zásilkovna domů SK (ověřeno přes API).
