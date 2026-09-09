@@ -198,8 +198,12 @@
                 ['Ukázek', s.samples]
             ].map(t => `<div class="tile${t[2] ? ' attention' : ''}"><div class="num">${esc(t[1])}</div><div class="lbl">${esc(t[0])}</div></div>`).join('');
             el('stockInput').value = s.stock;
+            if (data.synced && data.synced.length) {
+                el('packetaMsg').textContent = 'Podle Zásilkovny aktualizováno: ' + data.synced.map(x =>
+                    'č. ' + x.order_no + ' → ' + (x.to === 'shipped' ? 'podáno' + (x.mailed ? ' (mail odešel)' : '') : 'doručeno')).join(', ');
+            }
             el('packetaInfo').textContent = data.packeta_api
-                ? 'Napojeno na API Zásilkovny. Postup: 1. založit zásilku (štítek), 2. vytisknout štítek, 3. po podání balíku kliknout Podáno, tím odejde zákazníkovi mail se sledováním.'
+                ? 'Napojeno na API Zásilkovny. Postup: 1. založit zásilku (štítek), 2. vytisknout štítek, 3. podat balík. Stav podání i doručení se přebírá ze Zásilkovny sám při každém otevření adminu a jednou denně; tlačítko Podáno je jen pro jistotu.'
                 : 'API Zásilkovny není nastavené (chybí heslo na Vercelu). Použij CSV nebo ruční zadání čísla zásilky.';
             el('packetaAllButton').disabled = !data.packeta_api;
             el('labelsAllButton').disabled = !data.packeta_api;
@@ -216,6 +220,7 @@
                     <td>${deliveryCell(o)}</td>
                     <td><span class="pill ${esc(o.status)}">${esc(STATUS_LABEL[o.status] || o.status)}</span>
                         ${o.packeta_tracking ? `<small><a href="https://tracking.packeta.com/cs/?id=${encodeURIComponent(o.packeta_tracking)}" target="_blank" rel="noopener" style="color:var(--pink);">${esc(o.packeta_tracking)}</a></small>` : ''}
+                        ${o.packeta_status_text ? `<small>Zásilkovna: ${esc(o.packeta_status_text)}</small>` : ''}
                         ${o.labeled_at ? `<small>zásilka ${esc(fmtDate(o.labeled_at))}</small>` : ''}
                         ${o.shipped_at ? `<small>podáno ${esc(fmtDate(o.shipped_at))}</small>` : ''}
                         ${o.picked_up_at ? `<small>vyzvednuto ${esc(fmtDate(o.picked_up_at))}</small>` : ''}</td>

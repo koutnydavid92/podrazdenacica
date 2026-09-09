@@ -1028,7 +1028,8 @@
                     point = {
                         id: String(p.id),
                         name: p.name || '',
-                        address: [p.street, p.zip, p.city].filter(Boolean).join(', '),
+                        address: [p.street, p.zip, p.city].filter(Boolean).join(', ')
+                            || String(p.formatedValue || p.nameStreet || '').replace(/^"?Packeta"?,?\s*/, '').slice(0, 200),
                         country: (p.country || ship.country || '').toLowerCase()
                     };
                     renderPoint();

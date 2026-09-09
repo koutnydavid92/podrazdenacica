@@ -129,6 +129,66 @@ async function cancelPacket(packetId) {
     return true;
 }
 
+// Stav zásilky. Kódy Zásilkovny: 1 data přijata (čeká na podání), 2 přijato
+// na podacím místě, 3 až 6 na cestě, 5 připraveno k vyzvednutí, 7 doručeno /
+// vyzvednuto, 9 vrací se, 10 vráceno odesílateli, 11 zrušeno.
+async function packetStatus(packetId) {
+    const text = await call('packetStatus', `<packetId>${esc(packetId)}</packetId>`);
+    return {
+        code: parseInt((text.match(/<statusCode>(\d+)<\/statusCode>/) || [])[1], 10) || 0,
+        codeText: (text.match(/<codeText>([^<]*)<\/codeText>/) || [])[1] || '',
+        statusText: (text.match(/<statusText>([^<]*)<\/statusText>/) || [])[1] || '',
+        dateTime: (text.match(/<dateTime>([^<]*)<\/dateTime>/) || [])[1] || null
+    };
+}
+
+const STATUS_CS = {
+    1: 'čeká na podání', 2: 'přijato Zásilkovnou', 3: 'připraveno k odjezdu', 4: 'na cestě',
+    5: 'připraveno k vyzvednutí', 6: 'předáno dopravci', 7: 'doručeno', 9: 'vrací se',
+    10: 'vráceno odesílateli', 11: 'zrušeno', 12: 'předáno k doručení', 14: 'problém s doručením'
+};
+
+// Projde objednávky se zásilkou, které ještě nejsou doručené, a dorovná stav
+// podle Zásilkovny: podání -> 'shipped' (+ mail se sledováním), doručeno ->
+// 'picked_up'. Volá se z adminu při načtení a z denního cronu.
+// Vrací seznam změn. Chyby u jednotlivých zásilek nezastaví ostatní.
+async function syncStatuses(client, sendShippedEmail, limit) {
+    if (!process.env.PACKETA_API_PASSWORD) return [];
+    const { rows } = await client.query(
+        `select * from shop_orders
+         where packeta_tracking is not null and status in ('labeled', 'shipped')
+         order by created_at desc limit $1`, [limit || 40]);
+    const changes = [];
+    for (const order of rows) {
+        let st;
+        try { st = await packetStatus(order.packeta_tracking); }
+        catch (e) { console.error('packeta status failed', order.order_no, e.message); continue; }
+        const text = STATUS_CS[st.code] || st.codeText || String(st.code);
+        await client.query(
+            `update shop_orders set packeta_status_code = $2, packeta_status_text = $3, packeta_status_at = now() where id = $1`,
+            [order.id, st.code, text]);
+        if (st.code === 7 && order.status !== 'picked_up') {
+            await client.query(`update shop_orders set status = 'picked_up', picked_up_at = coalesce(picked_up_at, now()),
+                shipped_at = coalesce(shipped_at, now()) where id = $1`, [order.id]);
+            changes.push({ order_no: order.order_no, to: 'picked_up' });
+        } else if ([2, 3, 4, 5, 6, 12].includes(st.code) && order.status === 'labeled') {
+            const { rows: upd } = await client.query(
+                `update shop_orders set status = 'shipped', shipped_at = coalesce(shipped_at, now()) where id = $1 returning *`,
+                [order.id]);
+            let mailed = false;
+            if (sendShippedEmail && upd[0].email && !upd[0].shipped_mail_sent_at) {
+                try {
+                    await sendShippedEmail({ order: upd[0] });
+                    await client.query('update shop_orders set shipped_mail_sent_at = now() where id = $1', [order.id]);
+                    mailed = true;
+                } catch (e) { console.error('shipped mail failed', order.order_no, e.message); }
+            }
+            changes.push({ order_no: order.order_no, to: 'shipped', mailed });
+        }
+    }
+    return changes;
+}
+
 // Řádek pro hromadný import CSV (šablona "version 8" z klientské sekce)
 function csvRow(order) {
     const a = packetAttributes(order);
@@ -166,5 +226,5 @@ function csvFile(orders) {
 
 module.exports = {
     SENDER_LABEL, HOME_DELIVERY_CARRIER, weightKg, splitName, splitStreet,
-    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile
+    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile, packetStatus, syncStatuses, STATUS_CS
 };

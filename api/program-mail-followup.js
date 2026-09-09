@@ -9,6 +9,11 @@
 
 const { SUBJECT, buildHtml, buildText } = require('./_program_mail');
 const { pinEquals, withDb } = require('./_lib');
+// Denní cron se využívá i pro obchod: dorovná stavy zásilek Onanovánek
+// podle Zásilkovny (podáno / doručeno). Vlastní cron nejde přidat, Vercel
+// Hobby má limit funkcí i cronů.
+const packeta = require('./_packeta');
+const { sendShopShippedEmail } = require('./_email');
 
 const LIST_ID = 3;
 // Kampaň se rozesílala 25. 8. 2026 ~04:05 UTC; příjemci se ale zamkli už
@@ -92,6 +97,17 @@ module.exports = async (req, res) => {
     const isAdmin = req.method === 'POST' && pinEquals((req.body || {}).pin, process.env.ADMIN_PIN);
     const today = new Date().toISOString().slice(0, 10);
 
+    // Obchod: stavy zásilek ze Zásilkovny (jen cron, chyba nesmí shodit zbytek)
+    let shopSynced = [];
+    if (isCron) {
+        try {
+            shopSynced = await withDb(c => packeta.syncStatuses(c, sendShopShippedEmail, 100));
+            console.log('shop packeta sync:', JSON.stringify(shopSynced));
+        } catch (e) {
+            console.error('shop packeta sync failed:', e.message);
+        }
+    }
+
     if (!isCron && !isAdmin) {
         // bez oprávnění jen anonymní náhled počtů, nic se neposílá
         try {
@@ -103,7 +119,7 @@ module.exports = async (req, res) => {
         return;
     }
     if (isCron && !isAdmin && today !== RUN_DATE) {
-        res.status(200).json({ skipped: true, reason: `cron posílá až ${RUN_DATE}`, today });
+        res.status(200).json({ skipped: true, reason: `cron posílá až ${RUN_DATE}`, today, shop_synced: shopSynced });
         return;
     }
     try {

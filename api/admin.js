@@ -262,7 +262,11 @@ async function handleShop(c, body) {
         return { ok: true, stock };
     }
 
-    // shop_overview (výchozí)
+    // shop_overview (výchozí). Nejdřív dorovnat stavy zásilek podle Zásilkovny
+    // (podáno / doručeno), ať admin ukazuje pravdu bez klikání.
+    let synced = [];
+    try { synced = await packeta.syncStatuses(c, sendShopShippedEmail, 40); }
+    catch (e) { console.error('packeta sync failed', e.message); }
     const stockRow = (await c.query(
         'select stock, sold, updated_at from shop_stock where product = $1', [shop.PRODUCT])).rows[0]
         || { stock: 0, sold: 0 };
@@ -270,7 +274,8 @@ async function handleShop(c, body) {
         `select id, order_no, created_at, quantity, unit_price_czk, shipping_method, shipping_price_czk,
                 total_czk, gift_bag, name, email, phone, address_line1, address_line2, address_city,
                 address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
-                note, status, packeta_tracking, labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
+                note, status, packeta_tracking, packeta_status_code, packeta_status_text, packeta_status_at,
+                labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
                 shipped_mail_sent_at, stripe_session_id
          from shop_orders order by created_at desc limit 1000`)).rows;
     const one = async (sql) => (await c.query(sql)).rows[0];
@@ -289,7 +294,7 @@ async function handleShop(c, body) {
     };
     const samples = (await c.query(
         'select email, created_at from shop_samples order by created_at desc limit 500')).rows;
-    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING, packeta_api: Boolean(process.env.PACKETA_API_PASSWORD) };
+    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING, packeta_api: Boolean(process.env.PACKETA_API_PASSWORD), synced };
 }
 
 module.exports = async (req, res) => {
