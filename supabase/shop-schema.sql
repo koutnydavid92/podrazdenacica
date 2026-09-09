@@ -37,9 +37,11 @@ create table if not exists shop_orders (
     packeta_point_name text,
     packeta_point_address text,
     note text,                                             -- vzkaz zákazníka
+    -- paid -> labeled (zásilka založená v Zásilkovně, štítek) -> shipped (podáno)
     status text not null default 'paid' check (status in (
-        'paid', 'shipped', 'picked_up', 'cancelled', 'refunded')),
+        'paid', 'labeled', 'shipped', 'picked_up', 'cancelled', 'refunded')),
     packeta_tracking text,                                 -- číslo zásilky (Z...)
+    labeled_at timestamptz,                                -- založení zásilky (9. 9. 2026 přidáno)
     shipped_at timestamptz,
     picked_up_at timestamptz,
     confirmation_sent_at timestamptz,

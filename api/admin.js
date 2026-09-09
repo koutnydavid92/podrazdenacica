@@ -154,11 +154,13 @@ function makeCode(fullName) {
 // Akce shop_* vyžadují ADMIN_PIN. Objednávky vznikají jen ze Stripe
 // webhooku; tady se jen posouvá stav, zadává číslo zásilky a hlídá sklad.
 const SHOP_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const SHOP_STATUSES = ['paid', 'shipped', 'picked_up', 'cancelled', 'refunded'];
+const SHOP_STATUSES = ['paid', 'labeled', 'shipped', 'picked_up', 'cancelled', 'refunded'];
 
 async function handleShop(c, body) {
     if (body.action === 'shop_ship') {
-        // Odesláno: uloží číslo zásilky a pošle zákazníkovi mail se sledováním
+        // Podáno Zásilkovně: uloží číslo zásilky (když přišlo ručně), přepne na
+        // 'shipped' a pošle zákazníkovi mail se sledováním. Volá se po fyzickém
+        // podání balíku, ne při založení zásilky (to je stav 'labeled').
         if (!SHOP_UUID_RE.test(String(body.id || ''))) return { ok: false, error: 'bad_id' };
         const tracking = String(body.tracking || '').trim().replace(/\s+/g, '').slice(0, 40) || null;
         if (tracking && !/^[A-Za-z0-9-]{4,40}$/.test(tracking)) return { ok: false, error: 'bad_tracking' };
@@ -196,8 +198,9 @@ async function handleShop(c, body) {
     }
     if (body.action === 'shop_packeta_create') {
         // Založí zásilku v Zásilkovně pro jednu nebo všechny objednávky k odeslání.
-        // Číslo zásilky se uloží, objednávka přejde na 'shipped' a zákazníkovi
-        // odejde mail se sledováním. Objednávka, která už zásilku má, se přeskočí.
+        // Číslo zásilky se uloží a objednávka přejde na 'labeled' (štítek, čeká na
+        // podání). Mail zákazníkovi jde až při podání (akce shop_ship).
+        // Objednávka, která už zásilku má, se přeskočí.
         let where, params;
         if (body.id === 'all') {
             where = "status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null";
@@ -214,22 +217,12 @@ async function handleShop(c, body) {
             if (order.shipping_method === 'pickup_atelier') { results.push({ order_no: order.order_no, skipped: 'osobní odběr' }); continue; }
             try {
                 const packet = await packeta.createPacket(order);
-                const { rows: upd } = await c.query(
+                await c.query(
                     `update shop_orders
-                     set packeta_tracking = $2, status = 'shipped', shipped_at = coalesce(shipped_at, now())
-                     where id = $1 returning *`,
+                     set packeta_tracking = $2, status = 'labeled', labeled_at = coalesce(labeled_at, now())
+                     where id = $1`,
                     [order.id, packet.id]);
-                let mailed = false;
-                if (upd[0].email && !upd[0].shipped_mail_sent_at) {
-                    try {
-                        await sendShopShippedEmail({ order: upd[0] });
-                        await c.query('update shop_orders set shipped_mail_sent_at = now() where id = $1', [order.id]);
-                        mailed = true;
-                    } catch (e) {
-                        console.error('shipped mail failed', order.order_no, e.message);
-                    }
-                }
-                results.push({ order_no: order.order_no, packet_id: packet.id, mailed });
+                results.push({ order_no: order.order_no, packet_id: packet.id });
             } catch (e) {
                 console.error('packeta create failed', order.order_no, e.message);
                 results.push({ order_no: order.order_no, error: e.message });
@@ -247,7 +240,7 @@ async function handleShop(c, body) {
             rows = (await c.query('select order_no, packeta_tracking from shop_orders where id = any($1::uuid[]) and packeta_tracking is not null', [ids])).rows;
         } else {
             rows = (await c.query(`select order_no, packeta_tracking from shop_orders
-                where packeta_tracking is not null and shipped_at > now() - interval '7 days' order by order_no`)).rows;
+                where packeta_tracking is not null and coalesce(labeled_at, shipped_at) > now() - interval '7 days' order by order_no`)).rows;
         }
         if (!rows.length) return { ok: false, error: 'no_packets' };
         const pdf = await packeta.labelsPdf(rows.map(r => r.packeta_tracking), format);
@@ -277,14 +270,16 @@ async function handleShop(c, body) {
         `select id, order_no, created_at, quantity, unit_price_czk, shipping_method, shipping_price_czk,
                 total_czk, gift_bag, name, email, phone, address_line1, address_line2, address_city,
                 address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
-                note, status, packeta_tracking, shipped_at, picked_up_at, confirmation_sent_at,
+                note, status, packeta_tracking, labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
                 shipped_mail_sent_at, stripe_session_id
          from shop_orders order by created_at desc limit 1000`)).rows;
     const one = async (sql) => (await c.query(sql)).rows[0];
     const stats = {
         stock: stockRow.stock,
         sold: stockRow.sold,
-        to_ship: (await one("select count(*)::int as n from shop_orders where status = 'paid' and shipping_method <> 'pickup_atelier'")).n,
+        to_ship: (await one("select count(*)::int as n from shop_orders where status in ('paid','labeled') and shipping_method <> 'pickup_atelier'")).n,
+        to_label: (await one("select count(*)::int as n from shop_orders where status = 'paid' and shipping_method <> 'pickup_atelier'")).n,
+        to_post: (await one("select count(*)::int as n from shop_orders where status = 'labeled'")).n,
         to_pickup: (await one("select count(*)::int as n from shop_orders where status = 'paid' and shipping_method = 'pickup_atelier'")).n,
         orders: (await one("select count(*)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
         pieces: (await one("select coalesce(sum(quantity),0)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,

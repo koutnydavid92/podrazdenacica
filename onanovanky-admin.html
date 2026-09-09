@@ -43,6 +43,7 @@
         td small { color: var(--muted); display: block; }
         .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--divider); font-size: .8rem; white-space: nowrap; }
         .pill.paid { border-color: var(--warn); color: var(--warn); }
+        .pill.labeled { border-color: var(--pink); color: var(--pink); }
         .pill.shipped { border-color: var(--ok); color: var(--ok); }
         .pill.picked_up { border-color: var(--ok); color: var(--ok); }
         .pill.cancelled, .pill.refunded { border-color: var(--bad); color: var(--bad); }
@@ -160,7 +161,7 @@
             packeta_home_cz: 'Zásilkovna na adresu (ČR)',
             packeta_home_sk: 'Zásilkovna na adresu (SK)'
         };
-        const STATUS_LABEL = { paid: 'zaplaceno', shipped: 'odesláno', picked_up: 'vyzvednuto', cancelled: 'storno', refunded: 'vráceno' };
+        const STATUS_LABEL = { paid: 'zaplaceno', labeled: 'štítek, k podání', shipped: 'podáno', picked_up: 'vyzvednuto', cancelled: 'storno', refunded: 'vráceno' };
 
         function deliveryCell(o) {
             const label = SHIP_LABEL[o.shipping_method] || o.shipping_method;
@@ -176,17 +177,18 @@
         function matches(o) {
             const pickup = o.shipping_method === 'pickup_atelier';
             if (filter === 'all') return true;
-            if (filter === 'todo') return o.status === 'paid';
-            if (filter === 'ship') return o.status === 'paid' && !pickup;
+            if (filter === 'todo') return o.status === 'paid' || o.status === 'labeled';
+            if (filter === 'ship') return (o.status === 'paid' || o.status === 'labeled') && !pickup;
             if (filter === 'pickup') return pickup && o.status !== 'cancelled' && o.status !== 'refunded';
-            if (filter === 'done') return o.status !== 'paid';
+            if (filter === 'done') return o.status !== 'paid' && o.status !== 'labeled';
             return true;
         }
 
         function render() {
             const s = data.stats;
             el('tiles').innerHTML = [
-                ['K odeslání', s.to_ship, s.to_ship > 0],
+                ['Založit zásilku', s.to_label, s.to_label > 0],
+                ['Podat Zásilkovně', s.to_post, s.to_post > 0],
                 ['K vyzvednutí', s.to_pickup, s.to_pickup > 0],
                 ['Objednávek', s.orders],
                 ['Kusů prodáno', s.pieces],
@@ -197,7 +199,7 @@
             ].map(t => `<div class="tile${t[2] ? ' attention' : ''}"><div class="num">${esc(t[1])}</div><div class="lbl">${esc(t[0])}</div></div>`).join('');
             el('stockInput').value = s.stock;
             el('packetaInfo').textContent = data.packeta_api
-                ? 'Napojeno na API Zásilkovny. Založení zásilky uloží číslo, označí objednávku jako odeslanou a pošle zákazníkovi mail se sledováním.'
+                ? 'Napojeno na API Zásilkovny. Postup: 1. založit zásilku (štítek), 2. vytisknout štítek, 3. po podání balíku kliknout Podáno, tím odejde zákazníkovi mail se sledováním.'
                 : 'API Zásilkovny není nastavené (chybí heslo na Vercelu). Použij CSV nebo ruční zadání čísla zásilky.';
             el('packetaAllButton').disabled = !data.packeta_api;
             el('labelsAllButton').disabled = !data.packeta_api;
@@ -214,7 +216,8 @@
                     <td>${deliveryCell(o)}</td>
                     <td><span class="pill ${esc(o.status)}">${esc(STATUS_LABEL[o.status] || o.status)}</span>
                         ${o.packeta_tracking ? `<small><a href="https://tracking.packeta.com/cs/?id=${encodeURIComponent(o.packeta_tracking)}" target="_blank" rel="noopener" style="color:var(--pink);">${esc(o.packeta_tracking)}</a></small>` : ''}
-                        ${o.shipped_at ? `<small>odesláno ${esc(fmtDate(o.shipped_at))}</small>` : ''}
+                        ${o.labeled_at ? `<small>zásilka ${esc(fmtDate(o.labeled_at))}</small>` : ''}
+                        ${o.shipped_at ? `<small>podáno ${esc(fmtDate(o.shipped_at))}</small>` : ''}
                         ${o.picked_up_at ? `<small>vyzvednuto ${esc(fmtDate(o.picked_up_at))}</small>` : ''}</td>
                     <td>${actionsCell(o)}</td>
                 </tr>`).join('') : '<tr><td colspan="7" class="muted">Nic tu není.</td></tr>');
@@ -232,13 +235,16 @@
             let html = '';
             if (o.status === 'paid' && !pickup) {
                 if (data.packeta_api && !o.packeta_tracking) {
-                    html += `<button class="rowbtn" data-packeta="${esc(o.id)}" type="button">Založit zásilku v Zásilkovně</button>`;
+                    html += `<button class="rowbtn" data-packeta="${esc(o.id)}" type="button">1. Založit zásilku v Zásilkovně</button>`;
                 }
                 html += `<div class="ship-input"><input type="text" placeholder="Z 123 456 7890" data-tracking="${esc(o.id)}" value="${esc(o.packeta_tracking || '')}">
-                    <button class="rowbtn plain" data-ship="${esc(o.id)}" type="button">Odesláno (ručně)</button></div>`;
+                    <button class="rowbtn plain" data-ship="${esc(o.id)}" type="button">Podáno (ručně zadané číslo)</button></div>`;
+            }
+            if (o.status === 'labeled') {
+                html += `<button class="rowbtn" data-ship="${esc(o.id)}" data-labeled="1" type="button">3. Podáno Zásilkovně</button>`;
             }
             if (o.packeta_tracking && data.packeta_api) {
-                html += `<button class="rowbtn plain" data-label="${esc(o.id)}" type="button">Štítek PDF</button>`;
+                html += `<button class="rowbtn plain" data-label="${esc(o.id)}" type="button">${o.status === 'labeled' ? '2. ' : ''}Štítek PDF</button>`;
             }
             if (o.status === 'paid' && pickup) {
                 html += `<button class="rowbtn" data-status="picked_up" data-id="${esc(o.id)}" type="button">Vyzvednuto</button>`;
@@ -252,7 +258,7 @@
                 html += `<button class="rowbtn plain" data-status="paid" data-id="${esc(o.id)}" type="button">Zpět na zaplaceno</button>`;
             }
             if (o.status === 'shipped' || o.status === 'picked_up') {
-                html += `<button class="rowbtn plain" data-status="paid" data-id="${esc(o.id)}" type="button">Zpět</button>`;
+                html += `<button class="rowbtn plain" data-status="${o.packeta_tracking ? 'labeled' : 'paid'}" data-id="${esc(o.id)}" type="button">Zpět</button>`;
             }
             html += `<div class="msg" data-msg="${esc(o.id)}"></div>`;
             return html;
@@ -267,7 +273,7 @@
         }
         function describeResults(results) {
             return results.map(r => 'č. ' + r.order_no + ': '
-                + (r.packet_id ? 'zásilka ' + r.packet_id + (r.mailed ? ', mail odešel' : '')
+                + (r.packet_id ? 'zásilka ' + r.packet_id + ' založená, teď štítek a podání'
                     : (r.skipped ? 'přeskočeno (' + r.skipped + ')' : 'CHYBA ' + r.error))).join(' · ');
         }
         async function createPackets(id, btn, msgEl) {
@@ -305,12 +311,12 @@
                 const input = document.querySelector(`input[data-tracking="${id}"]`);
                 const tracking = input ? input.value.trim() : '';
                 const msg = document.querySelector(`[data-msg="${id}"]`);
-                if (!b.dataset.resend && !tracking && !confirm('Bez čísla zásilky? Zákazník nedostane odkaz na sledování.')) return;
+                if (!b.dataset.resend && !b.dataset.labeled && !tracking && !confirm('Bez čísla zásilky? Zákazník nedostane odkaz na sledování.')) return;
                 b.disabled = true;
                 try {
                     const r = await api({ action: 'shop_ship', id, tracking });
                     if (!r.ok) throw new Error(r.error || 'chyba');
-                    msg.textContent = r.mailed ? 'Označeno, mail odešel.' : 'Označeno (mail už byl poslaný dřív, nebo chybí e-mail).';
+                    msg.textContent = r.mailed ? 'Podáno, zákazníkovi odešel mail se sledováním.' : 'Podáno (mail už byl poslaný dřív, nebo chybí e-mail).';
                     await load();
                 } catch (e) {
                     msg.textContent = e.message === 'bad_tracking' ? 'Číslo zásilky má divný tvar (jen písmena, číslice a pomlčky).' : 'Nepovedlo se: ' + e.message;
