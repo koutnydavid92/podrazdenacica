@@ -129,6 +129,13 @@ async function cancelPacket(packetId) {
     return true;
 }
 
+// Podací kód pro Z-BOX (v klientské sekci "Podací kód", v API consignPassword).
+// Zadává se na klávesnici Z-BOXu při podání bez štítku.
+async function packetConsignCode(packetId) {
+    const text = await call('packetInfo', `<packetId>${esc(packetId)}</packetId>`);
+    return (text.match(/<consignPassword>([^<]*)<\/consignPassword>/) || [])[1] || null;
+}
+
 // Stav zásilky. Kódy Zásilkovny: 1 data přijata (čeká na podání), 2 přijato
 // na podacím místě, 3 až 6 na cestě, 5 připraveno k vyzvednutí, 7 doručeno /
 // vyzvednuto, 9 vrací se, 10 vráceno odesílateli, 11 zrušeno.
@@ -160,6 +167,12 @@ async function syncStatuses(client, sendShippedEmail, limit) {
          order by created_at desc limit $1`, [limit || 40]);
     const changes = [];
     for (const order of rows) {
+        if (!order.packeta_consign_code) {
+            try {
+                const code = await packetConsignCode(order.packeta_tracking);
+                if (code) await client.query('update shop_orders set packeta_consign_code = $2 where id = $1', [order.id, code]);
+            } catch (e) { console.error('packeta consign code failed', order.order_no, e.message); }
+        }
         let st;
         try { st = await packetStatus(order.packeta_tracking); }
         catch (e) { console.error('packeta status failed', order.order_no, e.message); continue; }
@@ -226,5 +239,5 @@ function csvFile(orders) {
 
 module.exports = {
     SENDER_LABEL, HOME_DELIVERY_CARRIER, weightKg, splitName, splitStreet,
-    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile, packetStatus, syncStatuses, STATUS_CS
+    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile, packetStatus, packetConsignCode, syncStatuses, STATUS_CS
 };

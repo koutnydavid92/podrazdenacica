@@ -42,6 +42,7 @@ create table if not exists shop_orders (
         'paid', 'labeled', 'shipped', 'picked_up', 'cancelled', 'refunded')),
     packeta_tracking text,                                 -- číslo zásilky (Z...)
     labeled_at timestamptz,                                -- založení zásilky (9. 9. 2026 přidáno)
+    packeta_consign_code text,                             -- podací kód pro Z-BOX (9. 9. 2026)
     packeta_status_code int,                               -- poslední stav ze Zásilkovny (9. 9. 2026)
     packeta_status_text text,
     packeta_status_at timestamptz,

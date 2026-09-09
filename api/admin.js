@@ -217,12 +217,15 @@ async function handleShop(c, body) {
             if (order.shipping_method === 'pickup_atelier') { results.push({ order_no: order.order_no, skipped: 'osobní odběr' }); continue; }
             try {
                 const packet = await packeta.createPacket(order);
+                let consign = null;
+                try { consign = await packeta.packetConsignCode(packet.id); }
+                catch (e) { console.error('consign code failed', order.order_no, e.message); }
                 await c.query(
                     `update shop_orders
-                     set packeta_tracking = $2, status = 'labeled', labeled_at = coalesce(labeled_at, now())
+                     set packeta_tracking = $2, packeta_consign_code = $3, status = 'labeled', labeled_at = coalesce(labeled_at, now())
                      where id = $1`,
-                    [order.id, packet.id]);
-                results.push({ order_no: order.order_no, packet_id: packet.id });
+                    [order.id, packet.id, consign]);
+                results.push({ order_no: order.order_no, packet_id: packet.id, consign_code: consign });
             } catch (e) {
                 console.error('packeta create failed', order.order_no, e.message);
                 results.push({ order_no: order.order_no, error: e.message });
@@ -274,7 +277,7 @@ async function handleShop(c, body) {
         `select id, order_no, created_at, quantity, unit_price_czk, shipping_method, shipping_price_czk,
                 total_czk, gift_bag, name, email, phone, address_line1, address_line2, address_city,
                 address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
-                note, status, packeta_tracking, packeta_status_code, packeta_status_text, packeta_status_at,
+                note, status, packeta_tracking, packeta_consign_code, packeta_status_code, packeta_status_text, packeta_status_at,
                 labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
                 shipped_mail_sent_at, stripe_session_id
          from shop_orders order by created_at desc limit 1000`)).rows;

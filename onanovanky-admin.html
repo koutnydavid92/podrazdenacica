@@ -219,7 +219,8 @@
                         ${o.note ? `<small class="note">„${esc(o.note)}“</small>` : ''}</td>
                     <td>${deliveryCell(o)}</td>
                     <td><span class="pill ${esc(o.status)}">${esc(STATUS_LABEL[o.status] || o.status)}</span>
-                        ${o.packeta_tracking ? `<small><a href="https://tracking.packeta.com/cs/?id=${encodeURIComponent(o.packeta_tracking)}" target="_blank" rel="noopener" style="color:var(--pink);">${esc(o.packeta_tracking)}</a></small>` : ''}
+                        ${o.packeta_tracking ? `<small><a href="https://tracking.packeta.com/cs/?id=${encodeURIComponent(o.packeta_tracking)}" target="_blank" rel="noopener" style="color:var(--pink);">${esc('Z ' + String(o.packeta_tracking).replace(/^Z/, '').replace(/^(\d{3})(\d{4})(\d{3})$/, '$1 $2 $3'))}</a></small>` : ''}
+                        ${o.packeta_consign_code ? `<small>Podací kód Z-BOX: <b style="color:var(--text);font-size:.95rem;letter-spacing:1px;">${esc(String(o.packeta_consign_code).replace(/(\d{3})(?=\d)/g, '$1 '))}</b></small>` : ''}
                         ${o.packeta_status_text ? `<small>Zásilkovna: ${esc(o.packeta_status_text)}</small>` : ''}
                         ${o.labeled_at ? `<small>zásilka ${esc(fmtDate(o.labeled_at))}</small>` : ''}
                         ${o.shipped_at ? `<small>podáno ${esc(fmtDate(o.shipped_at))}</small>` : ''}
@@ -278,7 +279,7 @@
         }
         function describeResults(results) {
             return results.map(r => 'č. ' + r.order_no + ': '
-                + (r.packet_id ? 'zásilka ' + r.packet_id + ' založená, teď štítek a podání'
+                + (r.packet_id ? 'zásilka ' + r.packet_id + (r.consign_code ? ', podací kód Z-BOX ' + r.consign_code : '') + ' založená, teď štítek nebo Z-BOX'
                     : (r.skipped ? 'přeskočeno (' + r.skipped + ')' : 'CHYBA ' + r.error))).join(' · ');
         }
         async function createPackets(id, btn, msgEl) {
