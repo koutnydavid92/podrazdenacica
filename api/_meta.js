@@ -40,6 +40,10 @@ async function sendEvent(eventName, o) {
     if (o.fbp) userData.fbp = String(o.fbp);
     if (o.fbc) userData.fbc = String(o.fbc);
     if (emailHash) userData.em = [emailHash];
+    // IP a prohlížeč: Meta je u událostí z webu vyžaduje k párování návštěvy
+    // (u nákupu z webhooku je nemáme, tam stačí cookies a e-mail)
+    if (o.clientIp) userData.client_ip_address = String(o.clientIp);
+    if (o.userAgent) userData.client_user_agent = String(o.userAgent).slice(0, 500);
     if (!Object.keys(userData).length) {
         console.warn('Meta CAPI:', eventName, o.eventId, 'nemá žádný identifikátor, neposílám');
         return { sent: false, reason: 'no_identifiers' };
@@ -57,7 +61,7 @@ async function sendEvent(eventName, o) {
             event_source_url: o.eventSourceUrl || 'https://www.podrazdenacica.cz/cica-art-fest',
             action_source: 'website',
             user_data: userData,
-            custom_data: {
+            custom_data: o.customData || {
                 value: value,
                 currency: 'CZK',
                 content_type: 'product',
@@ -141,4 +145,23 @@ function trackPurchase(o) {
     return sendEvent('Purchase', Object.assign({ eventId: o.transactionId }, o));
 }
 
-module.exports = { trackPurchase, trackInitiateCheckout };
+/**
+ * Zobrazení produktové stránky (ViewContent), posílané ze serveru přes
+ * první-party endpoint. Proč: pixel v prohlížeči blokují adblockery a bez
+ * něj zůstávají publika "návštěvníci webu" pro retargeting prázdná.
+ * Posílá se jen po souhlasu s cookies (hlídá stránka), se stejným event_id
+ * jako případný pixel, ať se návštěva nepočítá dvakrát.
+ */
+function trackViewContent(o) {
+    return sendEvent('ViewContent', Object.assign({
+        customData: {
+            content_type: 'product',
+            content_name: o.contentName || 'Onanovanky 2026',
+            content_ids: [o.contentId || 'onanovanky'],
+            value: Number(o.value) || 333,
+            currency: 'CZK'
+        }
+    }, o));
+}
+
+module.exports = { trackPurchase, trackInitiateCheckout, trackViewContent };

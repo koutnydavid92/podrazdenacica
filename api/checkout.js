@@ -6,7 +6,8 @@ const Stripe = require('stripe');
 const {
     withDb, remainingPublic, unitPriceCzk, quantityDiscount, MAX_TICKETS_PER_ORDER
 } = require('./_lib');
-const { trackInitiateCheckout } = require('./_meta');
+const { trackInitiateCheckout, trackViewContent } = require('./_meta');
+const { clientIp } = require('./_lib');
 const shop = require('./_shop');
 
 // Tělo requestu: Vercel ho obvykle naparsuje sám, ale request bez těla
@@ -51,12 +52,32 @@ module.exports = async (req, res) => {
         return;
     }
     try {
+        const body = await readJsonBody(req);
+
+        // Měření zobrazení stránky do Mety ze serveru (viz trackViewContent).
+        // Žije tady kvůli limitu 12 funkcí; se Stripem nemá nic společného.
+        if (body.track === 'view_content') {
+            await trackViewContent({
+                eventId: sanitizeEventId(body.event_id) || 'vc_' + Date.now(),
+                fbp: sanitizeFbCookie(body.fbp),
+                fbc: sanitizeFbCookie(body.fbc),
+                clientIp: clientIp(req),
+                userAgent: req.headers['user-agent'] || '',
+                eventSourceUrl: /^https:\/\/(www\.)?podrazdenacica\.cz\/[A-Za-z0-9\/_.-]*$/.test(String(body.url || ''))
+                    ? body.url : 'https://www.podrazdenacica.cz/onanovanky',
+                contentName: 'Onanovanky 2026',
+                contentId: 'onanovanky',
+                value: shop.UNIT_PRICE_CZK
+            }).catch(() => {});
+            res.status(204).end();
+            return;
+        }
+
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
         // GA4 identifikátory ze stránky festu si vezmeme s sebou do Stripu,
         // ať webhook umí nákup nahlásit do analytiky i se správnou návštěvou.
         // Chybí, když kupující nedal souhlas s cookies - to je v pořádku.
-        const body = await readJsonBody(req);
         if (body.product === shop.PRODUCT) {
             await shopCheckout(stripe, req, res, body);
             return;

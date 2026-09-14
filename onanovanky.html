@@ -1136,6 +1136,30 @@
         render();
         renderPoint();
 
+        // Zobrazení stránky do Mety přes náš server (obchází adblockery, plní
+        // publika pro retargeting). Jen po souhlasu s cookies: hned, když už je
+        // dřív daný, jinak ve chvíli kliknutí na Přijmout. Stejné event_id jde
+        // i do pixelu v prohlížeči, Meta si obě zprávy spáruje.
+        let viewSent = false;
+        window.sendMetaView = function () {
+            if (viewSent) return;
+            viewSent = true;
+            const ids = idsForCheckout();
+            const eventId = 'vc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+            try {
+                if (typeof fbq === 'function') {
+                    fbq('track', 'ViewContent', { content_type: 'product', content_ids: ['onanovanky'], content_name: 'Onanovanky 2026', value: UNIT_PRICE, currency: 'CZK' }, { eventID: eventId });
+                }
+            } catch (e) { /* měření nesmí nic rozbít */ }
+            const payload = JSON.stringify({ track: 'view_content', event_id: eventId, fbp: ids.fbp, fbc: ids.fbc, url: location.origin + location.pathname });
+            try {
+                if (!navigator.sendBeacon || !navigator.sendBeacon('/api/checkout', new Blob([payload], { type: 'application/json' }))) {
+                    fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+                }
+            } catch (e) { /* ticho */ }
+        };
+        if (localStorage.getItem('cookieConsent') === 'accepted') window.sendMetaView();
+
         // Je co prodávat? Ptáme se databáze přes veřejnou RPC (jen ano/ne).
         (async () => {
             try {
@@ -1219,6 +1243,7 @@
                 cookieBanner.classList.remove('show');
                 if (typeof loadGA === 'function') loadGA();
                 if (typeof window.updateConsent === 'function') window.updateConsent('granted');
+                if (typeof window.sendMetaView === 'function') window.sendMetaView();
             });
             declineCookies.addEventListener('click', () => {
                 localStorage.setItem('cookieConsent', 'declined');
