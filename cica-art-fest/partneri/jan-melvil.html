@@ -58,6 +58,31 @@
         .pt-section { padding: 4rem 0; }
         .pt-note { max-width: 780px; margin: 0 auto; color: rgba(255,255,255,0.6); font-size: 0.95rem; }
 
+        /* Logo festu s bublinou ročníku (stejné jako na fest stránce, jen staticky) */
+        .pt-festlogo { position: relative; width: 240px; margin: 0 0 1.8rem; filter: drop-shadow(0 0 26px rgba(254, 69, 232, 0.25)); }
+        .pt-festlogo img { width: 100%; height: auto; display: block; }
+        .pt-festlogo-tag {
+            position: absolute; right: -10px; bottom: -4px;
+            background: var(--accent-neon); color: #0D0D0D; font-family: 'Archivo Black', sans-serif;
+            font-size: 1.15rem; line-height: 1; padding: 9px 15px; border-radius: 999px;
+            transform: rotate(-8deg); box-shadow: 0 0 18px rgba(254, 69, 232, 0.5);
+        }
+
+        /* Reelska: náhled u nás, přehrání na Instagramu (stejné jako na tiskové stránce) */
+        .reel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 260px)); gap: 18px; justify-content: center; }
+        .reel-card { position: relative; display: block; border-radius: 16px; overflow: hidden; border: 1px solid var(--accent-neon);
+            box-shadow: 0 0 22px rgba(254, 69, 232, 0.16); aspect-ratio: 9 / 16; background: var(--bg-card); text-decoration: none; }
+        .reel-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+        .reel-card:hover img { transform: scale(1.05); }
+        .reel-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62px; height: 62px; border-radius: 50%;
+            background: rgba(13, 13, 13, 0.6); border: 2px solid var(--accent-neon); display: flex; align-items: center; justify-content: center;
+            transition: background 0.25s ease, transform 0.25s ease; }
+        .reel-play::after { content: ''; margin-left: 4px; border-left: 16px solid var(--accent-neon); border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+        .reel-card:hover .reel-play { background: var(--accent-neon); transform: translate(-50%, -50%) scale(1.08); }
+        .reel-card:hover .reel-play::after { border-left-color: #0D0D0D; }
+        .reel-title { position: absolute; inset: auto 0 0 0; padding: 16px 14px; font-size: 0.92rem; font-weight: 700; line-height: 1.35; color: #FFFFFF;
+            text-align: left; background: linear-gradient(to top, rgba(13, 13, 13, 0.94), rgba(13, 13, 13, 0)); }
+
         /* Logo partnera v úvodu */
         .pt-logo {
             display: inline-flex; align-items: center; justify-content: center;
@@ -95,10 +120,18 @@
         .pt-cta .contact-row { font-size: 1.1rem; }
         .pt-cta a { color: var(--accent-neon); }
 
-        /* Lightbox */
-        .lightbox { position: fixed; inset: 0; background: rgba(13,13,13,0.94); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 2vh 2vw; cursor: zoom-out; }
+        /* Lightbox s listováním */
+        .lightbox { position: fixed; inset: 0; background: rgba(13,13,13,0.94); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 2vh 2vw; cursor: zoom-out; touch-action: pan-y; }
         .lightbox.open { display: flex; }
-        .lightbox img { max-width: 100%; max-height: 94vh; border-radius: 8px; box-shadow: 0 20px 80px rgba(255,0,255,0.25); }
+        .lightbox img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 20px 80px rgba(255,0,255,0.25); user-select: none; }
+        .lb-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--accent-neon);
+            background: rgba(13,13,13,0.6); color: var(--accent-neon); font-size: 1.6rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s ease, color 0.2s ease; }
+        .lb-btn:hover { background: var(--accent-neon); color: #0D0D0D; }
+        .lb-prev { left: 16px; } .lb-next { right: 16px; }
+        .lb-close { top: 16px; right: 16px; transform: none; width: 44px; height: 44px; font-size: 1.3rem; }
+        .lb-count { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 0.9rem; letter-spacing: 0.06em; }
+        @media (max-width: 600px) { .lb-btn { width: 42px; height: 42px; font-size: 1.3rem; } .lb-prev { left: 8px; } .lb-next { right: 8px; } }
 
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
@@ -153,9 +186,12 @@
     <section id="pt-hero" class="page-hero">
         <div class="container">
             <div class="hero-text">
-                <div class="hero-label">Číča Art Fest 2026 · poděkování partnerovi</div>
+                <div class="pt-festlogo">
+                    <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
+                    <span class="pt-festlogo-tag">2026</span>
+                </div>
                 <a class="pt-logo" href="https://www.melvil.cz/" target="_blank" rel="noopener"><img src="/images/partneri/melvil.png" alt="Jan Melvil Publishing" width="400" height="200"></a>
-                <h1 class="hero-title">Díky, Jan Melvil Publishing.</h1>
+                <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Vaše knihy byly na Číča Marketu a Hana Vacková z nich četla ukázku po panelové diskuzi. Bez vás by první ročník nevypadal tak, jak vypadal,
                     a proto vám tady posíláme čísla, krátký report a všechny fotky, na kterých jste vidět.
@@ -212,10 +248,24 @@
                     <cite>Zuzka od Rosic, návštěvnice</cite>
                 </div>
             </div>
+            <p class="pt-note reveal" style="text-align: center; margin-top: 1.4rem;">
+                <a href="/reference">Všechny ohlasy návštěvníků a vystupujících</a>
+            </p>
         </div>
     </section>
 
-    <section id="fotky" class="pt-section" style="background: rgba(255,255,255,0.02);">
+    <!-- Videoreport: tři reelsy, stejný zdroj jako tisková stránka -->
+    <section id="videa" class="pt-section" style="background: rgba(255,255,255,0.02);" hidden>
+        <div class="container">
+            <h2 class="section-title reveal">Fest ve videích</h2>
+            <p class="pt-note reveal" style="margin-bottom: 2rem; text-align: center;">
+                Krátké reportáže z prvního ročníku. Přehrají se na Instagramu.
+            </p>
+            <div class="reel-grid" id="reelGrid"></div>
+        </div>
+    </section>
+
+    <section id="fotky" class="pt-section">
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
@@ -273,7 +323,7 @@
         </div>
     </section>
 
-    <section class="pt-section">
+    <section class="pt-section" style="background: rgba(255,255,255,0.02);">
         <div class="container">
             <h2 class="section-title reveal">Pojďme do toho znovu</h2>
             <div class="pt-cta reveal">
@@ -292,7 +342,13 @@
     </section>
     </main>
 
-    <div class="lightbox" id="lightbox" role="dialog" aria-label="Zvětšená fotka"><img src="" alt=""></div>
+    <div class="lightbox" id="lightbox" role="dialog" aria-label="Zvětšená fotka">
+        <button class="lb-btn lb-close" type="button" aria-label="Zavřít">✕</button>
+        <button class="lb-btn lb-prev" type="button" aria-label="Předchozí fotka">‹</button>
+        <img src="" alt="">
+        <button class="lb-btn lb-next" type="button" aria-label="Další fotka">›</button>
+        <span class="lb-count" aria-live="polite"></span>
+    </div>
 
     <footer id="footer">
         <div class="footer-content">
@@ -329,18 +385,54 @@
             }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
             reveals.forEach(el => io.observe(el));
 
-            // Lightbox nad náhledy
-            const lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img');
-            document.querySelectorAll('.pt-photo').forEach(a => {
-                a.addEventListener('click', (ev) => {
-                    ev.preventDefault();
-                    lbImg.src = a.getAttribute('href'); lbImg.alt = a.querySelector('img').alt;
-                    lb.classList.add('open'); document.body.style.overflow = 'hidden';
-                });
-            });
-            const closeLb = () => { lb.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; };
+            // Lightbox s listováním (šipky, klávesy, swipe)
+            const lb = document.getElementById('lightbox'), lbImg = lb.querySelector('img'), lbCount = lb.querySelector('.lb-count');
+            const photos = [...document.querySelectorAll('.pt-photo')];
+            let cur = -1;
+            const show = (i) => {
+                cur = (i + photos.length) % photos.length;
+                const a = photos[cur];
+                lbImg.src = a.getAttribute('href'); lbImg.alt = a.querySelector('img').alt;
+                lbCount.textContent = (cur + 1) + ' / ' + photos.length;
+                // přednačíst sousedy, ať listování nečeká
+                [cur + 1, cur - 1].forEach(j => { const n = photos[(j + photos.length) % photos.length]; if (n) new Image().src = n.getAttribute('href'); });
+            };
+            const openLb = (i) => { show(i); lb.classList.add('open'); document.body.style.overflow = 'hidden'; };
+            const closeLb = () => { lb.classList.remove('open'); document.body.style.overflow = ''; lbImg.src = ''; cur = -1; };
+            photos.forEach((a, i) => a.addEventListener('click', (ev) => { ev.preventDefault(); openLb(i); }));
+            lb.querySelector('.lb-prev').addEventListener('click', (ev) => { ev.stopPropagation(); show(cur - 1); });
+            lb.querySelector('.lb-next').addEventListener('click', (ev) => { ev.stopPropagation(); show(cur + 1); });
+            lb.querySelector('.lb-close').addEventListener('click', (ev) => { ev.stopPropagation(); closeLb(); });
+            lbImg.addEventListener('click', (ev) => { ev.stopPropagation(); show(cur + 1); });
             lb.addEventListener('click', closeLb);
-            document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && lb.classList.contains('open')) closeLb(); });
+            document.addEventListener('keydown', (ev) => {
+                if (!lb.classList.contains('open')) return;
+                if (ev.key === 'Escape') closeLb();
+                else if (ev.key === 'ArrowRight') show(cur + 1);
+                else if (ev.key === 'ArrowLeft') show(cur - 1);
+            });
+            let tx = null;
+            lb.addEventListener('touchstart', (ev) => { tx = ev.touches[0].clientX; }, { passive: true });
+            lb.addEventListener('touchend', (ev) => {
+                if (tx === null) return; const dx = ev.changedTouches[0].clientX - tx; tx = null;
+                if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+            }, { passive: true });
+
+            // Reelska z Instagramu: stejný zdroj jako tisková stránka
+            fetch('/api/instagram').then(r => r.json()).then(d => {
+                const reels = (d && d.reels) || [];
+                if (!reels.length) return;
+                const grid = document.getElementById('reelGrid');
+                for (const r of reels) {
+                    const a = document.createElement('a');
+                    a.className = 'reel-card'; a.href = r.permalink; a.target = '_blank'; a.rel = 'noopener';
+                    const img = document.createElement('img'); img.src = r.image; img.loading = 'lazy'; img.alt = r.caption || 'Video z Číča Art Festu';
+                    const play = document.createElement('span'); play.className = 'reel-play';
+                    const t = document.createElement('span'); t.className = 'reel-title'; t.textContent = r.title;
+                    a.append(img, play, t); grid.append(a);
+                }
+                document.getElementById('videa').hidden = false;
+            }).catch(() => {});
 
             document.getElementById('currentYear').textContent = new Date().getFullYear();
         });
