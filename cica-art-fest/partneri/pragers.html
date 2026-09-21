@@ -90,9 +90,9 @@
             transition: box-shadow 0.3s ease;
         }
         .pt-logo:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }
-        .pt-logo img { width: auto; height: auto; max-width: 260px; max-height: 70px; }
+        .pt-logo img { height: 70px; width: auto; max-width: 260px; object-fit: contain; }
         .pt-logo--square { padding: 12px 28px; }
-        .pt-logo--square img { max-height: 110px; }
+        .pt-logo--square img { height: 110px; }
 
         /* Fakta */
         .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
@@ -136,7 +136,8 @@
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
             .pt-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .pt-logo img { max-width: 200px; }
+            .pt-logo img { height: 60px; max-width: 200px; }
+            .pt-logo--square img { height: 96px; }
         }
     </style>
 </head>
@@ -190,7 +191,7 @@
                     <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
                     <span class="pt-festlogo-tag">2026</span>
                 </div>
-                <a class="pt-logo" href="https://www.pragers.cz/" target="_blank" rel="noopener"><img src="/images/partneri/pragers.svg" alt="Prager&#x27;s" width="400" height="200"></a>
+                <a class="pt-logo" href="https://www.pragers.cz/" target="_blank" rel="noopener"><img src="/images/partneri/pragers.svg" alt="Prager&#x27;s" width="1792" height="170"></a>
                 <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Váš cider chladil návštěvníky celé odpoledne až do noci. Bez vás by první ročník nevypadal tak, jak vypadal,
@@ -269,35 +270,37 @@
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                26 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                28 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0436.webp" data-name="DSC_0436.jpg"><img src="/images/partneri-fotky/pragers/DSC_0436.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0437.webp" data-name="DSC_0437.jpg"><img src="/images/partneri-fotky/pragers/DSC_0437.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0445.webp" data-name="DSC_0445.jpg"><img src="/images/partneri-fotky/pragers/DSC_0445.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0446.webp" data-name="DSC_0446.jpg"><img src="/images/partneri-fotky/pragers/DSC_0446.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0600.webp" data-name="DSC_0600.jpg"><img src="/images/partneri-fotky/pragers/DSC_0600.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0646_1.webp" data-name="DSC_0646_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0646_1.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0663_1.webp" data-name="DSC_0663_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0663_1.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0666_1.webp" data-name="DSC_0666_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0666_1.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0743_1.webp" data-name="DSC_0743_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0743_1.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0790_1.webp" data-name="DSC_0790_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0790_1.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0830_1.webp" data-name="DSC_0830_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0830_1.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0834_1.webp" data-name="DSC_0834_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0834_1.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0835_2.webp" data-name="DSC_0835_2.jpg"><img src="/images/partneri-fotky/pragers/DSC_0835_2.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0849_1.webp" data-name="DSC_0849_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0849_1.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0892_2.webp" data-name="DSC_0892_2.jpg"><img src="/images/partneri-fotky/pragers/DSC_0892_2.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0894_1.webp" data-name="DSC_0894_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0894_1.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_0897_1.webp" data-name="DSC_0897_1.jpg"><img src="/images/partneri-fotky/pragers/DSC_0897_1.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_1933.webp" data-name="DSC_1933.jpg"><img src="/images/partneri-fotky/pragers/DSC_1933.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_1971.webp" data-name="DSC_1971.jpg"><img src="/images/partneri-fotky/pragers/DSC_1971.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_1979.webp" data-name="DSC_1979.jpg"><img src="/images/partneri-fotky/pragers/DSC_1979.webp" alt="Číča Art Fest 2026, foto 20" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2003.webp" data-name="DSC_2003.jpg"><img src="/images/partneri-fotky/pragers/DSC_2003.webp" alt="Číča Art Fest 2026, foto 21" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2077.webp" data-name="DSC_2077.jpg"><img src="/images/partneri-fotky/pragers/DSC_2077.webp" alt="Číča Art Fest 2026, foto 22" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2086.webp" data-name="DSC_2086.jpg"><img src="/images/partneri-fotky/pragers/DSC_2086.webp" alt="Číča Art Fest 2026, foto 23" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2146.webp" data-name="DSC_2146.jpg"><img src="/images/partneri-fotky/pragers/DSC_2146.webp" alt="Číča Art Fest 2026, foto 24" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2171.webp" data-name="DSC_2171.jpg"><img src="/images/partneri-fotky/pragers/DSC_2171.webp" alt="Číča Art Fest 2026, foto 25" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/pragers/DSC_2178.webp" data-name="DSC_2178.jpg"><img src="/images/partneri-fotky/pragers/DSC_2178.webp" alt="Číča Art Fest 2026, foto 26" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/047.webp" data-name="047.jpg"><img src="/images/partneri-fotky/pragers/047.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/051.webp" data-name="051.jpg"><img src="/images/partneri-fotky/pragers/051.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/052.webp" data-name="052.jpg"><img src="/images/partneri-fotky/pragers/052.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/099.webp" data-name="099.jpg"><img src="/images/partneri-fotky/pragers/099.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/113.webp" data-name="113.jpg"><img src="/images/partneri-fotky/pragers/113.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/117.webp" data-name="117.jpg"><img src="/images/partneri-fotky/pragers/117.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/119.webp" data-name="119.jpg"><img src="/images/partneri-fotky/pragers/119.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/127.webp" data-name="127.jpg"><img src="/images/partneri-fotky/pragers/127.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/132.webp" data-name="132.jpg"><img src="/images/partneri-fotky/pragers/132.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/134.webp" data-name="134.jpg"><img src="/images/partneri-fotky/pragers/134.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/141.webp" data-name="141.jpg"><img src="/images/partneri-fotky/pragers/141.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/147.webp" data-name="147.jpg"><img src="/images/partneri-fotky/pragers/147.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/149.webp" data-name="149.jpg"><img src="/images/partneri-fotky/pragers/149.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/150.webp" data-name="150.jpg"><img src="/images/partneri-fotky/pragers/150.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/152.webp" data-name="152.jpg"><img src="/images/partneri-fotky/pragers/152.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/154.webp" data-name="154.jpg"><img src="/images/partneri-fotky/pragers/154.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/158.webp" data-name="158.jpg"><img src="/images/partneri-fotky/pragers/158.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/204.webp" data-name="204.jpg"><img src="/images/partneri-fotky/pragers/204.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/233.webp" data-name="233.jpg"><img src="/images/partneri-fotky/pragers/233.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/246.webp" data-name="246.jpg"><img src="/images/partneri-fotky/pragers/246.webp" alt="Číča Art Fest 2026, foto 20" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/248.webp" data-name="248.jpg"><img src="/images/partneri-fotky/pragers/248.webp" alt="Číča Art Fest 2026, foto 21" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/261.webp" data-name="261.jpg"><img src="/images/partneri-fotky/pragers/261.webp" alt="Číča Art Fest 2026, foto 22" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/265.webp" data-name="265.jpg"><img src="/images/partneri-fotky/pragers/265.webp" alt="Číča Art Fest 2026, foto 23" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/277.webp" data-name="277.jpg"><img src="/images/partneri-fotky/pragers/277.webp" alt="Číča Art Fest 2026, foto 24" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/282.webp" data-name="282.jpg"><img src="/images/partneri-fotky/pragers/282.webp" alt="Číča Art Fest 2026, foto 25" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/299.webp" data-name="299.jpg"><img src="/images/partneri-fotky/pragers/299.webp" alt="Číča Art Fest 2026, foto 26" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/312.webp" data-name="312.jpg"><img src="/images/partneri-fotky/pragers/312.webp" alt="Číča Art Fest 2026, foto 27" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/pragers/335.webp" data-name="335.jpg"><img src="/images/partneri-fotky/pragers/335.webp" alt="Číča Art Fest 2026, foto 28" loading="lazy" decoding="async" width="1000" height="665"></a>
             </div>
             <div class="pt-download reveal">
                 <p>
@@ -305,7 +308,8 @@
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="/files/partneri/caf-2026-pragers.zip" class="btn-primary">Stáhnout všech 26 fotek (ZIP, 4,9 MB) 📦</a>
+                <a href="/files/partneri/caf-2026-pragers.zip" class="btn-primary">Stáhnout všech 28 fotek (ZIP, 12,7 MB) 📦</a>
+                
             </div>
         </div>
     </section>

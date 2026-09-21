@@ -90,9 +90,9 @@
             transition: box-shadow 0.3s ease;
         }
         .pt-logo:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }
-        .pt-logo img { width: auto; height: auto; max-width: 260px; max-height: 70px; }
+        .pt-logo img { height: 70px; width: auto; max-width: 260px; object-fit: contain; }
         .pt-logo--square { padding: 12px 28px; }
-        .pt-logo--square img { max-height: 110px; }
+        .pt-logo--square img { height: 110px; }
 
         /* Fakta */
         .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
@@ -136,7 +136,8 @@
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
             .pt-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .pt-logo img { max-width: 200px; }
+            .pt-logo img { height: 60px; max-width: 200px; }
+            .pt-logo--square img { height: 96px; }
         }
     </style>
 </head>
@@ -190,7 +191,7 @@
                     <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
                     <span class="pt-festlogo-tag">2026</span>
                 </div>
-                <a class="pt-logo pt-logo--square" href="https://www.rozkosss.cz" target="_blank" rel="noopener"><img src="/images/partneri/rozkosss.png" alt="Rozkoššš" width="400" height="200"></a>
+                <a class="pt-logo pt-logo--square" href="https://www.rozkosss.cz" target="_blank" rel="noopener"><img src="/images/partneri/rozkosss.png" alt="Rozkoššš" width="397" height="600"></a>
                 <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Zuzana Křížová seděla v panelové diskuzi, vaše kousky šly po mole a balíček Klitty s fotečkama se v benefiční aukci prodal za 3 000 Kč ve prospěch Opuštěných kočičích tlapek. Bez vás by první ročník nevypadal tak, jak vypadal,
@@ -269,28 +270,86 @@
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                19 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                77 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_0626_1.webp" data-name="DSC_0626_1.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_0626_1.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2237.webp" data-name="DSC_2237.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2237.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2248.webp" data-name="DSC_2248.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2248.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2253.webp" data-name="DSC_2253.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2253.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2259.webp" data-name="DSC_2259.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2259.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2269.webp" data-name="DSC_2269.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2269.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2274.webp" data-name="DSC_2274.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2274.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2275.webp" data-name="DSC_2275.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2275.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2277.webp" data-name="DSC_2277.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2277.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2281.webp" data-name="DSC_2281.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2281.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2286.webp" data-name="DSC_2286.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2286.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2292.webp" data-name="DSC_2292.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2292.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2296.webp" data-name="DSC_2296.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2296.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2299.webp" data-name="DSC_2299.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2299.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2302.webp" data-name="DSC_2302.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2302.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2308.webp" data-name="DSC_2308.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2308.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2313.webp" data-name="DSC_2313.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2313.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2318.webp" data-name="DSC_2318.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2318.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/DSC_2323.webp" data-name="DSC_2323.jpg"><img src="/images/partneri-fotky/rozkosss/DSC_2323.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/038.webp" data-name="038.jpg"><img src="/images/partneri-fotky/rozkosss/038.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/039.webp" data-name="039.jpg"><img src="/images/partneri-fotky/rozkosss/039.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/237.webp" data-name="237.jpg"><img src="/images/partneri-fotky/rozkosss/237.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/238.webp" data-name="238.jpg"><img src="/images/partneri-fotky/rozkosss/238.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/394.webp" data-name="394.jpg"><img src="/images/partneri-fotky/rozkosss/394.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/395.webp" data-name="395.jpg"><img src="/images/partneri-fotky/rozkosss/395.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/396.webp" data-name="396.jpg"><img src="/images/partneri-fotky/rozkosss/396.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/402.webp" data-name="402.jpg"><img src="/images/partneri-fotky/rozkosss/402.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/406.webp" data-name="406.jpg"><img src="/images/partneri-fotky/rozkosss/406.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/407.webp" data-name="407.jpg"><img src="/images/partneri-fotky/rozkosss/407.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/417.webp" data-name="417.jpg"><img src="/images/partneri-fotky/rozkosss/417.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/418.webp" data-name="418.jpg"><img src="/images/partneri-fotky/rozkosss/418.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/419.webp" data-name="419.jpg"><img src="/images/partneri-fotky/rozkosss/419.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/422.webp" data-name="422.jpg"><img src="/images/partneri-fotky/rozkosss/422.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/434.webp" data-name="434.jpg"><img src="/images/partneri-fotky/rozkosss/434.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/435.webp" data-name="435.jpg"><img src="/images/partneri-fotky/rozkosss/435.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/437.webp" data-name="437.jpg"><img src="/images/partneri-fotky/rozkosss/437.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/441.webp" data-name="441.jpg"><img src="/images/partneri-fotky/rozkosss/441.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/442.webp" data-name="442.jpg"><img src="/images/partneri-fotky/rozkosss/442.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/443.webp" data-name="443.jpg"><img src="/images/partneri-fotky/rozkosss/443.webp" alt="Číča Art Fest 2026, foto 20" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/444.webp" data-name="444.jpg"><img src="/images/partneri-fotky/rozkosss/444.webp" alt="Číča Art Fest 2026, foto 21" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/445.webp" data-name="445.jpg"><img src="/images/partneri-fotky/rozkosss/445.webp" alt="Číča Art Fest 2026, foto 22" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/446.webp" data-name="446.jpg"><img src="/images/partneri-fotky/rozkosss/446.webp" alt="Číča Art Fest 2026, foto 23" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/447.webp" data-name="447.jpg"><img src="/images/partneri-fotky/rozkosss/447.webp" alt="Číča Art Fest 2026, foto 24" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/449.webp" data-name="449.jpg"><img src="/images/partneri-fotky/rozkosss/449.webp" alt="Číča Art Fest 2026, foto 25" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/453.webp" data-name="453.jpg"><img src="/images/partneri-fotky/rozkosss/453.webp" alt="Číča Art Fest 2026, foto 26" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/454.webp" data-name="454.jpg"><img src="/images/partneri-fotky/rozkosss/454.webp" alt="Číča Art Fest 2026, foto 27" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/455.webp" data-name="455.jpg"><img src="/images/partneri-fotky/rozkosss/455.webp" alt="Číča Art Fest 2026, foto 28" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/456.webp" data-name="456.jpg"><img src="/images/partneri-fotky/rozkosss/456.webp" alt="Číča Art Fest 2026, foto 29" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/457.webp" data-name="457.jpg"><img src="/images/partneri-fotky/rozkosss/457.webp" alt="Číča Art Fest 2026, foto 30" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/458.webp" data-name="458.jpg"><img src="/images/partneri-fotky/rozkosss/458.webp" alt="Číča Art Fest 2026, foto 31" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/459.webp" data-name="459.jpg"><img src="/images/partneri-fotky/rozkosss/459.webp" alt="Číča Art Fest 2026, foto 32" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/460.webp" data-name="460.jpg"><img src="/images/partneri-fotky/rozkosss/460.webp" alt="Číča Art Fest 2026, foto 33" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/462.webp" data-name="462.jpg"><img src="/images/partneri-fotky/rozkosss/462.webp" alt="Číča Art Fest 2026, foto 34" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/463.webp" data-name="463.jpg"><img src="/images/partneri-fotky/rozkosss/463.webp" alt="Číča Art Fest 2026, foto 35" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/464.webp" data-name="464.jpg"><img src="/images/partneri-fotky/rozkosss/464.webp" alt="Číča Art Fest 2026, foto 36" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/465.webp" data-name="465.jpg"><img src="/images/partneri-fotky/rozkosss/465.webp" alt="Číča Art Fest 2026, foto 37" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/466.webp" data-name="466.jpg"><img src="/images/partneri-fotky/rozkosss/466.webp" alt="Číča Art Fest 2026, foto 38" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/467.webp" data-name="467.jpg"><img src="/images/partneri-fotky/rozkosss/467.webp" alt="Číča Art Fest 2026, foto 39" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/468.webp" data-name="468.jpg"><img src="/images/partneri-fotky/rozkosss/468.webp" alt="Číča Art Fest 2026, foto 40" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/469.webp" data-name="469.jpg"><img src="/images/partneri-fotky/rozkosss/469.webp" alt="Číča Art Fest 2026, foto 41" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/470.webp" data-name="470.jpg"><img src="/images/partneri-fotky/rozkosss/470.webp" alt="Číča Art Fest 2026, foto 42" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/471.webp" data-name="471.jpg"><img src="/images/partneri-fotky/rozkosss/471.webp" alt="Číča Art Fest 2026, foto 43" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/473.webp" data-name="473.jpg"><img src="/images/partneri-fotky/rozkosss/473.webp" alt="Číča Art Fest 2026, foto 44" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/474.webp" data-name="474.jpg"><img src="/images/partneri-fotky/rozkosss/474.webp" alt="Číča Art Fest 2026, foto 45" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/475.webp" data-name="475.jpg"><img src="/images/partneri-fotky/rozkosss/475.webp" alt="Číča Art Fest 2026, foto 46" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/476.webp" data-name="476.jpg"><img src="/images/partneri-fotky/rozkosss/476.webp" alt="Číča Art Fest 2026, foto 47" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/477.webp" data-name="477.jpg"><img src="/images/partneri-fotky/rozkosss/477.webp" alt="Číča Art Fest 2026, foto 48" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/482.webp" data-name="482.jpg"><img src="/images/partneri-fotky/rozkosss/482.webp" alt="Číča Art Fest 2026, foto 49" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/483.webp" data-name="483.jpg"><img src="/images/partneri-fotky/rozkosss/483.webp" alt="Číča Art Fest 2026, foto 50" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/484.webp" data-name="484.jpg"><img src="/images/partneri-fotky/rozkosss/484.webp" alt="Číča Art Fest 2026, foto 51" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/485.webp" data-name="485.jpg"><img src="/images/partneri-fotky/rozkosss/485.webp" alt="Číča Art Fest 2026, foto 52" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/486.webp" data-name="486.jpg"><img src="/images/partneri-fotky/rozkosss/486.webp" alt="Číča Art Fest 2026, foto 53" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/488.webp" data-name="488.jpg"><img src="/images/partneri-fotky/rozkosss/488.webp" alt="Číča Art Fest 2026, foto 54" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/489.webp" data-name="489.jpg"><img src="/images/partneri-fotky/rozkosss/489.webp" alt="Číča Art Fest 2026, foto 55" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/490.webp" data-name="490.jpg"><img src="/images/partneri-fotky/rozkosss/490.webp" alt="Číča Art Fest 2026, foto 56" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/491.webp" data-name="491.jpg"><img src="/images/partneri-fotky/rozkosss/491.webp" alt="Číča Art Fest 2026, foto 57" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/495.webp" data-name="495.jpg"><img src="/images/partneri-fotky/rozkosss/495.webp" alt="Číča Art Fest 2026, foto 58" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/502.webp" data-name="502.jpg"><img src="/images/partneri-fotky/rozkosss/502.webp" alt="Číča Art Fest 2026, foto 59" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/503.webp" data-name="503.jpg"><img src="/images/partneri-fotky/rozkosss/503.webp" alt="Číča Art Fest 2026, foto 60" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/504.webp" data-name="504.jpg"><img src="/images/partneri-fotky/rozkosss/504.webp" alt="Číča Art Fest 2026, foto 61" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/505.webp" data-name="505.jpg"><img src="/images/partneri-fotky/rozkosss/505.webp" alt="Číča Art Fest 2026, foto 62" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/506.webp" data-name="506.jpg"><img src="/images/partneri-fotky/rozkosss/506.webp" alt="Číča Art Fest 2026, foto 63" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/507.webp" data-name="507.jpg"><img src="/images/partneri-fotky/rozkosss/507.webp" alt="Číča Art Fest 2026, foto 64" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/508.webp" data-name="508.jpg"><img src="/images/partneri-fotky/rozkosss/508.webp" alt="Číča Art Fest 2026, foto 65" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/509.webp" data-name="509.jpg"><img src="/images/partneri-fotky/rozkosss/509.webp" alt="Číča Art Fest 2026, foto 66" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/511.webp" data-name="511.jpg"><img src="/images/partneri-fotky/rozkosss/511.webp" alt="Číča Art Fest 2026, foto 67" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/512.webp" data-name="512.jpg"><img src="/images/partneri-fotky/rozkosss/512.webp" alt="Číča Art Fest 2026, foto 68" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/513.webp" data-name="513.jpg"><img src="/images/partneri-fotky/rozkosss/513.webp" alt="Číča Art Fest 2026, foto 69" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/514.webp" data-name="514.jpg"><img src="/images/partneri-fotky/rozkosss/514.webp" alt="Číča Art Fest 2026, foto 70" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/515.webp" data-name="515.jpg"><img src="/images/partneri-fotky/rozkosss/515.webp" alt="Číča Art Fest 2026, foto 71" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/518.webp" data-name="518.jpg"><img src="/images/partneri-fotky/rozkosss/518.webp" alt="Číča Art Fest 2026, foto 72" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/519.webp" data-name="519.jpg"><img src="/images/partneri-fotky/rozkosss/519.webp" alt="Číča Art Fest 2026, foto 73" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/520.webp" data-name="520.jpg"><img src="/images/partneri-fotky/rozkosss/520.webp" alt="Číča Art Fest 2026, foto 74" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/521.webp" data-name="521.jpg"><img src="/images/partneri-fotky/rozkosss/521.webp" alt="Číča Art Fest 2026, foto 75" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/524.webp" data-name="524.jpg"><img src="/images/partneri-fotky/rozkosss/524.webp" alt="Číča Art Fest 2026, foto 76" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/rozkosss/525.webp" data-name="525.jpg"><img src="/images/partneri-fotky/rozkosss/525.webp" alt="Číča Art Fest 2026, foto 77" loading="lazy" decoding="async" width="1000" height="665"></a>
             </div>
             <div class="pt-download reveal">
                 <p>
@@ -298,7 +357,8 @@
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="/files/partneri/caf-2026-rozkosss.zip" class="btn-primary">Stáhnout všech 19 fotek (ZIP, 2,6 MB) 📦</a>
+                <a href="/files/partneri/caf-2026-rozkosss.zip" class="btn-primary">Stáhnout všech 77 fotek (ZIP, 33,9 MB) 📦</a>
+                
             </div>
         </div>
     </section>

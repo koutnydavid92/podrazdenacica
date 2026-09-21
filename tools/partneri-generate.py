@@ -18,6 +18,15 @@ SRC = ("/Users/david/Documents/Dokumenty – David – MacBook Air/Mlyko/Podrá�
 CWEBP = "/opt/homebrew/bin/cwebp"
 THUMB_PX = 1000     # nejdelší strana náhledu (stačí i pro lightbox na mobilu)
 THUMB_Q = 78
+# Ve složkách jsou finální fotky (číslované, plné rozlišení ~10 MB) i starší DSC_* náhledy (1600 px).
+# True = když složka obsahuje finální fotky, DSC_* se ignorují. Partner s `keep_dsc=True` dostane obojí
+# (Melvil a JAKKO mají finálních málo, David chtěl nechat i bonusové).
+PREFER_FINAL = True
+# Originály ~10 MB/ks by dávaly ZIPy o stovkách MB (GitHub limit 100 MB/soubor). Do ZIPu na webu jde
+# proto verze zmenšená na ZIP_MAX_PX (1600 px ≈ 0,4 MB/ks, stejná jako první várka od Adelice).
+# Plné rozlišení se řeší odkazem na Drive: partner může mít v konfiguraci `drive="https://…"`.
+ZIP_MAX_PX = 1600
+ZIP_Q = 90
 
 PARTNERS = [
     dict(slug="makeup-institute-prague", name="Make Up Institute Prague", folder="01 Make Up Institute Prague",
@@ -35,14 +44,14 @@ PARTNERS = [
     dict(slug="amity-drinks", name="Amity Drinks", folder="05 Amity",
          logo="/images/partneri/amity-drinks.svg", square=True, web="https://amitydrinks.cz/",
          role="Vaše drinky byly na stolech po celém parku."),
-    dict(slug="jakko-candles", name="JAKKO candles", folder="06 Jakko candles",
+    dict(slug="jakko-candles", name="JAKKO candles", folder="06 Jakko candles", keep_dsc=True,
          logo="/images/partneri/jakko-candles.png", square=False, web="https://www.jakko.cz/",
          role="Vaše svíčky měly své místo na Číča Marketu, design marketu českých značek a umělců."),
     dict(slug="hulkarna", name="Hůlkárna", folder="07 Hulkarna",
          logo="/images/partneri/hulkarna.png", square=False, web="https://www.hulkarna.cz",
          role="Vaše hole a klobouky prošly po mole na modelkách a Podrážděná hůlka, která vznikla ve spolupráci s vámi, "
               "se v benefiční aukci prodala za 2 200 Kč ve prospěch Útulku Tuláčik Brezno."),
-    dict(slug="jan-melvil", name="Jan Melvil Publishing", folder="08 Jan Melvil",
+    dict(slug="jan-melvil", name="Jan Melvil Publishing", folder="08 Jan Melvil", keep_dsc=True,
          logo="/images/partneri/melvil.png", square=False, web="https://www.melvil.cz/",
          role="Vaše knihy byly na Číča Marketu a Hana Vacková z nich četla ukázku po panelové diskuzi."),
     dict(slug="rozkosss", name="Rozkoššš", folder="09 Rozkosss",
@@ -53,6 +62,12 @@ PARTNERS = [
          logo="/images/partneri/t-shock.png", square=False, web="https://www.t-shock.eu/",
          role="Dodali jste čisté dárkové tašky a my jsme si je přímo na akci sprejovali. Byl to jeden z nejlepších zážitků "
               "celého dne a lidi z toho byli nadšení."),
+    dict(slug="czeska", name="CZESKA", folder="11 Czeska",
+         logo="/images/partneri/czeska.png", square=True, web="https://www.czeska.cz/",
+         role="Vaše autorská móda oblékla ženy na přehlídce a bylo to vidět na každém kroku po mole."),
+    dict(slug="orera-bags", name="Orera Bags", folder="12 Orera bags",
+         logo="/images/partneri/orera-bags.png", square=True, web="https://www.instagram.com/orera_bags/",
+         role="Vaše kabelky dotvořily outfity modelek na přehlídce."),
 ]
 
 def run(cmd):
@@ -70,9 +85,27 @@ def webp_dims(path):
     w = int.from_bytes(d[i + 12:i + 15], "little") + 1; h = int.from_bytes(d[i + 15:i + 18], "little") + 1
     return w, h
 
+def logo_dims(url):
+    """Rozměry loga pro atributy width/height (poměr stran). PNG z hlavičky, SVG z viewBox/width/height."""
+    path = os.path.join(ROOT, url.lstrip("/"))
+    if url.lower().endswith(".svg"):
+        head = open(path, "r", encoding="utf-8", errors="ignore").read(4000)
+        m = re.search(r'viewBox="[\d.\-]+\s+[\d.\-]+\s+([\d.]+)\s+([\d.]+)"', head)
+        if m: return int(float(m.group(1))), int(float(m.group(2)))
+        mw = re.search(r'\swidth="([\d.]+)', head); mh = re.search(r'\sheight="([\d.]+)', head)
+        if mw and mh: return int(float(mw.group(1))), int(float(mh.group(1)))
+        return 400, 200
+    d = open(path, "rb").read(32)
+    if d[:8] == b"\x89PNG\r\n\x1a\n":
+        return struct.unpack(">II", d[16:24])
+    return 400, 200
+
 def build_photos(p):
     src_dir = os.path.join(SRC, p["folder"])
     files = sorted(f for f in os.listdir(src_dir) if f.lower().endswith((".jpg", ".jpeg")))
+    finals = [f for f in files if not f.upper().startswith("DSC")]
+    if PREFER_FINAL and finals and not p.get("keep_dsc"):
+        files = finals
     out_dir = os.path.join(ROOT, "images", "partneri-fotky", p["slug"])
     shutil.rmtree(out_dir, ignore_errors=True); os.makedirs(out_dir)
     photos = []
@@ -101,7 +134,12 @@ def build_zip(p, src_dir, files):
         pack = os.path.join(tmp, f"cica-art-fest-2026-{p['slug']}")
         os.makedirs(os.path.join(pack, "fotky"))
         for f in files:
-            shutil.copy2(os.path.join(src_dir, f), os.path.join(pack, "fotky", f"cica-art-fest-2026-{f}"))
+            dst = os.path.join(pack, "fotky", f"cica-art-fest-2026-{os.path.splitext(f)[0]}.jpg")
+            if ZIP_MAX_PX:
+                run(["sips", "-Z", str(ZIP_MAX_PX), "-s", "format", "jpeg", "-s", "formatOptions", str(ZIP_Q),
+                     os.path.join(src_dir, f), "--out", dst])
+            else:
+                shutil.copy2(os.path.join(src_dir, f), dst)
         with open(os.path.join(pack, "README.txt"), "w", encoding="utf-8") as fh:
             fh.write(f"""ČÍČA ART FEST 2026 — FOTKY PRO PARTNERA: {p['name'].upper()}
 {'=' * (40 + len(p['name']))}
@@ -123,11 +161,12 @@ Kontakt: David Koutný, jsem@podrazdenacica.cz, +420 732 227 989
 
 def render(p, photos, zip_url, zip_mb):
     e = html.escape
+    lw, lh = logo_dims(p["logo"]) if p["logo"] else (400, 200)
     logo_block = (
         f'<a class="pt-logo{" pt-logo--square" if p["square"] else ""}" href="{e(p["web"])}" target="_blank" rel="noopener">'
-        f'<img src="{e(p["logo"])}" alt="{e(p["name"])}" width="400" height="200"></a>'
+        f'<img src="{e(p["logo"])}" alt="{e(p["name"])}" width="{lw}" height="{lh}"></a>'
         if p["logo"] and p["web"] else
-        (f'<div class="pt-logo{" pt-logo--square" if p["square"] else ""}"><img src="{e(p["logo"])}" alt="{e(p["name"])}" width="400" height="200"></div>'
+        (f'<div class="pt-logo{" pt-logo--square" if p["square"] else ""}"><img src="{e(p["logo"])}" alt="{e(p["name"])}" width="{lw}" height="{lh}"></div>'
          if p["logo"] else "")
     )
     web_line = f' · <a href="{e(p["web"])}" target="_blank" rel="noopener">{e(re.sub(r"^https?://(www\\.)?|/$", "", p["web"]))}</a>' if p["web"] else ""
@@ -139,6 +178,8 @@ def render(p, photos, zip_url, zip_mb):
     fotek = "fotka" if n == 1 else ("fotky" if n < 5 else "fotek")
     mb = str(zip_mb).replace(".", ",")
     title = f"Díky, {p['name']} | Číča Art Fest 2026"
+    drive_block = (f'<a href="{e(p["drive"])}" target="_blank" rel="noopener" class="btn-secondary" style="margin-left: 0.6rem;">Plné rozlišení na Google Drive</a>'
+                   if p.get("drive") else "")
 
     return f"""<!DOCTYPE html>
 <html lang="cs">
@@ -232,9 +273,9 @@ def render(p, photos, zip_url, zip_mb):
             transition: box-shadow 0.3s ease;
         }}
         .pt-logo:hover {{ box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }}
-        .pt-logo img {{ width: auto; height: auto; max-width: 260px; max-height: 70px; }}
+        .pt-logo img {{ height: 70px; width: auto; max-width: 260px; object-fit: contain; }}
         .pt-logo--square {{ padding: 12px 28px; }}
-        .pt-logo--square img {{ max-height: 110px; }}
+        .pt-logo--square img {{ height: 110px; }}
 
         /* Fakta */
         .facts-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }}
@@ -278,7 +319,8 @@ def render(p, photos, zip_url, zip_mb):
         @media (max-width: 600px) {{
             .fact-number {{ font-size: 1.5rem; }}
             .pt-gallery {{ grid-template-columns: repeat(2, 1fr); gap: 8px; }}
-            .pt-logo img {{ max-width: 200px; }}
+            .pt-logo img {{ height: 60px; max-width: 200px; }}
+            .pt-logo--square img {{ height: 96px; }}
         }}
     </style>
 </head>
@@ -411,7 +453,7 @@ def render(p, photos, zip_url, zip_mb):
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                {n} {fotek}, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                {n} {fotek}, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
 {gallery}
@@ -423,6 +465,7 @@ def render(p, photos, zip_url, zip_mb):
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
                 <a href="{zip_url}" class="btn-primary">Stáhnout všech {n} {fotek} (ZIP, {mb} MB) 📦</a>
+                {drive_block}
             </div>
         </div>
     </section>

@@ -90,9 +90,9 @@
             transition: box-shadow 0.3s ease;
         }
         .pt-logo:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }
-        .pt-logo img { width: auto; height: auto; max-width: 260px; max-height: 70px; }
+        .pt-logo img { height: 70px; width: auto; max-width: 260px; object-fit: contain; }
         .pt-logo--square { padding: 12px 28px; }
-        .pt-logo--square img { max-height: 110px; }
+        .pt-logo--square img { height: 110px; }
 
         /* Fakta */
         .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
@@ -136,7 +136,8 @@
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
             .pt-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .pt-logo img { max-width: 200px; }
+            .pt-logo img { height: 60px; max-width: 200px; }
+            .pt-logo--square img { height: 96px; }
         }
     </style>
 </head>
@@ -190,7 +191,7 @@
                     <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
                     <span class="pt-festlogo-tag">2026</span>
                 </div>
-                <a class="pt-logo pt-logo--square" href="https://amitydrinks.cz/" target="_blank" rel="noopener"><img src="/images/partneri/amity-drinks.svg" alt="Amity Drinks" width="400" height="200"></a>
+                <a class="pt-logo pt-logo--square" href="https://amitydrinks.cz/" target="_blank" rel="noopener"><img src="/images/partneri/amity-drinks.svg" alt="Amity Drinks" width="2156" height="1241"></a>
                 <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Vaše drinky byly na stolech po celém parku. Bez vás by první ročník nevypadal tak, jak vypadal,
@@ -269,20 +270,27 @@
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                11 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                18 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0429.webp" data-name="DSC_0429.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0429.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0476.webp" data-name="DSC_0476.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0476.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0496.webp" data-name="DSC_0496.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0496.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0516.webp" data-name="DSC_0516.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0516.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0548.webp" data-name="DSC_0548.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0548.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0679_1.webp" data-name="DSC_0679_1.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0679_1.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_0823_1.webp" data-name="DSC_0823_1.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_0823_1.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_1933.webp" data-name="DSC_1933.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_1933.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_2029.webp" data-name="DSC_2029.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_2029.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_2052.webp" data-name="DSC_2052.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_2052.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/DSC_2092.webp" data-name="DSC_2092.jpg"><img src="/images/partneri-fotky/amity-drinks/DSC_2092.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/045.webp" data-name="045.jpg"><img src="/images/partneri-fotky/amity-drinks/045.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/055.webp" data-name="055.jpg"><img src="/images/partneri-fotky/amity-drinks/055.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/064.webp" data-name="064.jpg"><img src="/images/partneri-fotky/amity-drinks/064.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/075.webp" data-name="075.jpg"><img src="/images/partneri-fotky/amity-drinks/075.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/079.webp" data-name="079.jpg"><img src="/images/partneri-fotky/amity-drinks/079.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/083.webp" data-name="083.jpg"><img src="/images/partneri-fotky/amity-drinks/083.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/085.webp" data-name="085.jpg"><img src="/images/partneri-fotky/amity-drinks/085.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/086.webp" data-name="086.jpg"><img src="/images/partneri-fotky/amity-drinks/086.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/101.webp" data-name="101.jpg"><img src="/images/partneri-fotky/amity-drinks/101.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/111.webp" data-name="111.jpg"><img src="/images/partneri-fotky/amity-drinks/111.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/159.webp" data-name="159.jpg"><img src="/images/partneri-fotky/amity-drinks/159.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/183.webp" data-name="183.jpg"><img src="/images/partneri-fotky/amity-drinks/183.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/216.webp" data-name="216.jpg"><img src="/images/partneri-fotky/amity-drinks/216.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/230.webp" data-name="230.jpg"><img src="/images/partneri-fotky/amity-drinks/230.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/251.webp" data-name="251.jpg"><img src="/images/partneri-fotky/amity-drinks/251.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/259.webp" data-name="259.jpg"><img src="/images/partneri-fotky/amity-drinks/259.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/618.webp" data-name="618.jpg"><img src="/images/partneri-fotky/amity-drinks/618.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/amity-drinks/619.webp" data-name="619.jpg"><img src="/images/partneri-fotky/amity-drinks/619.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="1000" height="665"></a>
             </div>
             <div class="pt-download reveal">
                 <p>
@@ -290,7 +298,8 @@
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="/files/partneri/caf-2026-amity-drinks.zip" class="btn-primary">Stáhnout všech 11 fotek (ZIP, 1,4 MB) 📦</a>
+                <a href="/files/partneri/caf-2026-amity-drinks.zip" class="btn-primary">Stáhnout všech 18 fotek (ZIP, 7,2 MB) 📦</a>
+                
             </div>
         </div>
     </section>

@@ -90,9 +90,9 @@
             transition: box-shadow 0.3s ease;
         }
         .pt-logo:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }
-        .pt-logo img { width: auto; height: auto; max-width: 260px; max-height: 70px; }
+        .pt-logo img { height: 70px; width: auto; max-width: 260px; object-fit: contain; }
         .pt-logo--square { padding: 12px 28px; }
-        .pt-logo--square img { max-height: 110px; }
+        .pt-logo--square img { height: 110px; }
 
         /* Fakta */
         .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
@@ -136,7 +136,8 @@
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
             .pt-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .pt-logo img { max-width: 200px; }
+            .pt-logo img { height: 60px; max-width: 200px; }
+            .pt-logo--square img { height: 96px; }
         }
     </style>
 </head>
@@ -190,7 +191,7 @@
                     <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
                     <span class="pt-festlogo-tag">2026</span>
                 </div>
-                <a class="pt-logo" href="https://www.jakko.cz/" target="_blank" rel="noopener"><img src="/images/partneri/jakko-candles.png" alt="JAKKO candles" width="400" height="200"></a>
+                <a class="pt-logo" href="https://www.jakko.cz/" target="_blank" rel="noopener"><img src="/images/partneri/jakko-candles.png" alt="JAKKO candles" width="800" height="133"></a>
                 <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Vaše svíčky měly své místo na Číča Marketu, design marketu českých značek a umělců. Bez vás by první ročník nevypadal tak, jak vypadal,
@@ -269,14 +270,18 @@
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                5 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                9 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
-                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0676_2.webp" data-name="DSC_0676_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0676_2.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0687_2.webp" data-name="DSC_0687_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0687_2.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0688_1.webp" data-name="DSC_0688_1.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0688_1.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0793_2.webp" data-name="DSC_0793_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0793_2.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0795_1.webp" data-name="DSC_0795_1.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0795_1.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/166.webp" data-name="166.jpg"><img src="/images/partneri-fotky/jakko-candles/166.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/167.webp" data-name="167.jpg"><img src="/images/partneri-fotky/jakko-candles/167.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/228.webp" data-name="228.jpg"><img src="/images/partneri-fotky/jakko-candles/228.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/229.webp" data-name="229.jpg"><img src="/images/partneri-fotky/jakko-candles/229.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0676_2.webp" data-name="DSC_0676_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0676_2.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0687_2.webp" data-name="DSC_0687_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0687_2.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0688_1.webp" data-name="DSC_0688_1.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0688_1.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0793_2.webp" data-name="DSC_0793_2.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0793_2.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/jakko-candles/DSC_0795_1.webp" data-name="DSC_0795_1.jpg"><img src="/images/partneri-fotky/jakko-candles/DSC_0795_1.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
             </div>
             <div class="pt-download reveal">
                 <p>
@@ -284,7 +289,8 @@
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="/files/partneri/caf-2026-jakko-candles.zip" class="btn-primary">Stáhnout všech 5 fotek (ZIP, 1,4 MB) 📦</a>
+                <a href="/files/partneri/caf-2026-jakko-candles.zip" class="btn-primary">Stáhnout všech 9 fotek (ZIP, 4,2 MB) 📦</a>
+                
             </div>
         </div>
     </section>

@@ -90,9 +90,9 @@
             transition: box-shadow 0.3s ease;
         }
         .pt-logo:hover { box-shadow: 0 0 24px rgba(254, 69, 232, 0.35); }
-        .pt-logo img { width: auto; height: auto; max-width: 260px; max-height: 70px; }
+        .pt-logo img { height: 70px; width: auto; max-width: 260px; object-fit: contain; }
         .pt-logo--square { padding: 12px 28px; }
-        .pt-logo--square img { max-height: 110px; }
+        .pt-logo--square img { height: 110px; }
 
         /* Fakta */
         .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; max-width: 1000px; margin: 0 auto; }
@@ -136,7 +136,8 @@
         @media (max-width: 600px) {
             .fact-number { font-size: 1.5rem; }
             .pt-gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .pt-logo img { max-width: 200px; }
+            .pt-logo img { height: 60px; max-width: 200px; }
+            .pt-logo--square img { height: 96px; }
         }
     </style>
 </head>
@@ -190,7 +191,7 @@
                     <img src="/images/caf-logo.webp" alt="Logo Číča Art Fest" width="520" height="471">
                     <span class="pt-festlogo-tag">2026</span>
                 </div>
-                <a class="pt-logo" href="https://www.hulkarna.cz" target="_blank" rel="noopener"><img src="/images/partneri/hulkarna.png" alt="Hůlkárna" width="400" height="200"></a>
+                <a class="pt-logo" href="https://www.hulkarna.cz" target="_blank" rel="noopener"><img src="/images/partneri/hulkarna.png" alt="Hůlkárna" width="1021" height="216"></a>
                 <h1 class="hero-title">Díky, že jste do toho šli s náma!</h1>
                 <p class="pt-lead">
                     Vaše hole a klobouky prošly po mole na modelkách a Podrážděná hůlka, která vznikla ve spolupráci s vámi, se v benefiční aukci prodala za 2 200 Kč ve prospěch Útulku Tuláčik Brezno. Bez vás by první ročník nevypadal tak, jak vypadal,
@@ -269,38 +270,69 @@
         <div class="container">
             <h2 class="section-title reveal">Vaše fotky z festu</h2>
             <p class="pt-note reveal" style="text-align: center; margin-bottom: 2rem;">
-                29 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší, v plné kvalitě jsou v balíčku níže.
+                60 fotek, na kterých je vidět vaše účast. Kliknutím se otevřou větší a dají se listovat. Balíček níže je ve verzi pro web a sociální sítě (1600 px).
             </p>
             <div class="pt-gallery">
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0437.webp" data-name="DSC_0437.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0437.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0471.webp" data-name="DSC_0471.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0471.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0632_1.webp" data-name="DSC_0632_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0632_1.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0638_1.webp" data-name="DSC_0638_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0638_1.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0641_1.webp" data-name="DSC_0641_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0641_1.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0643_1.webp" data-name="DSC_0643_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0643_1.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0652_1.webp" data-name="DSC_0652_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0652_1.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0658_1.webp" data-name="DSC_0658_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0658_1.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0669_2.webp" data-name="DSC_0669_2.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0669_2.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0670_1.webp" data-name="DSC_0670_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0670_1.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0722_2.webp" data-name="DSC_0722_2.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0722_2.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0746_2.webp" data-name="DSC_0746_2.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0746_2.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0831_1.webp" data-name="DSC_0831_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0831_1.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0879_1.webp" data-name="DSC_0879_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0879_1.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0910_1.webp" data-name="DSC_0910_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0910_1.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0911_1.webp" data-name="DSC_0911_1.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0911_1.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_0927_2.webp" data-name="DSC_0927_2.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_0927_2.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_1937.webp" data-name="DSC_1937.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_1937.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_1975.webp" data-name="DSC_1975.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_1975.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_1984.webp" data-name="DSC_1984.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_1984.webp" alt="Číča Art Fest 2026, foto 20" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2047.webp" data-name="DSC_2047.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2047.webp" alt="Číča Art Fest 2026, foto 21" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2220.webp" data-name="DSC_2220.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2220.webp" alt="Číča Art Fest 2026, foto 22" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2248.webp" data-name="DSC_2248.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2248.webp" alt="Číča Art Fest 2026, foto 23" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2263.webp" data-name="DSC_2263.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2263.webp" alt="Číča Art Fest 2026, foto 24" loading="lazy" decoding="async" width="1000" height="665"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2313.webp" data-name="DSC_2313.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2313.webp" alt="Číča Art Fest 2026, foto 25" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2315.webp" data-name="DSC_2315.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2315.webp" alt="Číča Art Fest 2026, foto 26" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2318.webp" data-name="DSC_2318.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2318.webp" alt="Číča Art Fest 2026, foto 27" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2323.webp" data-name="DSC_2323.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2323.webp" alt="Číča Art Fest 2026, foto 28" loading="lazy" decoding="async" width="665" height="1000"></a>
-                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/DSC_2375.webp" data-name="DSC_2375.jpg"><img src="/images/partneri-fotky/hulkarna/DSC_2375.webp" alt="Číča Art Fest 2026, foto 29" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/048.webp" data-name="048.jpg"><img src="/images/partneri-fotky/hulkarna/048.webp" alt="Číča Art Fest 2026, foto 1" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/113.webp" data-name="113.jpg"><img src="/images/partneri-fotky/hulkarna/113.webp" alt="Číča Art Fest 2026, foto 2" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/124.webp" data-name="124.jpg"><img src="/images/partneri-fotky/hulkarna/124.webp" alt="Číča Art Fest 2026, foto 3" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/129.webp" data-name="129.jpg"><img src="/images/partneri-fotky/hulkarna/129.webp" alt="Číča Art Fest 2026, foto 4" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/147.webp" data-name="147.jpg"><img src="/images/partneri-fotky/hulkarna/147.webp" alt="Číča Art Fest 2026, foto 5" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/149.webp" data-name="149.jpg"><img src="/images/partneri-fotky/hulkarna/149.webp" alt="Číča Art Fest 2026, foto 6" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/153.webp" data-name="153.jpg"><img src="/images/partneri-fotky/hulkarna/153.webp" alt="Číča Art Fest 2026, foto 7" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/154.webp" data-name="154.jpg"><img src="/images/partneri-fotky/hulkarna/154.webp" alt="Číča Art Fest 2026, foto 8" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/189.webp" data-name="189.jpg"><img src="/images/partneri-fotky/hulkarna/189.webp" alt="Číča Art Fest 2026, foto 9" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/206.webp" data-name="206.jpg"><img src="/images/partneri-fotky/hulkarna/206.webp" alt="Číča Art Fest 2026, foto 10" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/386.webp" data-name="386.jpg"><img src="/images/partneri-fotky/hulkarna/386.webp" alt="Číča Art Fest 2026, foto 11" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/394.webp" data-name="394.jpg"><img src="/images/partneri-fotky/hulkarna/394.webp" alt="Číča Art Fest 2026, foto 12" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/395.webp" data-name="395.jpg"><img src="/images/partneri-fotky/hulkarna/395.webp" alt="Číča Art Fest 2026, foto 13" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/396.webp" data-name="396.jpg"><img src="/images/partneri-fotky/hulkarna/396.webp" alt="Číča Art Fest 2026, foto 14" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/412.webp" data-name="412.jpg"><img src="/images/partneri-fotky/hulkarna/412.webp" alt="Číča Art Fest 2026, foto 15" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/414.webp" data-name="414.jpg"><img src="/images/partneri-fotky/hulkarna/414.webp" alt="Číča Art Fest 2026, foto 16" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/415.webp" data-name="415.jpg"><img src="/images/partneri-fotky/hulkarna/415.webp" alt="Číča Art Fest 2026, foto 17" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/419.webp" data-name="419.jpg"><img src="/images/partneri-fotky/hulkarna/419.webp" alt="Číča Art Fest 2026, foto 18" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/421.webp" data-name="421.jpg"><img src="/images/partneri-fotky/hulkarna/421.webp" alt="Číča Art Fest 2026, foto 19" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/422.webp" data-name="422.jpg"><img src="/images/partneri-fotky/hulkarna/422.webp" alt="Číča Art Fest 2026, foto 20" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/428.webp" data-name="428.jpg"><img src="/images/partneri-fotky/hulkarna/428.webp" alt="Číča Art Fest 2026, foto 21" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/439.webp" data-name="439.jpg"><img src="/images/partneri-fotky/hulkarna/439.webp" alt="Číča Art Fest 2026, foto 22" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/441.webp" data-name="441.jpg"><img src="/images/partneri-fotky/hulkarna/441.webp" alt="Číča Art Fest 2026, foto 23" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/450.webp" data-name="450.jpg"><img src="/images/partneri-fotky/hulkarna/450.webp" alt="Číča Art Fest 2026, foto 24" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/473.webp" data-name="473.jpg"><img src="/images/partneri-fotky/hulkarna/473.webp" alt="Číča Art Fest 2026, foto 25" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/474.webp" data-name="474.jpg"><img src="/images/partneri-fotky/hulkarna/474.webp" alt="Číča Art Fest 2026, foto 26" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/475.webp" data-name="475.jpg"><img src="/images/partneri-fotky/hulkarna/475.webp" alt="Číča Art Fest 2026, foto 27" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/476.webp" data-name="476.jpg"><img src="/images/partneri-fotky/hulkarna/476.webp" alt="Číča Art Fest 2026, foto 28" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/477.webp" data-name="477.jpg"><img src="/images/partneri-fotky/hulkarna/477.webp" alt="Číča Art Fest 2026, foto 29" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/488.webp" data-name="488.jpg"><img src="/images/partneri-fotky/hulkarna/488.webp" alt="Číča Art Fest 2026, foto 30" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/489.webp" data-name="489.jpg"><img src="/images/partneri-fotky/hulkarna/489.webp" alt="Číča Art Fest 2026, foto 31" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/490.webp" data-name="490.jpg"><img src="/images/partneri-fotky/hulkarna/490.webp" alt="Číča Art Fest 2026, foto 32" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/491.webp" data-name="491.jpg"><img src="/images/partneri-fotky/hulkarna/491.webp" alt="Číča Art Fest 2026, foto 33" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/495.webp" data-name="495.jpg"><img src="/images/partneri-fotky/hulkarna/495.webp" alt="Číča Art Fest 2026, foto 34" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/496.webp" data-name="496.jpg"><img src="/images/partneri-fotky/hulkarna/496.webp" alt="Číča Art Fest 2026, foto 35" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/497.webp" data-name="497.jpg"><img src="/images/partneri-fotky/hulkarna/497.webp" alt="Číča Art Fest 2026, foto 36" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/498.webp" data-name="498.jpg"><img src="/images/partneri-fotky/hulkarna/498.webp" alt="Číča Art Fest 2026, foto 37" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/499.webp" data-name="499.jpg"><img src="/images/partneri-fotky/hulkarna/499.webp" alt="Číča Art Fest 2026, foto 38" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/500.webp" data-name="500.jpg"><img src="/images/partneri-fotky/hulkarna/500.webp" alt="Číča Art Fest 2026, foto 39" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/501.webp" data-name="501.jpg"><img src="/images/partneri-fotky/hulkarna/501.webp" alt="Číča Art Fest 2026, foto 40" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/502.webp" data-name="502.jpg"><img src="/images/partneri-fotky/hulkarna/502.webp" alt="Číča Art Fest 2026, foto 41" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/503.webp" data-name="503.jpg"><img src="/images/partneri-fotky/hulkarna/503.webp" alt="Číča Art Fest 2026, foto 42" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/504.webp" data-name="504.jpg"><img src="/images/partneri-fotky/hulkarna/504.webp" alt="Číča Art Fest 2026, foto 43" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/505.webp" data-name="505.jpg"><img src="/images/partneri-fotky/hulkarna/505.webp" alt="Číča Art Fest 2026, foto 44" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/506.webp" data-name="506.jpg"><img src="/images/partneri-fotky/hulkarna/506.webp" alt="Číča Art Fest 2026, foto 45" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/507.webp" data-name="507.jpg"><img src="/images/partneri-fotky/hulkarna/507.webp" alt="Číča Art Fest 2026, foto 46" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/508.webp" data-name="508.jpg"><img src="/images/partneri-fotky/hulkarna/508.webp" alt="Číča Art Fest 2026, foto 47" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/509.webp" data-name="509.jpg"><img src="/images/partneri-fotky/hulkarna/509.webp" alt="Číča Art Fest 2026, foto 48" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/511.webp" data-name="511.jpg"><img src="/images/partneri-fotky/hulkarna/511.webp" alt="Číča Art Fest 2026, foto 49" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/512.webp" data-name="512.jpg"><img src="/images/partneri-fotky/hulkarna/512.webp" alt="Číča Art Fest 2026, foto 50" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/514.webp" data-name="514.jpg"><img src="/images/partneri-fotky/hulkarna/514.webp" alt="Číča Art Fest 2026, foto 51" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/515.webp" data-name="515.jpg"><img src="/images/partneri-fotky/hulkarna/515.webp" alt="Číča Art Fest 2026, foto 52" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/519.webp" data-name="519.jpg"><img src="/images/partneri-fotky/hulkarna/519.webp" alt="Číča Art Fest 2026, foto 53" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/524.webp" data-name="524.jpg"><img src="/images/partneri-fotky/hulkarna/524.webp" alt="Číča Art Fest 2026, foto 54" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/525.webp" data-name="525.jpg"><img src="/images/partneri-fotky/hulkarna/525.webp" alt="Číča Art Fest 2026, foto 55" loading="lazy" decoding="async" width="1000" height="665"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/587.webp" data-name="587.jpg"><img src="/images/partneri-fotky/hulkarna/587.webp" alt="Číča Art Fest 2026, foto 56" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/588.webp" data-name="588.jpg"><img src="/images/partneri-fotky/hulkarna/588.webp" alt="Číča Art Fest 2026, foto 57" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/590.webp" data-name="590.jpg"><img src="/images/partneri-fotky/hulkarna/590.webp" alt="Číča Art Fest 2026, foto 58" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/593.webp" data-name="593.jpg"><img src="/images/partneri-fotky/hulkarna/593.webp" alt="Číča Art Fest 2026, foto 59" loading="lazy" decoding="async" width="665" height="1000"></a>
+                <a class="pt-photo" href="/images/partneri-fotky/hulkarna/628.webp" data-name="628.jpg"><img src="/images/partneri-fotky/hulkarna/628.webp" alt="Číča Art Fest 2026, foto 60" loading="lazy" decoding="async" width="1000" height="665"></a>
             </div>
             <div class="pt-download reveal">
                 <p>
@@ -308,7 +340,8 @@
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="/files/partneri/caf-2026-hulkarna.zip" class="btn-primary">Stáhnout všech 29 fotek (ZIP, 7,3 MB) 📦</a>
+                <a href="/files/partneri/caf-2026-hulkarna.zip" class="btn-primary">Stáhnout všech 60 fotek (ZIP, 28,8 MB) 📦</a>
+                
             </div>
         </div>
     </section>
