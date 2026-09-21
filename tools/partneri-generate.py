@@ -13,6 +13,8 @@ Spouštět z kořene webu:  python3 tools/partneri-generate.py [slug …] [--htm
 Zdrojové fotky bere ze složky SRC (mimo repo). Existující výstupy přepíše.
 """
 import os, re, sys, glob, struct, shutil, subprocess, tempfile, html
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _imgdup import fingerprint, distance   # porovnání fotek podle obsahu (duplicity DSC vs. finální)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = ("/Users/david/Documents/Dokumenty – David – MacBook Air/Mlyko/Podrážděná číča/Web/"
@@ -24,6 +26,9 @@ THUMB_Q = 78
 # True = když složka obsahuje finální fotky, DSC_* se ignorují. Partner s `keep_dsc=True` dostane obojí
 # (Melvil a JAKKO mají finálních málo, David chtěl nechat i bonusové).
 PREFER_FINAL = True
+# U `keep_dsc` partnerů se z DSC_* vezmou jen fotky, které mezi finálními NEJSOU (stejná fotka má jiný název).
+# Otisk 32×32: duplicity mají skóre < 5, různé fotky > 25 → práh 12.
+DUP_THRESHOLD = 12
 # Originály ~10 MB/ks by dávaly ZIPy o stovkách MB (GitHub limit 100 MB/soubor). Do ZIPu na webu jde
 # proto verze zmenšená na ZIP_MAX_PX (1600 px ≈ 0,4 MB/ks, stejná jako první várka od Adelice).
 # Plné rozlišení se řeší odkazem na Drive: partner může mít v konfiguraci `drive="https://…"`.
@@ -108,8 +113,20 @@ def build_photos(p):
     src_dir = os.path.join(SRC, p["folder"])
     files = sorted(f for f in os.listdir(src_dir) if f.lower().endswith((".jpg", ".jpeg")))
     finals = [f for f in files if not f.upper().startswith("DSC")]
-    if PREFER_FINAL and finals and not p.get("keep_dsc"):
-        files = finals
+    if PREFER_FINAL and finals:
+        if p.get("keep_dsc"):
+            # finální + jen ty DSC_*, které nejsou duplicitou žádné finální fotky
+            fin_fp = [fingerprint(os.path.join(src_dir, f)) for f in finals]
+            extra, dropped = [], 0
+            for f in files:
+                if f in finals: continue
+                fp = fingerprint(os.path.join(src_dir, f))
+                if min(distance(fp, g) for g in fin_fp) < DUP_THRESHOLD: dropped += 1
+                else: extra.append(f)
+            print(f"  {p['slug']}: finálních {len(finals)}, bonusových DSC {len(extra)}, vyřazeno duplicit {dropped}", file=sys.stderr)
+            files = sorted(finals + extra)
+        else:
+            files = finals
     out_dir = os.path.join(ROOT, "images", "partneri-fotky", p["slug"])
     shutil.rmtree(out_dir, ignore_errors=True); os.makedirs(out_dir)
     photos = []
