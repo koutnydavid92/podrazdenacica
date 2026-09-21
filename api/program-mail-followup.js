@@ -97,6 +97,23 @@ module.exports = async (req, res) => {
     const isAdmin = req.method === 'POST' && pinEquals((req.body || {}).pin, process.env.ADMIN_PIN);
     const today = new Date().toISOString().slice(0, 10);
 
+    // Večerní souhrn obchodu (vercel.json: ?job=shop-digest v 19:00 UTC).
+    // Vlastní funkci mít nemůže (limit 12), tak sdílí tenhle cron.
+    const job = (req.query && req.query.job) || (String(req.url || '').match(/[?&]job=([a-z-]+)/) || [])[1];
+    if (job === 'shop-digest') {
+        if (!isCron && !isAdmin) { res.status(401).json({ error: 'unauthorized' }); return; }
+        try {
+            const { runShopDigest } = require('./_shop_digest');
+            const out = await withDb(c => runShopDigest(c, { send: true }));
+            console.log('shop digest:', JSON.stringify(out));
+            res.status(200).json(out);
+        } catch (e) {
+            console.error('shop digest failed:', e.message);
+            res.status(500).json({ error: 'digest_failed' });
+        }
+        return;
+    }
+
     // Obchod: stavy zásilek ze Zásilkovny (jen cron, chyba nesmí shodit zbytek)
     let shopSynced = [];
     if (isCron) {

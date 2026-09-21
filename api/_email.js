@@ -438,6 +438,21 @@ async function sendShopOrderNotification({ order }) {
     });
 }
 
+// Večerní souhrn obchodu pro Davida (obsah sestavuje api/_shop_digest.js)
+async function sendShopDigestEmail({ subject, heading, bodyHtml, text }) {
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject,
+            from_name: 'Obchod Podrážděná číča',
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: SHOP_NOTIFY_EMAIL, name: 'David' }],
+            html: auctionShell({ heading, bodyHtml, footNote: 'Automatický večerní souhrn obchodu podrazdenacica.cz/onanovanky. Chodí jen, když je co řešit.' }),
+            text
+        }
+    });
+}
+
 // Balík je na cestě (posílá se z adminu po zadání čísla zásilky)
 async function sendShopShippedEmail({ order }) {
     const first = shopFirstName(order.name);
@@ -539,5 +554,5 @@ module.exports = {
     subscribeToEventList, subscribeToEventListSafe,
     sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail,
     sendShopConfirmationEmail, sendShopShippedEmail, sendShopSampleEmail, sendShopOrderNotification,
-    subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE
+    sendShopDigestEmail, subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE, esc, czk
 };

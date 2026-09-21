@@ -197,41 +197,21 @@ async function handleShop(c, body) {
         return rows.length ? { ok: true, status: rows[0].status } : { ok: false, error: 'not_found' };
     }
     if (body.action === 'shop_packeta_create') {
-        // Založí zásilku v Zásilkovně pro jednu nebo všechny objednávky k odeslání.
-        // Číslo zásilky se uloží a objednávka přejde na 'labeled' (štítek, čeká na
-        // podání). Mail zákazníkovi jde až při podání (akce shop_ship).
-        // Objednávka, která už zásilku má, se přeskočí.
-        let where, params;
-        if (body.id === 'all') {
-            where = "status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null";
-            params = [];
-        } else {
+        // Založí zásilku v Zásilkovně pro jednu nebo všechny objednávky k odeslání
+        // (sdílená logika s večerním souhrnem, viz _packeta.createPendingPackets).
+        let ids = null;
+        if (body.id !== 'all') {
             if (!SHOP_UUID_RE.test(String(body.id || ''))) return { ok: false, error: 'bad_id' };
-            where = 'id = $1';
-            params = [body.id];
+            ids = [body.id];
         }
-        const { rows } = await c.query(`select * from shop_orders where ${where} order by order_no`, params);
-        const results = [];
-        for (const order of rows) {
-            if (order.packeta_tracking) { results.push({ order_no: order.order_no, skipped: 'má zásilku' }); continue; }
-            if (order.shipping_method === 'pickup_atelier') { results.push({ order_no: order.order_no, skipped: 'osobní odběr' }); continue; }
-            try {
-                const packet = await packeta.createPacket(order);
-                let consign = null;
-                try { consign = await packeta.packetConsignCode(packet.id); }
-                catch (e) { console.error('consign code failed', order.order_no, e.message); }
-                await c.query(
-                    `update shop_orders
-                     set packeta_tracking = $2, packeta_consign_code = $3, status = 'labeled', labeled_at = coalesce(labeled_at, now())
-                     where id = $1`,
-                    [order.id, packet.id, consign]);
-                results.push({ order_no: order.order_no, packet_id: packet.id, consign_code: consign });
-            } catch (e) {
-                console.error('packeta create failed', order.order_no, e.message);
-                results.push({ order_no: order.order_no, error: e.message });
-            }
-        }
+        const results = await packeta.createPendingPackets(c, ids);
         return { ok: true, results };
+    }
+    if (body.action === 'shop_digest') {
+        // Večerní souhrn hned teď (test nebo když ho David chce navíc).
+        // send:false jen sestaví a vrátí, co by poslal.
+        const { runShopDigest } = require('./_shop_digest');
+        return runShopDigest(c, { send: body.send !== false, createPackets: body.create_packets !== false, force: true });
     }
     if (body.action === 'shop_packeta_labels') {
         // PDF se štítky (base64) pro zadané objednávky, nebo pro všechny odeslané

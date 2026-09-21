@@ -164,7 +164,10 @@ async function syncStatuses(client, sendShippedEmail, limit) {
     const { rows } = await client.query(
         `select * from shop_orders
          where packeta_tracking is not null and status in ('labeled', 'shipped')
+           and (labeled_at is null or labeled_at < now() - interval '5 minutes')
          order by created_at desc limit $1`, [limit || 40]);
+    // Čerstvě založené zásilky Zásilkovna pár minut nezná (PacketIdFault),
+    // proto ta 5minutová rezerva - doženou se při dalším běhu.
     const changes = [];
     for (const order of rows) {
         if (!order.packeta_consign_code) {
@@ -200,6 +203,38 @@ async function syncStatuses(client, sendShippedEmail, limit) {
         }
     }
     return changes;
+}
+
+// Založí zásilky pro zaplacené objednávky se Zásilkovnou, které ji ještě
+// nemají (nebo jen pro zadaná id). Číslo zásilky a podací kód se uloží,
+// objednávka přejde na 'labeled'. Mail zákazníkovi jde až při podání.
+// Volá admin (tlačítka) i večerní souhrn. Chyba u jedné nezastaví ostatní.
+async function createPendingPackets(client, ids) {
+    let where = "status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null";
+    let params = [];
+    if (Array.isArray(ids) && ids.length) { where = 'id = any($1::uuid[])'; params = [ids]; }
+    const { rows } = await client.query(`select * from shop_orders where ${where} order by order_no`, params);
+    const results = [];
+    for (const order of rows) {
+        if (order.packeta_tracking) { results.push({ order_no: order.order_no, skipped: 'má zásilku' }); continue; }
+        if (order.shipping_method === 'pickup_atelier') { results.push({ order_no: order.order_no, skipped: 'osobní odběr' }); continue; }
+        try {
+            const packet = await createPacket(order);
+            let consign = null;
+            try { consign = await packetConsignCode(packet.id); }
+            catch (e) { console.error('consign code failed', order.order_no, e.message); }
+            await client.query(
+                `update shop_orders
+                 set packeta_tracking = $2, packeta_consign_code = $3, status = 'labeled', labeled_at = coalesce(labeled_at, now())
+                 where id = $1`,
+                [order.id, packet.id, consign]);
+            results.push({ order_no: order.order_no, packet_id: packet.id, consign_code: consign });
+        } catch (e) {
+            console.error('packeta create failed', order.order_no, e.message);
+            results.push({ order_no: order.order_no, error: e.message });
+        }
+    }
+    return results;
 }
 
 // Řádek pro hromadný import CSV (šablona "version 8" z klientské sekce)
@@ -239,5 +274,6 @@ function csvFile(orders) {
 
 module.exports = {
     SENDER_LABEL, HOME_DELIVERY_CARRIER, weightKg, splitName, splitStreet,
-    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile, packetStatus, packetConsignCode, syncStatuses, STATUS_CS
+    packetAttributes, createPacket, cancelPacket, labelsPdf, csvFile, packetStatus, packetConsignCode, syncStatuses,
+    createPendingPackets, STATUS_CS
 };
