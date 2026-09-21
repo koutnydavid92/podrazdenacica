@@ -35,3 +35,6 @@ obrazy-k-prodeji.html
 # Node
 node_modules/
 .vercel
+
+# Python cache (generátor partnerských stránek)
+__pycache__/

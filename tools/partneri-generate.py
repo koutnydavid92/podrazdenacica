@@ -7,7 +7,9 @@ Pro každého partnera:
   - zabalí originály do files/partneri/caf-2026-<slug>.zip (s README)
   - vygeneruje cica-art-fest/partneri/<slug>.html (noindex, mimo sitemapu)
 
-Spouštět z kořene webu:  python3 tools/partneri-generate.py
+Spouštět z kořene webu:  python3 tools/partneri-generate.py [slug …] [--html]
+  --html  = přegeneruje jen HTML stránky z už hotových náhledů a ZIPů (změna textu/šablony),
+            fotky se nezpracovávají a ZIPy se nemění (šetří čas i velikost gitu).
 Zdrojové fotky bere ze složky SRC (mimo repo). Existující výstupy přepíše.
 """
 import os, re, sys, glob, struct, shutil, subprocess, tempfile, html
@@ -27,6 +29,8 @@ PREFER_FINAL = True
 # Plné rozlišení se řeší odkazem na Drive: partner může mít v konfiguraci `drive="https://…"`.
 ZIP_MAX_PX = 1600
 ZIP_Q = 90
+# Celé album všech fotek z festu (sdílené album Google Fotky, společné pro všechny partnery). Prázdné = tlačítko se neukáže.
+DRIVE_ALBUM_URL = "https://photos.google.com/share/AF1QipO5QAUm2Muke2cL0WdX0HDKeWu9Q8bLtRem8FZVQ3DCHWXhgIlmCZTSGn0nBi-t4A?key=aDNQdV96dVhfNVZiVXZKUG5vVXZfZ05UU3BEZ0lB"
 
 PARTNERS = [
     dict(slug="makeup-institute-prague", name="Make Up Institute Prague", folder="01 Make Up Institute Prague",
@@ -127,6 +131,17 @@ def build_photos(p):
             photos.append(dict(src=f"/images/partneri-fotky/{p['slug']}/{base}.webp", w=w, h=h, name=f))
     return photos, src_dir, files
 
+def existing_photos(p):
+    """Seznam fotek z už vygenerovaných náhledů (pro režim --html, kdy se mění jen text/šablona)."""
+    out_dir = os.path.join(ROOT, "images", "partneri-fotky", p["slug"])
+    photos = []
+    for f in sorted(os.listdir(out_dir)):
+        if not f.endswith(".webp"): continue
+        w, h = webp_dims(os.path.join(out_dir, f))
+        photos.append(dict(src=f"/images/partneri-fotky/{p['slug']}/{f}", w=w, h=h, name=f[:-5] + ".jpg"))
+    zpath = os.path.join(ROOT, "files", "partneri", f"caf-2026-{p['slug']}.zip")
+    return photos, f"/files/partneri/caf-2026-{p['slug']}.zip", round(os.path.getsize(zpath) / 1024 / 1024, 1)
+
 def build_zip(p, src_dir, files):
     zdir = os.path.join(ROOT, "files", "partneri"); os.makedirs(zdir, exist_ok=True)
     zpath = os.path.join(zdir, f"caf-2026-{p['slug']}.zip")
@@ -178,8 +193,10 @@ def render(p, photos, zip_url, zip_mb):
     fotek = "fotka" if n == 1 else ("fotky" if n < 5 else "fotek")
     mb = str(zip_mb).replace(".", ",")
     title = f"Díky, {p['name']} | Číča Art Fest 2026"
-    drive_block = (f'<a href="{e(p["drive"])}" target="_blank" rel="noopener" class="btn-secondary" style="margin-left: 0.6rem;">Plné rozlišení na Google Drive</a>'
-                   if p.get("drive") else "")
+    drive_url = p.get("drive") or DRIVE_ALBUM_URL
+    drive_label = "Plné rozlišení na Google Disku" if p.get("drive") else "Celé album z festu (Google Fotky)"
+    drive_block = (f'<a href="{e(drive_url)}" target="_blank" rel="noopener" class="btn-secondary">{drive_label}</a>'
+                   if drive_url else "")
 
     return f"""<!DOCTYPE html>
 <html lang="cs">
@@ -404,7 +421,7 @@ def render(p, photos, zip_url, zip_mb):
             <p class="pt-lead reveal">
                 První ročník Číča Art Festu proběhl v pátek <strong>28. srpna 2026</strong> v areálu CO.LABS v Brně
                 a přišlo na něj <strong>přes 150 lidí</strong>. Program spojil vernisáž první obrazové série
-                Královny Brno-venkov, panelovou diskuzi o ženské psychice a sexualitě, stand-up, koncerty,
+                Královny Brno-venkov, panelovou diskuzi o ženské psychice a sexualitě, stand-up, hudební vystoupení,
                 design market českých značek a umělců, módní přehlídku devíti žen, z nichž ani jedna nebyla
                 profesionální modelka, a závěrečnou show drag queen Miss Petty.
             </p>
@@ -415,7 +432,7 @@ def render(p, photos, zip_url, zip_mb):
             </p>
             <p class="pt-lead reveal">
                 Vaše logo bylo na webu festivalu, na tištěném letáku a je i na
-                <a href="/cica-art-fest/media">tiskové stránce pro média</a>, kterou teď posíláme redakcím.
+                <a href="/cica-art-fest/media">tiskové stránce pro média</a>, kterou jsme zaslali redakcím.
                 Tam najdete i kompletní přehled děl z aukce a ohlasy vystupujících.
             </p>
             <div class="pt-quotes">
@@ -432,9 +449,9 @@ def render(p, photos, zip_url, zip_mb):
                     <cite>Zuzka od Rosic, návštěvnice</cite>
                 </div>
             </div>
-            <p class="pt-note reveal" style="text-align: center; margin-top: 1.4rem;">
-                <a href="/reference">Všechny ohlasy návštěvníků a vystupujících</a>
-            </p>
+            <div class="hero-buttons reveal" style="justify-content: center; margin-top: 1.8rem;">
+                <a href="/reference" class="btn-secondary">Všechny ohlasy návštěvníků a vystupujících</a>
+            </div>
         </div>
     </section>
 
@@ -464,8 +481,10 @@ def render(p, photos, zip_url, zip_mb):
                     <strong>Foto: Adelice (<a href="https://www.instagram.com/adelice_foto/" target="_blank" rel="noopener">@adelice_foto</a>)</strong>
                     a budeme rádi za označení <a href="https://www.instagram.com/cicaartfest/" target="_blank" rel="noopener">@cicaartfest</a>.
                 </p>
-                <a href="{zip_url}" class="btn-primary">Stáhnout všech {n} {fotek} (ZIP, {mb} MB) 📦</a>
-                {drive_block}
+                <div class="hero-buttons" style="justify-content: center;">
+                    <a href="{zip_url}" class="btn-primary">Stáhnout všech {n} {fotek} (ZIP, {mb} MB) 📦</a>
+                    {drive_block}
+                </div>
             </div>
         </div>
     </section>
@@ -478,7 +497,7 @@ def render(p, photos, zip_url, zip_mb):
                     Druhý ročník chystáme na rok 2027 a moc rádi bychom v něm měli <strong>{e(p['name'])}</strong> znovu.
                     Ozveme se s pořádným předstihem, ale kdykoli dřív stačí napsat nebo zavolat.
                 </p>
-                <p class="contact-row"><strong>David Koutný</strong>, pořadatel festivalu</p>
+                <p class="contact-row"><strong>Kristýna Mlynář Koutná &amp; David Koutný (MLYKO)</strong>, pořadatelé festivalu</p>
                 <p class="contact-row">📧 <a href="mailto:jsem@podrazdenacica.cz?subject=%C4%8C%C3%AD%C4%8Da%20Art%20Fest%202027">jsem@podrazdenacica.cz</a></p>
                 <p class="contact-row">📞 <a href="tel:+420732227989">+420 732 227 989</a></p>
                 <p style="margin-top: 1.4rem; color: rgba(255,255,255,0.6);">
@@ -590,11 +609,16 @@ def render(p, photos, zip_url, zip_mb):
 
 def main():
     out_dir = os.path.join(ROOT, "cica-art-fest", "partneri"); os.makedirs(out_dir, exist_ok=True)
-    only = set(sys.argv[1:])
+    args = sys.argv[1:]
+    html_only = "--html" in args           # jen HTML z hotových náhledů/ZIPů (změna textu či šablony)
+    only = set(a for a in args if not a.startswith("--"))
     for p in PARTNERS:
         if only and p["slug"] not in only: continue
-        photos, src_dir, files = build_photos(p)
-        zip_url, zip_mb = build_zip(p, src_dir, files)
+        if html_only:
+            photos, zip_url, zip_mb = existing_photos(p)
+        else:
+            photos, src_dir, files = build_photos(p)
+            zip_url, zip_mb = build_zip(p, src_dir, files)
         with open(os.path.join(out_dir, p["slug"] + ".html"), "w", encoding="utf-8") as fh:
             fh.write(render(p, photos, zip_url, zip_mb))
         print(f"{p['slug']:<26} {len(photos):>3} fotek  ZIP {zip_mb} MB")
