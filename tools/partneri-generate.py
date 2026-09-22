@@ -62,7 +62,7 @@ PARTNERS = [
               "ve spolupráci s vámi, se v benefiční aukci prodala za 2 200 Kč ve prospěch Útulku Tuláčik Brezno."),
     dict(slug="jan-melvil", name="Jan Melvil Publishing", folder="08 Jan Melvil", keep_dsc=True,
          logo="/images/partneri/melvil.png", square=False, web="https://www.melvil.cz/",
-         role="Vaše knihy byly na Číča Marketu a Hana Vacková z nich četla ukázku po panelové diskuzi."),
+         role="Vaše knihy byly na Číča Marketu a Hana Vacková vás skvěle reprezentovala na panelové diskuzi."),
     dict(slug="rozkosss", name="Rozkoššš", folder="09 Rozkosss",
          logo="/images/partneri/rozkosss.png", square=True, web="https://www.rozkosss.cz",
          role="Zuzana Křížová seděla v panelové diskuzi, vaše kousky šly po mole a balíček Klitty s fotečkama "
