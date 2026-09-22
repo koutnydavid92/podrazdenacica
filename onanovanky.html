@@ -146,6 +146,79 @@
             transform: rotate(8deg);
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);
         }
+        .play-btn {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(3deg);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(13, 13, 13, 0.6);
+            border: 2px solid var(--accent-neon);
+            color: var(--white);
+            border-radius: 999px;
+            padding: 0.75rem 1.4rem 0.75rem 1.1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.35);
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+        .play-btn:hover, .play-btn:focus-visible {
+            background: var(--accent-neon);
+            color: var(--black);
+            transform: translate(-50%, -50%) rotate(3deg) scale(1.06);
+            outline: none;
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 14px solid currentColor;
+            border-top: 9px solid transparent;
+            border-bottom: 9px solid transparent;
+            margin-left: 3px;
+        }
+        .video-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(5, 3, 8, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .video-overlay[hidden] { display: none; }
+        .video-overlay video {
+            height: min(92vh, 1000px);
+            width: auto;
+            max-width: 100%;
+            background: #000;
+            border-radius: 14px;
+            border: 1px solid var(--divider);
+            box-shadow: 0 0 60px rgba(254, 69, 232, 0.25);
+        }
+        .video-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--divider);
+            background: var(--bg-card);
+            color: var(--white);
+            font-size: 1.7rem;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 1;
+        }
+        .video-close:hover { border-color: var(--accent-neon); color: var(--accent-neon); }
         .shop-hero .hero-title { font-size: clamp(2.2rem, 5vw, 3.6rem); }
         /* Nadpis má z style.css přechod přes text (transparentní výplň), proto
            se em musí z přechodu vyjmout, jinak se růžová míchá s bílou. */
@@ -529,6 +602,10 @@
             .shop-hero { padding-top: 8rem; }
             .shop-hero-grid { grid-template-columns: 1fr; gap: 2.2rem; }
             .shop-cover { max-width: 320px; margin: 0 auto; transform: rotate(-2deg); }
+            .play-btn { transform: translate(-50%, -50%) rotate(2deg); font-size: 0.95rem; }
+            .play-btn:hover, .play-btn:focus-visible { transform: translate(-50%, -50%) rotate(2deg) scale(1.06); }
+            .video-overlay { padding: 0; }
+            .video-overlay video { width: 100%; height: auto; max-height: 100vh; max-height: 100dvh; border-radius: 0; border: 0; }
             .order-box, .sample-box { padding: 1.8rem 1.2rem; border-radius: 18px; }
             .sample-form { flex-direction: column; }
             .sheet-grid.five { grid-template-columns: repeat(3, 1fr); }
@@ -606,6 +683,10 @@
             <div class="shop-hero-grid">
                 <div class="shop-cover reveal active">
                     <img src="/images/onanovanky/obalka.webp" alt="Obálka Onanovánek 2026: antisystémové omalovánky pro dospělé" width="1237" height="1752" fetchpriority="high">
+                    <button type="button" class="play-btn" id="playPromo" data-cta="onanovanky_hero_video" aria-label="Přehrát video s průletem Onanovánkami">
+                        <span class="play-icon" aria-hidden="true"></span>
+                        <span class="play-label">Přehrát video</span>
+                    </button>
                     <div class="age" aria-label="Jen pro dospělé">18+</div>
                 </div>
                 <div class="hero-text">
@@ -1179,6 +1260,35 @@
             } catch (e) { /* když se nepovede zjistit, prodej necháme otevřený, server sklad hlídá */ }
         })();
 
+        // ---- Promo video (průlet Onanovánkami) ----
+        // Soubor se stahuje až po kliknutí; na mobilu lehčí 720p verze.
+        const videoOverlay = el('videoOverlay');
+        const promoVideo = el('promoVideo');
+        let videoTracked = false;
+        function openPromoVideo() {
+            if (!promoVideo.getAttribute('src')) {
+                promoVideo.src = window.innerWidth < 820 ? '/videos/onanovanky/promo-720.mp4' : '/videos/onanovanky/promo.mp4';
+            }
+            videoOverlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            promoVideo.play().catch(() => { /* prohlížeč nechal ovládání na uživateli */ });
+            el('videoClose').focus();
+            if (!videoTracked) {
+                videoTracked = true;
+                track('video_play', { video: 'onanovanky-promo', video_page: window.location.pathname });
+            }
+        }
+        function closePromoVideo() {
+            promoVideo.pause();
+            videoOverlay.hidden = true;
+            document.body.style.overflow = '';
+            el('playPromo').focus();
+        }
+        el('playPromo').addEventListener('click', openPromoVideo);
+        el('videoClose').addEventListener('click', closePromoVideo);
+        videoOverlay.addEventListener('click', (e) => { if (e.target === videoOverlay) closePromoVideo(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !videoOverlay.hidden) closePromoVideo(); });
+
         // ---- Ukázka na mail ----
         el('sampleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1216,6 +1326,12 @@
         });
         }); // End requestAnimationFrame
     </script>
+
+    <!-- Video: průlet Onanovánkami (otevře se z tlačítka v hero) -->
+    <div class="video-overlay" id="videoOverlay" hidden role="dialog" aria-modal="true" aria-label="Video: průlet Onanovánkami">
+        <button type="button" class="video-close" id="videoClose" aria-label="Zavřít video">&times;</button>
+        <video id="promoVideo" controls playsinline preload="none" poster="/videos/onanovanky/promo-poster.webp" width="1080" height="1920"></video>
+    </div>
 
     <!-- Cookie Banner -->
     <div class="cookie-banner" id="cookieBanner">
