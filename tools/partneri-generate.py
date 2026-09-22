@@ -58,8 +58,8 @@ PARTNERS = [
          role="Vaše svíčky měly své místo na Číča Marketu, design marketu českých značek a umělců."),
     dict(slug="hulkarna", name="Hůlkárna", folder="07 Hulkarna",
          logo="/images/partneri/hulkarna.png", square=False, web="https://www.hulkarna.cz",
-         role="Vaše hole a klobouky prošly po mole na modelkách a Podrážděná hůlka, která vznikla ve spolupráci s vámi, "
-              "se v benefiční aukci prodala za 2 200 Kč ve prospěch Útulku Tuláčik Brezno."),
+         role="Vaše hole a klobouky skvěle dotvořily celou vkusnou atmosféru festivalu. Podrážděná hůlka, která vznikla "
+              "ve spolupráci s vámi, se v benefiční aukci prodala za 2 200 Kč ve prospěch Útulku Tuláčik Brezno."),
     dict(slug="jan-melvil", name="Jan Melvil Publishing", folder="08 Jan Melvil", keep_dsc=True,
          logo="/images/partneri/melvil.png", square=False, web="https://www.melvil.cz/",
          role="Vaše knihy byly na Číča Marketu a Hana Vacková z nich četla ukázku po panelové diskuzi."),
