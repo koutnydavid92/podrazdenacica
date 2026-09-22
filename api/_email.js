@@ -295,9 +295,11 @@ function czk(n) {
     return Number(n || 0).toLocaleString('cs-CZ') + ' Kč';
 }
 
+// Oslovení v 5. pádě (Kristýna -> Kristýno), viz api/_vokativ.js
+const { vokativ } = require('./_vokativ');
 function shopFirstName(name) {
-    const first = String(name || '').trim().split(/\s+/)[0];
-    return first ? esc(first) : '';
+    const v = vokativ(name);
+    return v ? esc(v) : '';
 }
 
 // Popis doručení do mailu podle zvolené metody
