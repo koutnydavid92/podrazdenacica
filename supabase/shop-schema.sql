@@ -11,7 +11,7 @@
 create table if not exists shop_orders (
     id uuid primary key default gen_random_uuid(),
     created_at timestamptz not null default now(),
-    order_no bigint generated always as identity,        -- lidské číslo objednávky
+    order_no bigint generated always as identity,        -- lidské číslo objednávky (22. 9. 2026 restart na 100: alter table shop_orders alter column order_no restart with 100)
     stripe_session_id text not null unique,
     stripe_payment_intent text,
     product text not null default 'onanovanky',
