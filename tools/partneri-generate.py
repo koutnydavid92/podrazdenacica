@@ -41,7 +41,7 @@ PARTNERS = [
     dict(slug="makeup-institute-prague", name="Make Up Institute Prague", folder="01 Make Up Institute Prague",
          logo="/images/partneri/makeup-institute-prague.png", square=True, web="https://www.makeupinstitute.cz/",
          role="Vaše vizážistky se postaraly o make-up všech devíti žen, které šly po mole."),
-    dict(slug="furiosa", name="Furiosa", folder="02 Furiosa",
+    dict(slug="furiosa", name="Furiosa", folder="02 Furiosa", exclude=["040", "386", "414"],
          logo="/images/partneri/furiosa.png", square=False, web="https://furiosa.cz/",
          role="Vaše šperky a brýle dotvořily outfity modelek na přehlídce."),
     dict(slug="stary-vrch", name="Starý vrch", folder="03 Stary vrch",
@@ -112,6 +112,9 @@ def logo_dims(url):
 def build_photos(p):
     src_dir = os.path.join(SRC, p["folder"])
     files = sorted(f for f in os.listdir(src_dir) if f.lower().endswith((".jpg", ".jpeg")))
+    # `exclude` = názvy bez přípony, které partner nechce (zdrojová složka se nemění)
+    skip = set(p.get("exclude", []))
+    files = [f for f in files if os.path.splitext(f)[0] not in skip]
     finals = [f for f in files if not f.upper().startswith("DSC")]
     if PREFER_FINAL and finals:
         if p.get("keep_dsc"):
