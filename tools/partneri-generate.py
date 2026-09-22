@@ -49,7 +49,7 @@ PARTNERS = [
          role="Vaším frizzante jsme vítali každého návštěvníka u vstupu a vaše vína dělala radost účinkujícím v zákulisí."),
     dict(slug="pragers", name="Prager's", folder="04 Pragers",
          logo="/images/partneri/pragers.svg", square=False, web="https://www.pragers.cz/",
-         role="Váš cider chladil návštěvníky celé odpoledne až do noci."),
+         role="Váš cider a kombucha chladili návštěvníky celé odpoledne až do noci."),
     dict(slug="amity-drinks", name="Amity Drinks", folder="05 Amity",
          logo="/images/partneri/amity-drinks.svg", square=True, web="https://amitydrinks.cz/",
          role="Vaše drinky byly na stolech po celém parku."),
