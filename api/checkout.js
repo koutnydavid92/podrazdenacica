@@ -211,7 +211,7 @@ async function shopCheckout(stripe, req, res, body) {
             unit_amount: shop.UNIT_PRICE_CZK * 100,
             product_data: {
                 name: shop.PRODUCT_NAME,
-                description: 'Antisystémové omalovánky pro dospělé. A4, 30 motivů, spirála nahoře. 18+.',
+                description: 'Antisystémové omalovánky pro dospělé. A4, 30 motivů, spirála nahoře.',
                 images: ['https://www.podrazdenacica.cz/images/onanovanky/obalka-og.jpg']
             }
         },

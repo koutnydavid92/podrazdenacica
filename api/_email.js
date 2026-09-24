@@ -358,7 +358,7 @@ async function sendShopConfirmationEmail({ order }) {
             ${order.gift_bag ? `<p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0 0 12px;">
                 Do balíku přihazujeme <b style="color:#F5F5F5;">plátěnou číča tašku</b>. Ručně sprejovanou, každá trochu jiná.</p>` : ''}
             <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
-                Onanovánky jsou 18+. Vybarvené kousky chceme vidět: označ
+                Vybarvené kousky chceme vidět: označ
                 <a href="https://www.instagram.com/podrazdena_cica/" style="color:#FE45E8;">@podrazdena_cica</a>.
                 Cokoliv k objednávce: odpověz na tenhle mail.
             </p>`,
