@@ -154,8 +154,33 @@ async function fulfillShopSession(client, session, quantity) {
     }
 }
 
+
+// Heureka „Ověřeno zákazníky“: po zaplacení nahlásíme objednávku (e-mail +
+// ITEM_ID z feedu), Heureka pošle zákazníkovi dotazník spokojenosti. Volá se jen
+// když zákazník v objednávce dotazník neodmítl. Nikdy nesmí shodit vyřízení.
+const HEUREKA_ITEM_ID = 'onanovanky-2026';
+async function logHeurekaOrder({ email, orderNo }) {
+    const apiKey = process.env.HEUREKA_OVERENO_KEY;
+    if (!apiKey || !email) return { skipped: true };
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    try {
+        const res = await fetch('https://api.heureka.cz/shop-certification/v2/order/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify({ apiKey, email, orderId: orderNo, productItemIds: [HEUREKA_ITEM_ID] }),
+            signal: controller.signal
+        });
+        const text = await res.text();
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + text.slice(0, 200));
+        return { ok: true };
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 module.exports = {
     PRODUCT, PRODUCT_NAME, UNIT_PRICE_CZK, MAX_PER_ORDER, GIFT_BAG_FROM_CZK, SHIPPING,
     shippingMethod, clampQuantity, goodsTotal, giftBagIncluded, sanitizePoint,
-    stockAvailable, fulfillShopSession
+    stockAvailable, fulfillShopSession, logHeurekaOrder
 };

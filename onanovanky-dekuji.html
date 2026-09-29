@@ -300,6 +300,30 @@
                     }]
                 }
             });
+            // Heureka.cz: měření konverzí, část 2 (děkovací stránka). Jen po
+            // souhlasu s cookies, jinak až při kliknutí na Přijmout v liště.
+            window.sendHeurekaOrder = function () {
+                if (window.heurekaOrderSent) return;
+                window.heurekaOrderSent = true;
+                try {
+                    (function(t, r, a, c, k, i, n, g) {t['ROIDataObject'] = k;
+                    t[k]=t[k]||function(){(t[k].q=t[k].q||[]).push(arguments)},t[k].c=i;n=r.createElement(a),
+                    g=r.getElementsByTagName(a)[0];n.async=1;n.src=c;g.parentNode.insertBefore(n,g)
+                    })(window, document, 'script', 'https://www.heureka.cz/ocm/sdk.js?version=2&page=thank_you', 'heureka', 'cz');
+                    heureka('authenticate', '15e3cdd1fab5b73e2a105df0d87196d44a61');
+                    heureka('set_order_id', String(o.order_no));
+                    heureka('add_product', 'onanovanky-2026', 'Onanovánky 2026', String(Number(o.unit_price_czk) || 333), String(Number(o.quantity) || 1));
+                    heureka('set_total_vat', String(Number(o.total_czk) || 0));
+                    heureka('set_currency', 'CZK');
+                    heureka('send', 'Order');
+                } catch (e) { /* měření nesmí nic rozbít */ }
+            };
+            if (localStorage.getItem('cookieConsent') === 'accepted') {
+                window.sendHeurekaOrder();
+            } else {
+                var hb = document.getElementById('acceptCookies');
+                if (hb) hb.addEventListener('click', window.sendHeurekaOrder);
+            }
         }
 
         // Webhook zapisuje objednávku pár vteřin po platbě - zkoušíme opakovaně

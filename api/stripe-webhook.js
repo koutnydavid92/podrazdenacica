@@ -168,5 +168,14 @@ async function handleShopSession(stripe, session) {
             console.error('shop notification failed', order.order_no, e.message);
         }
         await subscribeToShopListSafe({ email: order.email, name: order.name, tag: SHOP_TAG_BUYER });
+        // Heureka Ověřeno zákazníky (jen když zákazník dotazník neodmítl)
+        if (md.heureka_optout !== '1') {
+            try {
+                const hr = await shop.logHeurekaOrder({ email: order.email, orderNo: order.order_no });
+                console.log('heureka order log', order.order_no, JSON.stringify(hr));
+            } catch (e) {
+                console.error('heureka order log failed', order.order_no, e.message);
+            }
+        }
     });
 }

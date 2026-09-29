@@ -178,6 +178,8 @@ async function shopCheckout(stripe, req, res, body) {
         return;
     }
     const note = String(body.note || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+    // Heureka Ověřeno zákazníky: zákazník může dotazník odmítnout zaškrtnutím v objednávce
+    const heurekaOptOut = body.heureka_optout === true || body.heureka_optout === '1';
 
     const stock = await withDb(shop.stockAvailable);
     if (stock <= 0) {
@@ -260,6 +262,7 @@ async function shopCheckout(stripe, req, res, body) {
                 packeta_point_address: point.address
             } : {}),
             ...(note ? { note: note } : {}),
+            ...(heurekaOptOut ? { heureka_optout: '1' } : {}),
             ...(gaClientId ? { ga_client_id: gaClientId } : {}),
             ...(gaSessionId ? { ga_session_id: gaSessionId } : {}),
             ...(fbp ? { fbp: fbp } : {}),

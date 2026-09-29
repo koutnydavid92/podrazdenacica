@@ -103,6 +103,24 @@
         if (localStorage.getItem('cookieConsent') === 'accepted') {
             loadGA();
         }
+        // Heureka.cz: měření konverzí, část 1 (produktová stránka). Jen po souhlasu
+        // s cookies; při souhlasu z lišty se spustí ve chvíli kliknutí.
+        var heurekaProductSent = false;
+        function loadHeurekaProduct() {
+            if (heurekaProductSent) return;
+            heurekaProductSent = true;
+            (function(t, r, a, c, k, i, n, g) {t['ROIDataObject'] = k;
+            t[k]=t[k]||function(){(t[k].q=t[k].q||[]).push(arguments)},t[k].c=i;n=r.createElement(a),
+            g=r.getElementsByTagName(a)[0];n.async=1;n.src=c;g.parentNode.insertBefore(n,g)
+            })(window, document, 'script', 'https://www.heureka.cz/ocm/sdk.js?version=2&page=product_detail', 'heureka', 'cz');
+        }
+        if (localStorage.getItem('cookieConsent') === 'accepted') {
+            loadHeurekaProduct();
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var b = document.getElementById('acceptCookies');
+            if (b) b.addEventListener('click', loadHeurekaProduct);
+        });
     </script>
 
     <!-- Shared styles -->
@@ -806,6 +824,10 @@
                             <input type="checkbox" id="termsCheck">
                             <span>Souhlasím s <a href="/obchodni-podminky" target="_blank" rel="noopener">obchodními podmínkami</a> a beru na vědomí <a href="/podminky" target="_blank" rel="noopener">zpracování osobních údajů</a>.</span>
                         </label>
+                        <label class="check">
+                            <input type="checkbox" id="heurekaOptOut">
+                            <span>Nechci po nákupu dostat dotazník spokojenosti Heureka Ověřeno zákazníky.</span>
+                        </label>
                     </div>
 
                     <div class="summary" aria-live="polite">
@@ -1187,6 +1209,7 @@
                         shipping_method: shipKey(),
                         packeta_point: point,
                         note: el('noteInput').value,
+                        heureka_optout: el('heurekaOptOut').checked,
                         ic_event_id: icEventId
                     }, idsForCheckout()))
                 });
