@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>Podrážděná číča</title>
+    <link>https://www.podrazdenacica.cz/onanovanky</link>
+    <description>Onanovánky 2026, antisystémové omalovánky od Podrážděné číči</description>
+    <item>
+      <g:id>onanovanky-2026</g:id>
+      <g:title>Onanovánky 2026 – antisystémové omalovánky od Podrážděné číči</g:title>
+      <g:description>Antisystémové omalovánky od Podrážděné číči. 30 motivů podle skutečných fotek z brněnské číča komunity, formát A4 na spirále nahoře, obálka s matnou laminací, papír 180 g. Stránku odtrhneš a pověsíš na zeď. Balíme do 3 pracovních dnů, Zásilkovna po celé ČR i na Slovensko, osobní odběr v ateliéru na Veselé 5 v Brně. Od tří kusů plátěná číča taška zdarma. Mňau.</g:description>
+      <g:link>https://www.podrazdenacica.cz/onanovanky?utm_source=google&amp;utm_medium=shopping&amp;utm_campaign=onanovanky</g:link>
+      <g:image_link>https://www.podrazdenacica.cz/images/onanovanky/produkt-labubu.jpg</g:image_link>
+      <g:additional_image_link>https://www.podrazdenacica.cz/images/onanovanky/hero-labudusumu.webp</g:additional_image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>333.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Podrážděná číča</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:google_product_category>Media &gt; Books</g:google_product_category>
+      <g:product_type>Omalovánky pro dospělé</g:product_type>
+      <g:adult>no</g:adult>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>89.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna na adresu</g:service>
+        <g:price>129.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>SK</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>129.00 CZK</g:price>
+      </g:shipping>
+    </item>
+  </channel>
+</rss>
