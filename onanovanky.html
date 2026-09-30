@@ -1162,7 +1162,8 @@
         function idsForCheckout() {
             try {
                 const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
-                const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.(\d+)/);
+                // Cookie má dva tvary: starší GS1.1.<id>.… a novější GS2.1.s<id>$o…
+                const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.s?(\d+)/);
                 const fbp = document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
                 const fbc = document.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
                 return {
