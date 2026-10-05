@@ -7,6 +7,7 @@ const {
     withDb, remainingPublic, unitPriceCzk, quantityDiscount, MAX_TICKETS_PER_ORDER
 } = require('./_lib');
 const { trackInitiateCheckout, trackViewContent } = require('./_meta');
+const { trackBeginCheckout } = require('./_ga');
 const { clientIp } = require('./_lib');
 const shop = require('./_shop');
 
@@ -207,6 +208,15 @@ async function shopCheckout(stripe, req, res, body) {
         eventSourceUrl: 'https://www.podrazdenacica.cz/onanovanky'
     }).catch(() => { /* měření nesmí shodit prodej */ });
 
+    // Zahájení objednávky do GA4 (a přes GA4 do Google Ads). Běží souběžně
+    // se zakládáním platby ve Stripu, takže cestu k platbě nezdržuje.
+    const gaEvent = trackBeginCheckout({
+        value: goods + method.price,
+        quantity: quantity,
+        clientId: gaClientId,
+        sessionId: gaSessionId
+    }).catch(() => { /* měření nesmí shodit prodej */ });
+
     const lineItems = [{
         price_data: {
             currency: 'czk',
@@ -288,5 +298,6 @@ async function shopCheckout(stripe, req, res, body) {
 
     const session = await stripe.checkout.sessions.create(params);
     await metaEvent;
+    await gaEvent;
     res.status(200).json({ url: session.url });
 }

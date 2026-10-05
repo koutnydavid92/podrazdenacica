@@ -103,4 +103,74 @@ async function trackPurchase(o) {
     }
 }
 
-module.exports = { trackPurchase };
+/**
+ * Pošle do GA4 událost begin_checkout: zákazník vyplnil objednávku a jde platit.
+ * Volá se z /api/checkout těsně před přesměrováním na Stripe. Slouží jako
+ * dřívější signál než nákup (který z reklamy chodí zřídka), mimo jiné pro
+ * Google Ads. Stejná pravidla jako u nákupu: se souhlasem dosedne do návštěvy,
+ * bez souhlasu jde pod jednorázovým client_id. Nikdy nevyhodí výjimku
+ * a čeká nejdéle 1,5 s, aby nezdržela cestu k platbě.
+ *
+ * @param {object} o
+ * @param {number} o.value          cena objednávky v Kč (zboží + doprava)
+ * @param {number} o.quantity       počet kusů
+ * @param {string} [o.itemId]       ID položky (výchozí onanovanky)
+ * @param {string} [o.itemName]     název položky
+ * @param {string|null} o.clientId  GA4 client_id z cookie _ga, když je
+ * @param {string|null} o.sessionId GA4 session_id z cookie _ga_<ID>, když je
+ * @returns {Promise<{sent: boolean, reason?: string}>}
+ */
+async function trackBeginCheckout(o) {
+    const apiSecret = process.env.GA4_API_SECRET;
+    if (!apiSecret) return { sent: false, reason: 'no_api_secret' };
+
+    const quantity = Number(o.quantity) || 1;
+    const value = Number(o.value) || 0;
+    const params = {
+        value: value,
+        currency: 'CZK',
+        items: [{
+            item_id: o.itemId || 'onanovanky',
+            item_name: o.itemName || 'Onanovánky 2026',
+            quantity: quantity
+        }],
+        engagement_time_msec: 1
+    };
+    if (o.sessionId) params.session_id = String(o.sessionId);
+
+    const body = {
+        client_id: o.clientId || anonymousClientId(),
+        non_personalized_ads: true,
+        events: [{ name: 'begin_checkout', params }]
+    };
+    const url = `${ENDPOINT}?measurement_id=${MEASUREMENT_ID}`
+        + `&api_secret=${encodeURIComponent(apiSecret)}`;
+
+    try {
+        const abort = new AbortController();
+        const timer = setTimeout(() => abort.abort(), 1500);
+        let res;
+        try {
+            res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+                signal: abort.signal
+            });
+        } finally {
+            clearTimeout(timer);
+        }
+        if (!res.ok) {
+            console.error('GA4: begin_checkout neodeslán, HTTP', res.status);
+            return { sent: false, reason: `http_${res.status}` };
+        }
+        console.log('GA4: begin_checkout odeslán', value, 'CZK',
+            o.clientId ? '(se souhlasem)' : '(anonymně)');
+        return { sent: true };
+    } catch (e) {
+        console.error('GA4: begin_checkout neodeslán:', e.message);
+        return { sent: false, reason: 'request_failed' };
+    }
+}
+
+module.exports = { trackPurchase, trackBeginCheckout };
