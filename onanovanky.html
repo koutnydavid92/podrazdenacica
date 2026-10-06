@@ -265,6 +265,41 @@
         }
         .shop-price-note { color: var(--text-secondary); font-size: 1rem; }
         .shop-price-note b { color: var(--white); }
+        /* Dostupnost (Heureka chce dostupnost vidět přímo na stránce, ne jen ve feedu) */
+        .shop-avail {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: -0.6rem 0 1.6rem;
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .shop-avail .dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+            flex: none;
+        }
+        .shop-avail.off .dot { background: #888; box-shadow: none; }
+        .shop-avail small { color: var(--text-secondary); font-weight: 400; }
+        .avail-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            margin: -0.4rem 0 1.6rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .avail-line .dot {
+            width: 9px; height: 9px; border-radius: 50%;
+            margin-top: 0.42em;
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+            flex: none;
+        }
+        .avail-line b { color: var(--white); }
 
         /* Specifikace */
         #co-dostanes { padding-top: 0; }
@@ -720,6 +755,7 @@
                         <div class="shop-price">333 Kč</div>
                         <div class="shop-price-note">Kup alespoň tři kusy (pro tebe, pro kámošku, pro mámu) a získej <b>plátěnou číča tašku jako dárek</b>.</div>
                     </div>
+                    <div class="shop-avail" id="availBadge"><span class="dot"></span><span>Skladem.&nbsp;<small>Odesíláme do 3 pracovních dnů.</small></span></div>
                     <div class="hero-buttons">
                         <a href="#koupit" class="btn-primary" data-cta="onanovanky_hero_koupit">Chci Onanovánky</a>
                     </div>
@@ -763,6 +799,7 @@
             <h2 class="section-title reveal" style="text-align:center;">Koupit Onanovánky</h2>
             <div class="order-box reveal" id="orderBox">
                 <form id="orderForm" novalidate>
+                    <p class="avail-line"><span class="dot"></span><span><b>Skladem.</b> Balíme do 3 pracovních dnů, Zásilkovna pak doručí obvykle do jednoho až dvou dnů.</span></p>
                     <div class="order-step">
                         <h3><span class="n">1</span> Kolik kusů</h3>
                         <div class="qty-row">
@@ -1052,6 +1089,11 @@
 
         // ---- Objednávka ----
         const el = id => document.getElementById(id);
+        function markSoldOut() {
+            el('orderBox').classList.add('is-sold-out');
+            const badge = el('availBadge');
+            if (badge) { badge.classList.add('off'); badge.innerHTML = '<span class="dot"></span><span>Vyprodáno.&nbsp;<small>Dotiskujeme, nech nám mail níž.</small></span>'; }
+        }
         const czk = n => n.toLocaleString('cs-CZ') + ' Kč';
         let qty = 1;
         let point = null;
@@ -1230,7 +1272,7 @@
                         render();
                         showErr('Tolik kusů už nemáme. Zbývá ' + info.remaining + ', počet jsme ti srovnali, zkus to znovu.');
                     } else {
-                        el('orderBox').classList.add('is-sold-out');
+                        markSoldOut();
                     }
                     return;
                 }
@@ -1287,7 +1329,7 @@
                     body: JSON.stringify({ p_product: 'onanovanky' })
                 });
                 if (res.ok && (await res.json()) === false) {
-                    el('orderBox').classList.add('is-sold-out');
+                    markSoldOut();
                 }
             } catch (e) { /* když se nepovede zjistit, prodej necháme otevřený, server sklad hlídá */ }
         })();
