@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
+    <!-- Režim souhlasu Google (consent mode v2). Musí běžet jako první, ještě před GTM a GA4:
+         výchozí stav je „zamítnuto“, kdo dal „Přijmout vše“ (i dřív), má hned „povoleno“.
+         Bez toho Google bral návštěvy jako bez souhlasu s reklamou a remarketing zůstal prázdný. -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', personalization_storage: 'denied', functionality_storage: 'granted', security_storage: 'granted', wait_for_update: 500});
+    window.updateConsent = function (s) {
+        gtag('consent', 'update', {ad_storage: s, ad_user_data: s, ad_personalization: s, analytics_storage: s, personalization_storage: s});
+    };
+    try { if (localStorage.getItem('cookieConsent') === 'accepted') window.updateConsent('granted'); } catch (e) {}
+    </script>
     <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP) -->
     <script>
     window.dataLayer = window.dataLayer || [];
