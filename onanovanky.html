@@ -662,6 +662,20 @@
         .faq-list { display: grid; gap: 1rem; max-width: 900px; margin: 0 auto; }
         .shop-footer-cta { text-align: center; padding-bottom: 2rem; }
         .shop-footer-cta .big { font-size: 1.6rem; color: var(--accent-neon); }
+        /* Závěrečná výzva ke koupi (David 21. 10. 2026): kdo dočetl až sem, nemusí scrollovat zpátky */
+        .final-cta {
+            max-width: 620px;
+            margin: 0 auto 2.6rem;
+            padding: 2.2rem 1.6rem;
+            border: 1px solid var(--accent-neon);
+            border-radius: 24px;
+            background: var(--bg-card);
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.12);
+        }
+        .final-cta h2 { font-size: 1.6rem; margin-bottom: 0.6rem; }
+        .final-cta p { color: var(--text-secondary); margin-bottom: 1.4rem; line-height: 1.5; }
+        .final-cta .btn-primary { font-size: 1.1rem; padding: 1.1rem 2.4rem; }
+        .final-cta .fine { font-size: 0.85rem; color: #888; margin: 0.9rem 0 0; }
 
         @media (max-width: 820px) {
             .shop-hero { padding-top: 8rem; }
@@ -982,6 +996,12 @@
 
     <section class="shop-footer-cta">
         <div class="container">
+            <div class="final-cta reveal">
+                <h2>Dočetl*a jsi až sem. Tak si je kup.</h2>
+                <p>333 Kč, třicet motivů, od tří kusů plátěná číča taška jako dárek. Balíme do 3 pracovních dnů.</p>
+                <a href="#koupit" class="btn-primary" data-cta="onanovanky_footer_koupit">Koupit Onanovánky</a>
+                <p class="fine">Zásilkovna po celé ČR i na Slovensko, nebo osobní odběr v Brně.</p>
+            </div>
             <div class="big">₍^. .^₎⟆</div>
             <p style="color:var(--text-secondary);margin-top:.4rem;">mňau</p>
         </div>
