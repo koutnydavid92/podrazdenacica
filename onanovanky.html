@@ -1341,10 +1341,11 @@
         function upsell() {
             const singles = (cart.items.find(i => i.id === 'onanovanky') || { qty: 0 }).qty;
             const has3 = cart.items.some(i => i.id === 'balicek-3plus1' && i.qty > 0);
+            // Prahy podle Davida: od 3 kusů doporučit balíček 3+1, od 5 kusů 5+1, u 1 až 2 kusů jen tip
             if (giftBag()) return { text: 'Taška je tvoje. Plátěná, ručně sprejovaná, v balíku zdarma.', ok: true };
             if (singles >= 5) return { id: 'balicek-5plus1', text: ks(singles) + ' samostatně = ' + czk(singles * UNIT_PRICE) + '. Balíček 5+1 = šest kusů za 1 666 Kč, k tomu taška a doprava zdarma.', button: 'Vyměnit za balíček 5+1' };
-            if (singles >= 2) return { id: 'balicek-3plus1', text: ks(singles) + ' samostatně = ' + czk(singles * UNIT_PRICE) + '. Balíček 3+1 = čtyři kusy za 999 Kč.', button: 'Vyměnit za balíček 3+1' };
-            if (singles === 1 && !has3) return { text: 'Tip: čtyři kusy v balíčku 3+1 za 999 Kč, šest kusů s taškou a dopravou zdarma v balíčku 5+1.' };
+            if (singles >= 3) return { id: 'balicek-3plus1', text: ks(singles) + ' samostatně = ' + czk(singles * UNIT_PRICE) + '. Balíček 3+1 = čtyři kusy za 999 Kč' + (singles === 3 ? ', tedy čtvrtý kus zdarma.' : '.'), button: 'Vyměnit za balíček 3+1' };
+            if (singles >= 1 && !has3) return { text: 'Tip: čtyři kusy v balíčku 3+1 za 999 Kč, šest kusů s taškou a dopravou zdarma v balíčku 5+1.' };
             if (has3) return { text: 'Šest kusů, taška a doprava zdarma: to je balíček 5+1 za 1 666 Kč.' };
             return null;
         }
