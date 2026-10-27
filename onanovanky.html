@@ -1742,6 +1742,18 @@
 
         // ---- Start: počítadlo, zobrazení produktu, obnova z mailu, návrat ze Stripu ----
         renderCart();
+
+        // Vstup z Heureky/Zboží na /onanovanky/balicek-3plus1 nebo /balicek-5plus1 (rewrite ve vercel.json
+        // servíruje tuhle stránku): sjedeme na kartu balíčku a zvýrazníme ji.
+        (function () {
+            const m = location.pathname.match(/\/onanovanky\/(balicek-[35]plus1)\/?$/);
+            if (!m) return;
+            const card = document.querySelector('.offer[data-product="' + m[1] + '"]');
+            if (!card) return;
+            card.style.outline = '2px solid #FE45E8';
+            card.style.outlineOffset = '4px';
+            setTimeout(function () { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+        })();
         trackEcommerce('view_item', { currency: 'CZK', value: UNIT_PRICE, items: [{ item_id: 'onanovanky', item_name: PRODUCTS.onanovanky.name, price: UNIT_PRICE, quantity: 1 }] });
         trackEcommerce('view_item_list', { item_list_id: 'koupit', item_list_name: 'Koupit Onanovánky', items: Object.values(PRODUCTS).map((p, i) => ({ item_id: p.id, item_name: p.name, price: p.price, index: i + 1, quantity: 1 })) });
         (async () => {
