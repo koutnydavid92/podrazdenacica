@@ -42,7 +42,7 @@ const PRODUCTS = {
         name: 'Ultimátní vánočiční baličíček (5+1)',
         price: 1666,
         description: 'Šest Onanovánek 2026 za cenu pěti, k tomu plátěná číča taška a doprava zdarma.',
-        image: 'https://www.podrazdenacica.cz/images/onanovanky/balicek-5plus1.jpg',
+        image: 'https://www.podrazdenacica.cz/images/onanovanky/balicek-5plus1.jpg?v=2',
         components: { onanovanky: 6 },
         freeShipping: true,        // doprava zdarma, ať si zákazník vybere cokoliv
         giftBag: true,             // plátěná číča taška v balíku
