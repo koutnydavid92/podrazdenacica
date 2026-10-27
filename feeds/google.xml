@@ -35,5 +35,67 @@
         <g:price>129.00 CZK</g:price>
       </g:shipping>
     </item>
+    <item>
+      <g:id>balicek-3plus1</g:id>
+      <g:title>Onanovánky 2026 – Alfasamičičí baličíček 3+1 (čtyři kusy)</g:title>
+      <g:description>Čtyři Onanovánky 2026 za cenu tří: antisystémové omalovánky od Podrážděné číči, 30 motivů, A4 na spirále. Topovej dárek pro mámu, ségru, bestku a kolegyňku z kanclu. Balíme do 3 pracovních dnů, Zásilkovna po celé ČR i na Slovensko, osobní odběr v Brně. Mňau.</g:description>
+      <g:link>https://www.podrazdenacica.cz/onanovanky?utm_source=google&amp;utm_medium=shopping&amp;utm_campaign=onanovanky&amp;utm_content=balicek-3plus1#koupit</g:link>
+      <g:image_link>https://www.podrazdenacica.cz/images/onanovanky/balicek-3plus1.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>999.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Podrážděná číča</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:google_product_category>Media &gt; Books</g:google_product_category>
+      <g:product_type>Omalovánky pro dospělé</g:product_type>
+      <g:is_bundle>yes</g:is_bundle>
+      <g:adult>no</g:adult>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>89.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna na adresu</g:service>
+        <g:price>129.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>SK</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>129.00 CZK</g:price>
+      </g:shipping>
+    </item>
+    <item>
+      <g:id>balicek-5plus1</g:id>
+      <g:title>Onanovánky 2026 – Ultimátní vánočiční baličíček 5+1 (šest kusů, taška, doprava zdarma)</g:title>
+      <g:description>Šest Onanovánek 2026 za cenu pěti, k tomu plátěná číča taška a doprava zdarma. Antisystémové omalovánky od Podrážděné číči, 30 motivů, A4 na spirále. Ježíšek letos naděluje vkus a legraci. Balíme do 3 pracovních dnů. Mňau.</g:description>
+      <g:link>https://www.podrazdenacica.cz/onanovanky?utm_source=google&amp;utm_medium=shopping&amp;utm_campaign=onanovanky&amp;utm_content=balicek-5plus1#koupit</g:link>
+      <g:image_link>https://www.podrazdenacica.cz/images/onanovanky/balicek-5plus1.jpg</g:image_link>
+      <g:availability>in_stock</g:availability>
+      <g:price>1666.00 CZK</g:price>
+      <g:condition>new</g:condition>
+      <g:brand>Podrážděná číča</g:brand>
+      <g:identifier_exists>no</g:identifier_exists>
+      <g:google_product_category>Media &gt; Books</g:google_product_category>
+      <g:product_type>Omalovánky pro dospělé</g:product_type>
+      <g:is_bundle>yes</g:is_bundle>
+      <g:adult>no</g:adult>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>CZ</g:country>
+        <g:service>Zásilkovna na adresu</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+      <g:shipping>
+        <g:country>SK</g:country>
+        <g:service>Zásilkovna výdejní místo</g:service>
+        <g:price>0.00 CZK</g:price>
+      </g:shipping>
+    </item>
   </channel>
 </rss>
