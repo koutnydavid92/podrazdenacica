@@ -12,7 +12,6 @@ const PRODUCT = 'onanovanky';
 const PRODUCT_NAME = 'Onanovánky 2026';
 const UNIT_PRICE_CZK = 333;
 const MAX_PER_ORDER = 20;          // kusů Onanovánek na objednávku, víc jen po domluvě mailem
-const GIFT_BAG_FROM_CZK = 999;     // od téhle částky za zboží je taška zdarma
 
 // Katalog (27. 10. 2026). Stejné položky a ceny má klient v onanovanky.html
 // (PRODUCTS), ale platí vždycky tenhle seznam. Balíčky přibudou jako další
@@ -46,6 +45,7 @@ const PRODUCTS = {
         image: 'https://www.podrazdenacica.cz/images/onanovanky/balicek-5plus1.jpg',
         components: { onanovanky: 6 },
         freeShipping: true,        // doprava zdarma, ať si zákazník vybere cokoliv
+        giftBag: true,             // plátěná číča taška v balíku
         active: true
     }
 };
@@ -169,9 +169,10 @@ function goodsTotal(quantity) {
     return UNIT_PRICE_CZK * clampQuantity(quantity);
 }
 
-// Taška zdarma se řídí cenou zboží (od 999 Kč), ať je v košíku cokoliv
-function giftBagIncluded(goodsCzk) {
-    return Number(goodsCzk) >= GIFT_BAG_FROM_CZK;
+// Plátěná taška jde jen s položkou, která ji má v ceně (balíček 5+1).
+// Dřívější pravidlo „od 999 Kč za zboží“ David 27. 10. 2026 zrušil.
+function giftBagIncluded(items) {
+    return Array.isArray(items) && items.some(i => PRODUCTS[i.id] && PRODUCTS[i.id].giftBag);
 }
 
 // E-mail z košíku: malá písmena, rozumná délka a tvar
@@ -251,7 +252,7 @@ async function fulfillShopSession(client, session) {
                 session.id,
                 typeof session.payment_intent === 'string' ? session.payment_intent : null,
                 PRODUCT, q, UNIT_PRICE_CZK,
-                md.shipping_method || 'pickup_atelier', shippingPriceFor(items, method), total, giftBagIncluded(goods),
+                md.shipping_method || 'pickup_atelier', shippingPriceFor(items, method), total, giftBagIncluded(items),
                 shippingName || details.name || null,
                 details.email || null,
                 details.phone || null,
@@ -318,7 +319,7 @@ async function logHeurekaOrder({ email, orderNo }) {
 }
 
 module.exports = {
-    PRODUCT, PRODUCT_NAME, UNIT_PRICE_CZK, MAX_PER_ORDER, GIFT_BAG_FROM_CZK, SHIPPING, PRODUCTS,
+    PRODUCT, PRODUCT_NAME, UNIT_PRICE_CZK, MAX_PER_ORDER, SHIPPING, PRODUCTS,
     product, normalizeItems, unitsOf, stockNeeds, itemsTotal, itemsForMetadata, itemsFromMetadata,
     freeShippingIncluded, shippingPriceFor,
     shippingMethod, clampQuantity, goodsTotal, giftBagIncluded, sanitizeEmail, sanitizePoint,

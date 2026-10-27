@@ -49,7 +49,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Onanovánky 2026: antisystémové omalovánky od Podrážděné číči">
-    <meta property="og:description" content="30 motivů podle skutečných fotek z číča komunity. A4 na spirále, 333 Kč. Od tří kusů plátěná číča taška zdarma.">
+    <meta property="og:description" content="30 motivů podle skutečných fotek z číča komunity. A4 na spirále, 333 Kč. Balíček 3+1 za 999 Kč, 5+1 s taškou a dopravou zdarma.">
     <meta property="og:type" content="product">
     <meta property="og:url" content="https://www.podrazdenacica.cz/onanovanky">
     <meta property="og:image" content="https://www.podrazdenacica.cz/images/og-onanovanky-obchod-2.jpg">
@@ -456,6 +456,15 @@
             line-height: 1.5;
         }
         .bag-hint.ok { color: var(--accent-neon); font-weight: 700; }
+        .bag-hint[hidden] { display: none; }
+        .bag-hint.upsell {
+            border: 1px solid var(--accent-neon);
+            background: rgba(254, 69, 232, 0.08);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+        }
+        .bag-hint .btn-small { display: block; margin-top: 0.6rem; }
 
         .ship-notice {
             border: 1px solid var(--accent-neon);
@@ -1156,7 +1165,7 @@
                     <tr><th>Formát</th><td>A4, černá spirála nahoře. Stránku odtrhneš, zarámuješ, pověsíš.</td></tr>
                     <tr><th>Obálka</th><td>Matná laminace na 350g křídě, zadní strana karton.</td></tr>
                     <tr><th>Vnitřek</th><td>Černobílý tisk. Barvy jsou na tobě.</td></tr>
-                    <tr><th>Cena</th><td>333 Kč. Od tří kusů plátěná číča taška jako dárek.</td></tr>
+                    <tr><th>Cena</th><td>333 Kč za kus. Balíček 3+1 za 999 Kč, balíček 5+1 za 1 666 Kč s plátěnou taškou a dopravou zdarma.</td></tr>
                 </table>
             </div>
         </div>
@@ -1166,7 +1175,7 @@
         <div class="container">
             <div class="final-cta reveal">
                 <h2>Dočetl*a jsi až sem. Tak si je kup.</h2>
-                <p>333 Kč, třicet motivů, od tří kusů plátěná číča taška jako dárek. Balíme do 3 pracovních dnů.</p>
+                <p>333 Kč za kus, třicet motivů. Balíček 3+1 za 999 Kč, balíček 5+1 s taškou a dopravou zdarma. Balíme do 3 pracovních dnů.</p>
                 <a href="#koupit" class="btn-primary" data-cta="onanovanky_footer_koupit">Koupit Onanovánky</a>
                 <p class="fine">Zásilkovna po celé ČR i na Slovensko, nebo osobní odběr v Brně.</p>
             </div>
@@ -1200,7 +1209,6 @@
         const PACKETA_API_KEY = 'be2bcfa908b34a3d';
         const UNIT_PRICE = 333;
         const MAX_QTY = 20;
-        const GIFT_FROM = 999;
         const SHIPPING = {
             pickup_atelier: { price: 0, label: 'Osobní odběr', point: false, country: null },
             packeta_point_cz: { price: 89, label: 'Zásilkovna, výdejní místo (ČR)', point: true, country: 'cz' },
@@ -1297,7 +1305,7 @@
             // units = kolik kusů Onanovánek položka obsahuje (limit na objednávku, sklad)
             onanovanky: { id: 'onanovanky', name: 'Onanovánky 2026', price: UNIT_PRICE, units: 1, image: '/images/onanovanky/obalka.webp' },
             'balicek-3plus1': { id: 'balicek-3plus1', name: 'Alfasamičičí baličíček (3+1)', price: 999, units: 4, image: '/images/onanovanky/balicek-3plus1.webp' },
-            'balicek-5plus1': { id: 'balicek-5plus1', name: 'Ultimátní vánočiční baličíček (5+1)', price: 1666, units: 6, image: '/images/onanovanky/balicek-5plus1.webp', freeShipping: true }
+            'balicek-5plus1': { id: 'balicek-5plus1', name: 'Ultimátní vánočiční baličíček (5+1)', price: 1666, units: 6, image: '/images/onanovanky/balicek-5plus1.webp', freeShipping: true, giftBag: true }
         };
         const CART_KEY = 'onanovanky_cart_v1';
         const el = id => document.getElementById(id);
@@ -1326,6 +1334,37 @@
         function gaItems() { return cartItems().map(i => ({ item_id: i.id, item_name: PRODUCTS[i.id].name, price: PRODUCTS[i.id].price, quantity: i.qty })); }
         function shipKey() { return SHIPPING[cart.shipping] ? cart.shipping : 'pickup_atelier'; }
         function freeShipping() { return cartItems().some(i => PRODUCTS[i.id].freeShipping); }
+        function giftBag() { return cartItems().some(i => PRODUCTS[i.id].giftBag); }      // taška jen k balíčku 5+1
+        function ks(n) { return n + (n === 1 ? ' kus' : (n <= 4 ? ' kusy' : ' kusů')); }
+        // Nabídka balíčku místo jednotlivých kusů (David 27. 10. 2026: dřívější „od tří kusů
+        // taška“ neplatí, košík má upozornit na zvýhodněný balíček)
+        function upsell() {
+            const singles = (cart.items.find(i => i.id === 'onanovanky') || { qty: 0 }).qty;
+            const has3 = cart.items.some(i => i.id === 'balicek-3plus1' && i.qty > 0);
+            if (giftBag()) return { text: 'Taška je tvoje. Plátěná, ručně sprejovaná, v balíku zdarma.', ok: true };
+            if (singles >= 5) return { id: 'balicek-5plus1', text: ks(singles) + ' samostatně = ' + czk(singles * UNIT_PRICE) + '. Balíček 5+1 = šest kusů za 1 666 Kč, k tomu taška a doprava zdarma.', button: 'Vyměnit za balíček 5+1' };
+            if (singles >= 2) return { id: 'balicek-3plus1', text: ks(singles) + ' samostatně = ' + czk(singles * UNIT_PRICE) + '. Balíček 3+1 = čtyři kusy za 999 Kč.', button: 'Vyměnit za balíček 3+1' };
+            if (singles === 1 && !has3) return { text: 'Tip: čtyři kusy v balíčku 3+1 za 999 Kč, šest kusů s taškou a dopravou zdarma v balíčku 5+1.' };
+            if (has3) return { text: 'Šest kusů, taška a doprava zdarma: to je balíček 5+1 za 1 666 Kč.' };
+            return null;
+        }
+        // Výměna jednotlivých kusů za balíček (tlačítko v upozornění)
+        function swapForBundle(id) {
+            const p = PRODUCTS[id];
+            const single = cart.items.find(i => i.id === 'onanovanky');
+            if (!p || !single) return;
+            const removed = single.qty;
+            cart.items = cart.items.filter(i => i.id !== 'onanovanky');
+            if (units() + p.units > MAX_QTY) { cart.items.push(single); showErr('Tolik kusů najednou nedáme (nejvíc ' + MAX_QTY + '). Uber a zkus to znovu.'); return; }
+            const item = cart.items.find(i => i.id === id);
+            if (item) item.qty += 1; else cart.items.push({ id, qty: 1 });
+            saveCart();
+            renderCart();
+            showErr('');
+            trackEcommerce('remove_from_cart', { currency: 'CZK', value: UNIT_PRICE * removed, items: [{ item_id: 'onanovanky', item_name: PRODUCTS.onanovanky.name, price: UNIT_PRICE, quantity: removed }] });
+            trackEcommerce('add_to_cart', { currency: 'CZK', value: p.price, items: [{ item_id: id, item_name: p.name, price: p.price, quantity: 1 }] });
+            scheduleCartSave();
+        }
         function shipPrice() { return freeShipping() ? 0 : SHIPPING[shipKey()].price; }
         function orderTotal() { return goodsTotal() + shipPrice(); }
         function emailValid(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v || '').trim()); }
@@ -1468,6 +1507,10 @@
             if (t.dataset.dec) setQty(t.dataset.dec, current(t.dataset.dec) - 1);
             if (t.dataset.rm) setQty(t.dataset.rm, 0);
         });
+        el('bagHint').addEventListener('click', (e) => {
+            const t = e.target.closest('[data-swap]');
+            if (t) swapForBundle(t.dataset.swap);
+        });
 
         // ---- Vykreslení ----
         function renderCart() {
@@ -1489,18 +1532,14 @@
             }).join('');
             const goods = goodsTotal();
             const ship = SHIPPING[shipKey()];
-            const gift = goods >= GIFT_FROM;
+            const gift = giftBag();
             const hint = el('bagHint');
-            if (gift) {
-                hint.textContent = 'Taška je tvoje. Plátěná, ručně sprejovaná, v balíku zdarma.';
-                hint.classList.add('ok');
-            } else if (goods > 0) {
-                const missing = Math.ceil((GIFT_FROM - goods) / UNIT_PRICE);
-                hint.textContent = missing === 1
-                    ? 'Ještě jeden kus a přihodíme plátěnou číča tašku zdarma.'
-                    : 'Ještě ' + missing + ' kusy a přihodíme plátěnou číča tašku zdarma.';
-                hint.classList.remove('ok');
-            }
+            const up = upsell();
+            hint.hidden = !up;
+            hint.classList.toggle('ok', Boolean(up && up.ok));
+            hint.classList.toggle('upsell', Boolean(up && up.button));
+            hint.innerHTML = up ? escapeHtml(up.text) + (up.button
+                ? '<button type="button" class="btn-small" data-swap="' + up.id + '">' + escapeHtml(up.button) + '</button>' : '') : '';
             document.querySelectorAll('input[name="ship"]').forEach(r => { r.checked = r.value === shipKey(); });
             document.querySelectorAll('.ship').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
             el('pointBox').classList.toggle('show', ship.point);

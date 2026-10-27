@@ -297,6 +297,8 @@ function czk(n) {
 
 // Oslovení v 5. pádě (Kristýna -> Kristýno), viz api/_vokativ.js
 const { vokativ } = require('./_vokativ');
+// Katalog kvůli dárku (taška jen k balíčku 5+1); _shop nic z tohoto modulu při načtení nepotřebuje
+const shopCatalog = require('./_shop');
 function shopFirstName(name) {
     const v = vokativ(name);
     return v ? esc(v) : '';
@@ -518,7 +520,7 @@ async function sendShopSampleEmail({ to }) {
             <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
                 Celé Onanovánky mají 30 motivů, spirálu nahoře a obálku, co snese pastelku i rtěnku.
                 Za 333 Kč na <a href="${BASE_URL}/onanovanky" style="color:#FE45E8;">podrazdenacica.cz/onanovanky</a>.
-                Od tří kusů přihazujeme plátěnou číča tašku.
+                Balíček 3+1 za 999 Kč, balíček 5+1 za 1 666 Kč s plátěnou taškou a dopravou zdarma.
             </p>`,
         footNote: 'Tenhle mail ti přišel, protože sis na podrazdenacica.cz/onanovanky vyžádal(a) ukázku. Odhlásit se můžeš kdykoliv odpovědí na tenhle mail.'
     });
@@ -545,7 +547,7 @@ async function sendShopCartReminderEmail({ cart, step }) {
     const stop = `${BASE_URL}/onanovanky?kosik=${encodeURIComponent(cart.token)}&zrusit=1`;
     const ship = SHIP_LABEL[cart.shipping_method] || 'Doprava';
     const rows = items.map(i => [`${i.qty} × ${esc(i.name)}`, czk(Number(i.unit_price_czk) * Number(i.qty))]);
-    if (Number(cart.goods_czk) >= 999) rows.push(['Plátěná číča taška (dárek)', '0 Kč']);
+    if (shopCatalog.giftBagIncluded(items)) rows.push(['Plátěná číča taška (dárek)', '0 Kč']);
     rows.push([esc(ship), czk(cart.shipping_czk)]);
     rows.push(['Celkem', czk(cart.total_czk)]);
     const table = `<table style="width:100%;border-collapse:collapse;margin:16px 0;">${rows.map(([l, v], i) => `

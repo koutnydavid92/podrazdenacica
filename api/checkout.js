@@ -257,7 +257,7 @@ async function shopCheckout(stripe, req, res, body) {
     const heurekaOptOut = body.heureka_optout === true || body.heureka_optout === '1';
     const units = shop.unitsOf(items);
     const goods = shop.itemsTotal(items);
-    const giftBag = shop.giftBagIncluded(goods);
+    const giftBag = shop.giftBagIncluded(items);               // taška jen k balíčku 5+1
     const shippingCzk = shop.shippingPriceFor(items, method); // 0 u balíčku s dopravou v ceně
     const gaClientId = sanitizeGaClientId(body.ga_client_id);
     const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
@@ -336,7 +336,7 @@ async function shopCheckout(stripe, req, res, body) {
                 unit_amount: 0,
                 product_data: {
                     name: 'Plátěná číča taška (dárek)',
-                    description: 'K nákupu od ' + shop.GIFT_BAG_FROM_CZK + ' Kč zdarma.'
+                    description: 'K balíčku 5+1 zdarma.'
                 }
             },
             quantity: 1
