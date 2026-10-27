@@ -223,7 +223,7 @@
         }
         .video-overlay {
             position: fixed;
-            inset: 0;
+            top: 0; right: 0; bottom: 0; left: 0; /* místo inset (starší iOS Safari ho nezná) */
             z-index: 2000;
             background: rgba(5, 3, 8, 0.94);
             display: flex;
@@ -778,7 +778,7 @@
         .ship-list.free-ship .ship .p.free { text-decoration: none; color: var(--accent-neon); }
 
         /* Panel košíku */
-        .cart-backdrop { position: fixed; inset: 0; z-index: 1900; background: rgba(5, 3, 8, 0.7); }
+        .cart-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1900; background: rgba(5, 3, 8, 0.7); }
         .cart-backdrop[hidden] { display: none; }
         .cart-drawer {
             position: fixed; top: 0; right: 0; bottom: 0; z-index: 1950;
