@@ -164,4 +164,35 @@ function trackViewContent(o) {
     }, o));
 }
 
-module.exports = { trackPurchase, trackInitiateCheckout, trackViewContent };
+/**
+ * Lead: člověk si nechal poslat ukázku Onanovánek na mail (api/newsletter.js).
+ * Prohlížeč posílá stejný Lead přes pixel se stejným event_id; tahle serverová
+ * kopie dorazí i přes adblocker a nese otisk e-mailu, takže se dobře páruje
+ * s účtem na Instagramu. Hodnota 0, jde o signál zájmu, ne o tržbu.
+ */
+function trackLead(o) {
+    return sendEvent('Lead', Object.assign({
+        customData: {
+            content_name: o.contentName || 'onanovanky_ukazka',
+            content_category: 'onanovanky'
+        }
+    }, o));
+}
+
+// Cookies Meta pixelu mají tvar "fb.1.<čas>.<hodnota>", u _fbc je na konci
+// ID prokliku z reklamy. Dál pouštíme jen tenhle tvar a rozumnou délku.
+function sanitizeFbCookie(v) {
+    const s = String(v || '').trim();
+    return /^fb\.[0-9]\.[0-9]{1,20}\.[A-Za-z0-9_-]{1,300}$/.test(s) ? s : null;
+}
+
+// ID, podle kterého Meta spáruje událost z prohlížeče se stejnou ze serveru.
+function sanitizeEventId(v) {
+    const s = String(v || '').trim();
+    return /^[A-Za-z0-9_.-]{6,80}$/.test(s) ? s : null;
+}
+
+module.exports = {
+    trackPurchase, trackInitiateCheckout, trackViewContent, trackLead,
+    sanitizeFbCookie, sanitizeEventId
+};

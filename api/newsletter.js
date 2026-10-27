@@ -9,6 +9,7 @@ const { withDb, clientIp } = require('./_lib');
 const {
     subscribeToNewsletter, sendShopSampleEmail, subscribeToShopListSafe, SHOP_TAG_SAMPLE
 } = require('./_email');
+const { trackLead, sanitizeFbCookie, sanitizeEventId } = require('./_meta');
 
 async function sampleRequest(req, res) {
     const b = req.body || {};
@@ -39,8 +40,21 @@ async function sampleRequest(req, res) {
         res.status(429).json({ error: 'too_many' });
         return;
     }
+    // Meta: Lead ze serveru souběžně s odesláním ukázky. Pixel v prohlížeči
+    // posílá totéž se stejným event_id, Meta si obě zprávy spáruje. Nikdy
+    // nevyhodí výjimku; před odpovědí na něj počkáme, ať ho konec funkce neutne.
+    const lead = trackLead({
+        eventId: sanitizeEventId(b.lead_event_id) || 'ld_' + Date.now(),
+        email,
+        fbp: sanitizeFbCookie(b.fbp),
+        fbc: sanitizeFbCookie(b.fbc),
+        clientIp: ip,
+        userAgent: req.headers['user-agent'] || '',
+        eventSourceUrl: 'https://www.podrazdenacica.cz/onanovanky'
+    }).catch(() => { /* měření nesmí shodit odeslání ukázky */ });
     await sendShopSampleEmail({ to: email });
     await subscribeToShopListSafe({ email, name: '', tag: SHOP_TAG_SAMPLE });
+    await lead;
     res.status(200).json({ ok: true });
 }
 

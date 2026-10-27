@@ -692,6 +692,71 @@
             .ship { grid-template-columns: auto 1fr; }
             .ship .p { grid-column: 2; justify-self: start; }
         }
+
+        /* Náhled ukázky (lightbox sdílený se style.css). Clarity, říjen 2026:
+           lidé klepali na miniatury a čekali zvětšení, tak ho dostanou. */
+        .sheet { cursor: zoom-in; }
+        .sheet::after {
+            content: '';
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: rgba(13, 13, 13, 0.75) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Ccircle cx='10' cy='10' r='6'/%3E%3Cpath d='M15 15l5 5M10 7v6M7 10h6'/%3E%3C/svg%3E") center / 14px no-repeat;
+            pointer-events: none;
+        }
+        .sheet:focus-visible { outline: 3px solid var(--accent-neon); outline-offset: 2px; }
+        #sheetLightbox .lightbox-content img { background: #FFFFFF; }
+        #sheetLightbox .lightbox-title { font-family: 'Archivo Black', sans-serif; font-weight: 400; }
+        #sheetLightbox .lightbox-hint { position: absolute; bottom: -90px; left: 50%; transform: translateX(-50%); color: #888; font-size: 0.85rem; white-space: nowrap; }
+
+        /* Načítání videa: na mobilních datech má 12 MB, bez odezvy lidi klikali
+           naprázdno (Clarity, říjen 2026). */
+        .video-loading {
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: rgba(13, 13, 13, 0.75);
+            color: var(--white);
+            border-radius: 999px;
+            padding: 0.7rem 1.2rem;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        .video-loading[hidden] { display: none; }
+        .video-loading::before {
+            content: '';
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            border-top-color: var(--accent-neon);
+            animation: videoSpin 0.9s linear infinite;
+        }
+        @keyframes videoSpin { to { transform: rotate(360deg); } }
+
+        /* Úzké displeje (Clarity 26. 10. 2026: Android s oknem 299 px). Sloupec
+           mřížky se nesměl zúžit pod nejdelší slovo nadpisu, celý hero i tlačítko
+           přetekly za okraj a body s overflow-x hidden je usekl. */
+        .shop-hero-grid > * { min-width: 0; }
+        .shop-hero .hero-title, .section-title, .final-cta h2, .sample-box h2 { overflow-wrap: anywhere; }
+        .btn-primary, .btn-secondary { max-width: 100%; white-space: normal; }
+        @media (max-width: 380px) {
+            .container { padding: 0 1.1rem; }
+            .shop-hero .hero-title, .section-title, .final-cta h2 { hyphens: auto; }
+            .shop-hero { padding-top: 7rem; }
+            .shop-hero .hero-title { font-size: 1.7rem; }
+            .section-title { font-size: 1.55rem; }
+            .shop-price { font-size: 2.1rem; }
+            .sheet-grid.five { gap: 0.5rem; }
+            .sheet span { font-size: 0.7rem; padding: 0.3rem; }
+            .order-box, .sample-box, .final-cta { padding: 1.4rem 0.9rem; }
+            .qty button { width: 42px; height: 42px; }
+            .btn-primary, .btn-secondary { padding: 0.95rem 1.2rem; }
+            #sheetLightbox .lightbox-nav { width: 40px; height: 40px; font-size: 2rem; }
+        }
     </style>
     <script src="/js/rtg.js" defer></script>
 </head>
@@ -1371,13 +1436,16 @@
         const videoOverlay = el('videoOverlay');
         const promoVideo = el('promoVideo');
         let videoTracked = false;
+        const videoLoading = el('videoLoading');
         function openPromoVideo() {
             if (!promoVideo.getAttribute('src')) {
+                promoVideo.preload = 'auto';
                 promoVideo.src = window.innerWidth < 820 ? '/videos/onanovanky/promo-720.mp4' : '/videos/onanovanky/promo.mp4';
+                videoLoading.hidden = false;
             }
             videoOverlay.hidden = false;
             document.body.style.overflow = 'hidden';
-            promoVideo.play().catch(() => { /* prohlížeč nechal ovládání na uživateli */ });
+            promoVideo.play().catch(() => { videoLoading.hidden = true; /* prohlížeč nechal ovládání na uživateli */ });
             el('videoClose').focus();
             if (!videoTracked) {
                 videoTracked = true;
@@ -1393,7 +1461,23 @@
         el('playPromo').addEventListener('click', openPromoVideo);
         el('videoClose').addEventListener('click', closePromoVideo);
         videoOverlay.addEventListener('click', (e) => { if (e.target === videoOverlay) closePromoVideo(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !videoOverlay.hidden) closePromoVideo(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !videoOverlay.hidden) { closePromoVideo(); return; }
+            if (!sheetBox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeSheet();
+            if (e.key === 'ArrowLeft') openSheet(sheetIndex - 1);
+            if (e.key === 'ArrowRight') openSheet(sheetIndex + 1);
+        });
+        // Odezva videa: točítko, dokud se nerozjede; měříme skutečný start a dokoukání
+        ['waiting', 'loadstart', 'seeking'].forEach(ev => promoVideo.addEventListener(ev, () => { videoLoading.hidden = false; }));
+        ['playing', 'canplay', 'pause', 'error'].forEach(ev => promoVideo.addEventListener(ev, () => { videoLoading.hidden = true; }));
+        let videoStarted = false;
+        promoVideo.addEventListener('playing', () => {
+            if (videoStarted) return;
+            videoStarted = true;
+            track('video_start', { video: 'onanovanky-promo', video_page: window.location.pathname });
+        });
+        promoVideo.addEventListener('ended', () => track('video_complete', { video: 'onanovanky-promo', video_page: window.location.pathname }));
 
         // ---- Ukázka na mail ----
         el('sampleForm').addEventListener('submit', async (e) => {
@@ -1410,17 +1494,27 @@
             const btn = el('sampleButton');
             btn.disabled = true;
             btn.textContent = 'Posílám…';
+            // Stejné ID dostane Meta z prohlížeče i ze serveru (api/newsletter.js),
+            // podle něj si obě zprávy spáruje a Lead započítá jen jednou.
+            const leadEventId = 'ld_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+            const ids = idsForCheckout();
             try {
                 const res = await fetch('/api/newsletter', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ kind: 'onanovanky_ukazka', email, website: e.target.website.value })
+                    body: JSON.stringify({
+                        kind: 'onanovanky_ukazka', email, website: e.target.website.value,
+                        lead_event_id: leadEventId, fbp: ids.fbp, fbc: ids.fbc
+                    })
                 });
                 if (res.status === 429) throw new Error('too_many');
                 if (!res.ok) throw new Error('http');
                 done.textContent = 'Letí to. Mrkni do schránky (a do spamu, kdyby se schovaly).';
                 input.value = '';
                 track('form_submit', { form_id: 'onanovanky_ukazka', form_page: window.location.pathname });
+                // Ukázka na mail jako konverze: GA4 generate_lead, Meta standardní Lead
+                track('generate_lead', { lead_type: 'onanovanky_ukazka', lead_page: window.location.pathname });
+                metaEvent('track', 'Lead', { content_name: 'onanovanky_ukazka', content_category: 'onanovanky' }, leadEventId);
             } catch (err) {
                 done.textContent = err.message === 'too_many'
                     ? 'Dneska už jsme ti ukázku posílali. Mrkni do schránky.'
@@ -1430,6 +1524,96 @@
             btn.disabled = false;
             btn.textContent = 'Poslat 5 stránek';
         });
+
+        // ---- Meta: události i před načtením pixelu ----
+        // Pixel přijíždí s GTM až 2,5 s po načtení stránky (nebo při první
+        // interakci), scroll na 25 % tak může přijít dřív. Události počkají ve frontě.
+        const metaQueue = [];
+        const pageStartedAt = Date.now();
+        function metaEvent(kind, name, params, eventId) {
+            if (typeof fbq !== 'function') { metaQueue.push([kind, name, params, eventId]); return; }
+            try {
+                if (eventId) fbq(kind, name, params || {}, { eventID: eventId });
+                else fbq(kind, name, params || {});
+            } catch (e) { /* měření nesmí nic rozbít */ }
+        }
+        (function flushMetaQueue() {
+            if (typeof fbq === 'function') {
+                while (metaQueue.length) { const q = metaQueue.shift(); metaEvent(q[0], q[1], q[2], q[3]); }
+                return;
+            }
+            if (Date.now() - pageStartedAt < 90000) setTimeout(flushMetaQueue, 500);
+        })();
+
+        // ---- Hloubka scrollu: 25 / 50 / 75 / 100 %, každý práh jednou za zobrazení ----
+        // GA4 dostane scroll_25 až scroll_100 (jdou označit jako klíčové události),
+        // Meta vlastní události Scroll25 až Scroll100 (podklad pro vlastní konverze).
+        const scrollSent = {};
+        let scrollTick = false;
+        function measureScrollDepth() {
+            scrollTick = false;
+            const doc = document.documentElement;
+            const max = doc.scrollHeight - window.innerHeight;
+            const pct = max > 0 ? ((window.scrollY || doc.scrollTop || 0) + 2) / max * 100 : 100;
+            [25, 50, 75, 100].forEach(m => {
+                if (pct >= m && !scrollSent[m]) {
+                    scrollSent[m] = true;
+                    track('scroll_' + m, { percent_scrolled: m, scroll_page: window.location.pathname });
+                    metaEvent('trackCustom', 'Scroll' + m, { percent: m, page: window.location.pathname });
+                }
+            });
+        }
+        window.addEventListener('scroll', () => {
+            if (scrollTick) return;
+            scrollTick = true;
+            requestAnimationFrame(measureScrollDepth);
+        }, { passive: true });
+
+        // ---- Náhled ukázek: klepnutí na miniaturu zvětší stránku ----
+        const sheets = Array.from(document.querySelectorAll('.sheet-grid.five .sheet'));
+        const sheetBox = el('sheetLightbox');
+        const sheetImg = el('sheetImage');
+        let sheetIndex = 0;
+        function sheetName(s) { return s.querySelector('span').textContent.trim(); }
+        function openSheet(i) {
+            if (!sheets.length) return;
+            sheetIndex = (i + sheets.length) % sheets.length;
+            const img = sheets[sheetIndex].querySelector('img');
+            sheetImg.src = img.currentSrc || img.src;
+            sheetImg.alt = img.alt;
+            el('sheetTitle').textContent = sheetName(sheets[sheetIndex]) + ' · ' + (sheetIndex + 1) + ' z ' + sheets.length;
+            if (!sheetBox.classList.contains('active')) {
+                sheetBox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                el('sheetClose').focus();
+            }
+            track('sheet_view', { sheet: sheetName(sheets[sheetIndex]), sheet_page: window.location.pathname });
+        }
+        function closeSheet() {
+            if (!sheetBox.classList.contains('active')) return;
+            sheetBox.classList.remove('active');
+            document.body.style.overflow = '';
+            sheets[sheetIndex].focus();
+        }
+        sheets.forEach((s, i) => {
+            s.setAttribute('role', 'button');
+            s.setAttribute('tabindex', '0');
+            s.setAttribute('aria-label', 'Zvětšit ukázku ' + sheetName(s));
+            s.addEventListener('click', () => openSheet(i));
+            s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(i); } });
+        });
+        el('sheetClose').addEventListener('click', (e) => { e.stopPropagation(); closeSheet(); });
+        el('sheetPrev').addEventListener('click', (e) => { e.stopPropagation(); openSheet(sheetIndex - 1); });
+        el('sheetNext').addEventListener('click', (e) => { e.stopPropagation(); openSheet(sheetIndex + 1); });
+        sheetBox.addEventListener('click', (e) => { if (e.target === sheetBox || e.target === sheetImg || e.target.classList.contains('lightbox-content')) closeSheet(); });
+        let sheetTouchX = null;
+        sheetBox.addEventListener('touchstart', (e) => { sheetTouchX = e.touches[0].clientX; }, { passive: true });
+        sheetBox.addEventListener('touchend', (e) => {
+            if (sheetTouchX === null) return;
+            const dx = e.changedTouches[0].clientX - sheetTouchX;
+            sheetTouchX = null;
+            if (Math.abs(dx) > 40) openSheet(sheetIndex + (dx < 0 ? 1 : -1));
+        });
         }); // End requestAnimationFrame
     </script>
 
@@ -1437,6 +1621,19 @@
     <div class="video-overlay" id="videoOverlay" hidden role="dialog" aria-modal="true" aria-label="Video: průlet Onanovánkami">
         <button type="button" class="video-close" id="videoClose" aria-label="Zavřít video">&times;</button>
         <video id="promoVideo" controls playsinline preload="none" poster="/videos/onanovanky/promo-poster.webp" width="1080" height="1920"></video>
+        <div class="video-loading" id="videoLoading" hidden>Načítám video…</div>
+    </div>
+
+    <!-- Náhled ukázky (zvětšená stránka, listování šipkami nebo přejetím prstu) -->
+    <div class="lightbox" id="sheetLightbox" role="dialog" aria-modal="true" aria-label="Náhled stránky Onanovánek">
+        <div class="lightbox-content">
+            <button type="button" class="lightbox-close" id="sheetClose" aria-label="Zavřít náhled">×</button>
+            <button type="button" class="lightbox-nav lightbox-prev" id="sheetPrev" aria-label="Předchozí stránka">‹</button>
+            <button type="button" class="lightbox-nav lightbox-next" id="sheetNext" aria-label="Další stránka">›</button>
+            <img id="sheetImage" src="" alt="">
+            <div class="lightbox-title" id="sheetTitle"></div>
+            <div class="lightbox-hint">Takhle ti přijde v PDF. Klepnutím zavřeš.</div>
+        </div>
     </div>
 
     <!-- Cookie Banner -->
