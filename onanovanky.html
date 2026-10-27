@@ -91,7 +91,7 @@
     <link rel="shortcut icon" href="/podrazdenacica/my-favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/podrazdenacica/my-favicon/apple-touch-icon.png" />
 
-    <link rel="preload" as="image" href="/images/onanovanky/hero-labudusumu.webp" type="image/webp">
+    <link rel="preload" as="image" href="/images/onanovanky/obalka.webp" type="image/webp">
 
     <!-- Google Fonts - non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -141,12 +141,20 @@
     <style>
         /* ===== Onanovánky: obchod ===== */
         .shop-hero { padding-top: 11rem; padding-bottom: 3rem; }
+        /* Pořadí (David 27. 10. 2026): nadpis, obálka, popis a tlačítko. Na desktopu
+           obálka vlevo přes oba řádky textu, na mobilu pod sebou v tomhle pořadí. */
         .shop-hero-grid {
             display: grid;
-            grid-template-columns: minmax(260px, 420px) 1fr;
-            gap: 3.5rem;
+            grid-template-columns: minmax(260px, 400px) 1fr;
+            grid-template-areas: "cover top" "cover bottom";
+            column-gap: 3.5rem;
+            row-gap: 0;
             align-items: center;
         }
+        .shop-cover { grid-area: cover; }
+        .hero-top { grid-area: top; align-self: end; }
+        .hero-bottom { grid-area: bottom; align-self: start; }
+        .hero-top .hero-title { margin-bottom: 1rem; }
         .shop-cover {
             position: relative;
             transform: rotate(-3deg);
@@ -679,8 +687,9 @@
 
         @media (max-width: 820px) {
             .shop-hero { padding-top: 8rem; }
-            .shop-hero-grid { grid-template-columns: 1fr; gap: 2.2rem; }
-            .shop-cover { max-width: 320px; margin: 0 auto; transform: rotate(-2deg); }
+            .shop-hero-grid { grid-template-columns: 1fr; grid-template-areas: "top" "cover" "bottom"; row-gap: 1.6rem; }
+            .shop-cover { max-width: 300px; margin: 0 auto; transform: rotate(-2deg); }
+            .hero-top .hero-title { margin-bottom: 0; }
             .play-btn { transform: translate(-50%, -50%) rotate(2deg); font-size: 0.95rem; }
             .play-btn:hover, .play-btn:focus-visible { transform: translate(-50%, -50%) rotate(2deg) scale(1.06); }
             .video-overlay { padding: 0; }
@@ -713,24 +722,51 @@
         .cart-btn.bump { animation: cartBump .4s ease; }
         @keyframes cartBump { 30% { transform: scale(1.2); } }
 
-        /* Nabídka (karty produktů, balíčky přibudou jako další karty) */
-        .offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 540px)); justify-content: center; gap: 1.4rem; }
+        /* Nabídka: tři karty (Onanovánky, balíček 3+1, balíček 5+1), David 27. 10. 2026 */
+        .offer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; max-width: 1120px; margin: 0 auto; }
         .offer {
-            display: grid; grid-template-columns: 170px 1fr; gap: 1.3rem; align-items: center;
-            background: var(--bg-card); border: 1px solid var(--accent-neon); border-radius: 22px; padding: 1.3rem;
+            display: flex; flex-direction: column; gap: 1rem;
+            background: var(--bg-card); border: 1px solid var(--accent-neon); border-radius: 22px; padding: 1.1rem;
             box-shadow: 0 0 60px rgba(255, 0, 255, 0.12);
         }
-        .offer-media img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; display: block; border: 1px solid #2A2A2A; }
-        .offer-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 1.35rem; margin-bottom: 0.4rem; color: var(--white); }
+        .offer-media img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: contain; background: #0D0D0D; border-radius: 14px; display: block; border: 1px solid #2A2A2A; }
+        .offer-body { display: flex; flex-direction: column; flex: 1; }
+        .offer-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 1.3rem; line-height: 1.2; margin-bottom: 0.5rem; color: var(--white); }
+        .offer-body h3 .pill { display: inline-block; vertical-align: middle; margin-left: 0.3rem; background: var(--accent-neon); color: var(--black); border-radius: 999px; padding: 0.1rem 0.6rem; font-size: 0.8rem; line-height: 1.5; transform: translateY(-2px); }
         .offer-body p { color: var(--text-secondary); line-height: 1.5; font-size: 0.95rem; }
-        .offer-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem 1rem; flex-wrap: wrap; margin: 1rem 0 0.6rem; }
-        .offer-price { font-family: 'Archivo Black', sans-serif; font-size: 1.9rem; color: var(--accent-neon); line-height: 1; }
-        .offer .btn-primary { padding: 0.85rem 1.6rem; font-size: 1rem; }
+        .offer-body p + p { margin-top: 0.5rem; }
+        .offer-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem 1rem; flex-wrap: wrap; margin-top: auto; padding-top: 1rem; }
+        .offer-price { font-family: 'Archivo Black', sans-serif; font-size: 1.9rem; color: var(--accent-neon); line-height: 1; white-space: nowrap; }
+        .offer .btn-primary { padding: 0.85rem 1.5rem; font-size: 1rem; }
         .offer .btn-primary:disabled { opacity: .5; cursor: default; transform: none; }
-        .offer-note { font-size: 0.85rem; color: #888 !important; }
         .offer-avail { justify-content: center; margin: -1.6rem auto 1.8rem; max-width: 620px; }
         .sold-out.show { display: block; }
         .avail-line.off .dot, .shop-avail.off .dot { background: #888; box-shadow: none; }
+        @media (max-width: 900px) {
+            .offer-grid { grid-template-columns: 1fr; max-width: 560px; }
+            .offer { display: grid; grid-template-columns: 128px 1fr; gap: 1rem; align-items: start; padding: 1rem; }
+            .offer-body h3 { font-size: 1.15rem; }
+            .offer-price { font-size: 1.6rem; }
+            .offer-row { padding-top: 0.6rem; }
+        }
+        @media (max-width: 380px) {
+            .offer { grid-template-columns: 100px 1fr; gap: 0.8rem; }
+        }
+
+        /* Video: samostatná sekce s plakátem (přesunuto z hero) */
+        .video-teaser {
+            position: relative; max-width: 340px; margin: 0 auto;
+            border-radius: 18px; overflow: hidden; border: 1px solid var(--divider);
+            box-shadow: 0 0 60px rgba(254, 69, 232, 0.18); cursor: pointer;
+        }
+        .video-teaser img { display: block; width: 100%; height: auto; }
+        .video-teaser .play-btn { transform: translate(-50%, -50%); }
+        .video-teaser .play-btn:hover, .video-teaser .play-btn:focus-visible { transform: translate(-50%, -50%) scale(1.06); }
+        .video-teaser:hover .play-btn { background: var(--accent-neon); color: var(--black); }
+        #video { padding-top: 1rem; }
+        /* Doprava zdarma k balíčku: ceny dopravy přeškrtnuté */
+        .ship-list.free-ship .ship .p { text-decoration: line-through; color: #888; }
+        .ship-list.free-ship .ship .p.free { text-decoration: none; color: var(--accent-neon); }
 
         /* Panel košíku */
         .cart-backdrop { position: fixed; inset: 0; z-index: 1900; background: rgba(5, 3, 8, 0.7); }
@@ -922,31 +958,24 @@
 
     <main id="main-content">
 
-    <!-- Hero -->
+    <!-- Hero (pořadí David 27. 10. 2026: nadpis, obálka, popis, tlačítko; video je níž) -->
     <section id="onanovanky-hero" class="page-hero shop-hero">
         <div class="container">
             <div class="shop-hero-grid">
-                <div class="shop-cover reveal active">
-                    <img src="/images/onanovanky/hero-labudusumu.webp" alt="Onanovánky 2026 v ruce: stránka Labudusumu na spirále" width="1080" height="1470" fetchpriority="high">
-                    <button type="button" class="play-btn" id="playPromo" data-cta="onanovanky_hero_video" aria-label="Přehrát video s průletem Onanovánkami">
-                        <span class="play-icon" aria-hidden="true"></span>
-                        <span class="play-label">Přehrát video</span>
-                    </button>
-                </div>
-                <div class="hero-text">
+                <div class="hero-text hero-top">
                     <div class="hero-label">Z dílny Podrážděné číči</div>
                     <h1 class="hero-title"><em>Onanovánky 2026.</em> Antisystémové omalovánky od Podrážděné číči.</h1>
+                </div>
+                <div class="shop-cover reveal active">
+                    <img src="/images/onanovanky/obalka.webp" alt="Onanovánky 2026, obálka" width="1237" height="1752" fetchpriority="high">
+                </div>
+                <div class="hero-text hero-bottom">
                     <p class="hero-description">
                         Třicet žhavých motivů podle skutečných fotek z naší číča komunity.
                         Art by Podrážděná číča, vytištěné na spirálu, ať můžeš stránku odtrhnout
                         a pověsit na zeď. K vymalování použij pastelky, fixy, akvarel, rtěnku.
                         Vhodné na doma, do parku i do šaliny.
                     </p>
-                    <div class="shop-price-row">
-                        <div class="shop-price">333 Kč</div>
-                        <div class="shop-price-note">Kup alespoň tři kusy (pro tebe, pro kámošku, pro mámu) a získej <b>plátěnou číča tašku jako dárek</b>.</div>
-                    </div>
-                    <div class="shop-avail" id="availBadge"><span class="dot"></span><span>Skladem.&nbsp;<small>Odesíláme do 3 pracovních dnů.</small></span></div>
                     <div class="hero-buttons">
                         <a href="#koupit" class="btn-primary" data-cta="onanovanky_hero_koupit">Chci Onanovánky</a>
                     </div>
@@ -984,6 +1013,20 @@
         </div>
     </section>
 
+    <!-- Video: průlet Onanovánkami (plakát, přehrává se v překryvu níž) -->
+    <section id="video">
+        <div class="container">
+            <h2 class="section-title reveal" style="text-align:center;">Mrkni, jak vypadají Onanovánky</h2>
+            <div class="video-teaser reveal" id="videoTeaser">
+                <img src="/videos/onanovanky/promo-poster.webp" alt="Průlet Onanovánkami, náhled videa" loading="lazy" width="720" height="1280">
+                <button type="button" class="play-btn" id="playPromo" data-cta="onanovanky_hero_video" aria-label="Přehrát video s průletem Onanovánkami">
+                    <span class="play-icon" aria-hidden="true"></span>
+                    <span class="play-label">Přehrát video</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
     <!-- Nabídka: produkty do košíku (varianta A, 27. 10. 2026). Doprava, e-mail
          a platba se řeší v panelu košíku (#cartDrawer níže). Balíčky přibudou
          jako další <article class="offer"> a položka v PRODUCTS (tady i v api/_shop.js). -->
@@ -994,16 +1037,42 @@
             <div class="offer-grid reveal" id="offerGrid">
                 <article class="offer" data-product="onanovanky">
                     <div class="offer-media">
-                        <img src="/images/onanovanky/produkt-labubu.jpg" alt="Onanovánky 2026, kniha otevřená na stránce Labudusumu" loading="lazy" width="1080" height="1350">
+                        <img src="/images/onanovanky/obalka.webp" alt="Onanovánky 2026, obálka" loading="lazy" width="1237" height="1752">
                     </div>
                     <div class="offer-body">
                         <h3>Onanovánky 2026</h3>
-                        <p>30 motivů, A4 na spirále, obálka s matnou laminací. Vymaluj, odtrhni, pověs na zeď.</p>
+                        <p>Když si chceš jen tak onanovávat a zahnat stres. Vymaluj, odtrhni, pověs na zeď.</p>
                         <div class="offer-row">
                             <div class="offer-price">333 Kč</div>
                             <button type="button" class="btn-primary" data-add="onanovanky" data-cta="onanovanky_do_kosiku">Do košíku</button>
                         </div>
-                        <p class="offer-note">Od tří kusů plátěná číča taška jako dárek. Osobní odběr v Brně zdarma, Zásilkovna od 89 Kč.</p>
+                    </div>
+                </article>
+                <article class="offer" data-product="balicek-3plus1">
+                    <div class="offer-media">
+                        <img src="/images/onanovanky/balicek-3plus1.webp" alt="Alfasamičičí baličíček: čtyři Onanovánky, čtvrté zdarma" loading="lazy" width="1080" height="1350">
+                    </div>
+                    <div class="offer-body">
+                        <h3>Alfasamičičí baličíček <span class="pill">3+1</span></h3>
+                        <p>Když potřebuješ topovej dárek pro mámu, ségru, bestku a kolegyňku z kanclu.</p>
+                        <div class="offer-row">
+                            <div class="offer-price">999 Kč</div>
+                            <button type="button" class="btn-primary" data-add="balicek-3plus1" data-cta="onanovanky_do_kosiku_3plus1">Do košíku</button>
+                        </div>
+                    </div>
+                </article>
+                <article class="offer" data-product="balicek-5plus1">
+                    <div class="offer-media">
+                        <img src="/images/onanovanky/balicek-5plus1.webp" alt="Ultimátní vánočiční baličíček: šest Onanovánek, plátěná taška a doprava zdarma" loading="lazy" width="1080" height="1350">
+                    </div>
+                    <div class="offer-body">
+                        <h3>Ultimátní vánočiční baličíček <span class="pill">5+1</span></h3>
+                        <p>Ježíšek letos naděluje pod stromečky vkus a legraci. Tvoje tchýně se bude červenat víc než Rudolfův nos.</p>
+                        <p>K tomu všemu dostaneš tašku a dopravu zdarma. Horste, to se prostě vyplatí!</p>
+                        <div class="offer-row">
+                            <div class="offer-price">1 666 Kč</div>
+                            <button type="button" class="btn-primary" data-add="balicek-5plus1" data-cta="onanovanky_do_kosiku_5plus1">Do košíku</button>
+                        </div>
                     </div>
                 </article>
             </div>
@@ -1207,7 +1276,7 @@
                 });
             });
         });
-        const trackedSections = ['ukazky', 'koupit', 'prodejny', 'otazky', 'co-dostanes'];
+        const trackedSections = ['ukazky', 'video', 'koupit', 'prodejny', 'otazky', 'co-dostanes'];
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1224,8 +1293,11 @@
         // člověk zadá e-mail, košík se uloží i na server kvůli připomínce
         // nedokončené objednávky (api/_shop_carts.js: 3 h a 24 h, bez slevy).
         const PRODUCTS = {
-            // zrcadlo katalogu z api/_shop.js (platí vždycky server), při změně upravit obojí
-            onanovanky: { id: 'onanovanky', name: 'Onanovánky 2026', price: UNIT_PRICE, image: '/images/onanovanky/produkt-labubu.jpg' }
+            // zrcadlo katalogu z api/_shop.js (platí vždycky server), při změně upravit obojí;
+            // units = kolik kusů Onanovánek položka obsahuje (limit na objednávku, sklad)
+            onanovanky: { id: 'onanovanky', name: 'Onanovánky 2026', price: UNIT_PRICE, units: 1, image: '/images/onanovanky/obalka.webp' },
+            'balicek-3plus1': { id: 'balicek-3plus1', name: 'Alfasamičičí baličíček (3+1)', price: 999, units: 4, image: '/images/onanovanky/balicek-3plus1.webp' },
+            'balicek-5plus1': { id: 'balicek-5plus1', name: 'Ultimátní vánočiční baličíček (5+1)', price: 1666, units: 6, image: '/images/onanovanky/balicek-5plus1.webp', freeShipping: true }
         };
         const CART_KEY = 'onanovanky_cart_v1';
         const el = id => document.getElementById(id);
@@ -1248,11 +1320,14 @@
 
         function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) { /* ticho */ } }
         function cartItems() { return cart.items.filter(i => PRODUCTS[i.id] && i.qty > 0); }
-        function units() { return cartItems().reduce((s, i) => s + i.qty, 0); }
+        function units() { return cartItems().reduce((s, i) => s + i.qty * PRODUCTS[i.id].units, 0); }   // kusů Onanovánek
+        function itemCount() { return cartItems().reduce((s, i) => s + i.qty, 0); }                      // položek v košíku
         function goodsTotal() { return cartItems().reduce((s, i) => s + PRODUCTS[i.id].price * i.qty, 0); }
         function gaItems() { return cartItems().map(i => ({ item_id: i.id, item_name: PRODUCTS[i.id].name, price: PRODUCTS[i.id].price, quantity: i.qty })); }
         function shipKey() { return SHIPPING[cart.shipping] ? cart.shipping : 'pickup_atelier'; }
-        function orderTotal() { return goodsTotal() + SHIPPING[shipKey()].price; }
+        function freeShipping() { return cartItems().some(i => PRODUCTS[i.id].freeShipping); }
+        function shipPrice() { return freeShipping() ? 0 : SHIPPING[shipKey()].price; }
+        function orderTotal() { return goodsTotal() + shipPrice(); }
         function emailValid(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v || '').trim()); }
 
         // GA4 a Meta identifikátory návštěvy pro server (viz api/checkout.js)
@@ -1343,7 +1418,7 @@
             opts = opts || {};
             const p = PRODUCTS[id];
             if (!p || soldOut) return;
-            const add = Math.max(0, Math.min(qty, MAX_QTY - units()));
+            const add = Math.max(0, Math.min(qty, Math.floor((MAX_QTY - units()) / p.units)));
             if (!add) {
                 openCart();
                 showErr('Víc než ' + MAX_QTY + ' kusů na jednu objednávku nedáme. Napiš nám na jsem@podrazdenacica.cz, domluvíme cenu i dopravu.');
@@ -1370,7 +1445,7 @@
             const p = PRODUCTS[id];
             const item = cart.items.find(i => i.id === id);
             if (!p || !item) return;
-            const next = Math.max(0, Math.min(qty, item.qty + (MAX_QTY - units())));
+            const next = Math.max(0, Math.min(qty, item.qty + Math.floor((MAX_QTY - units()) / p.units)));
             const diff = next - item.qty;
             if (!diff) return;
             item.qty = next;
@@ -1398,15 +1473,16 @@
         function renderCart() {
             const items = cartItems();
             const n = units();
-            el('cartCount').textContent = n;
-            el('cartCount').hidden = n === 0;
+            const count = itemCount();
+            el('cartCount').textContent = count;
+            el('cartCount').hidden = count === 0;
             el('cartEmpty').hidden = items.length > 0;
             el('cartForm').hidden = items.length === 0;
             el('cartItems').innerHTML = items.map(i => {
                 const p = PRODUCTS[i.id];
                 return '<div class="cart-item">'
                     + '<img src="' + p.image + '" alt="" width="56" height="70" loading="lazy">'
-                    + '<div><div class="t">' + escapeHtml(p.name) + '</div><div class="u">' + czk(p.price) + ' za kus</div>'
+                    + '<div><div class="t">' + escapeHtml(p.name) + '</div><div class="u">' + czk(p.price) + (p.units > 1 ? ' za balíček (' + p.units + ' ks)' : ' za kus') + '</div>'
                     + '<div class="qty" role="group" aria-label="Počet kusů"><button type="button" data-dec="' + i.id + '" aria-label="Míň">−</button><output aria-live="polite">' + i.qty + '</output><button type="button" data-inc="' + i.id + '" aria-label="Víc"' + (n >= MAX_QTY ? ' disabled' : '') + '>+</button></div></div>'
                     + '<div class="right"><div class="line">' + czk(p.price * i.qty) + '</div><button type="button" class="rm" data-rm="' + i.id + '">Odebrat</button></div>'
                     + '</div>';
@@ -1428,16 +1504,19 @@
             document.querySelectorAll('input[name="ship"]').forEach(r => { r.checked = r.value === shipKey(); });
             document.querySelectorAll('.ship').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
             el('pointBox').classList.toggle('show', ship.point);
+            const free = freeShipping();
+            el('shipList').classList.toggle('free-ship', free);
+            el('shipFreeNotice').hidden = !free;
             el('sumGoodsLabel').textContent = items.length === 1
                 ? items[0].qty + ' × ' + PRODUCTS[items[0].id].name
-                : 'Zboží (' + n + ' ks)';
+                : 'Zboží (' + count + ' položky, ' + n + ' ks)';
             el('sumGoods').textContent = czk(goods);
             el('sumBagRow').hidden = !gift;
-            el('sumShipLabel').textContent = ship.label;
-            el('sumShip').textContent = ship.price ? czk(ship.price) : '0 Kč';
-            el('sumTotal').textContent = czk(goods + ship.price);
+            el('sumShipLabel').textContent = ship.label + (free && ship.price ? ' (zdarma k balíčku)' : '');
+            el('sumShip').textContent = shipPrice() ? czk(shipPrice()) : '0 Kč';
+            el('sumTotal').textContent = czk(goods + shipPrice());
             const pay = el('payButton');
-            pay.textContent = soldOut ? 'Vyprodáno' : 'Zaplatit ' + czk(goods + ship.price);
+            pay.textContent = soldOut ? 'Vyprodáno' : 'Zaplatit ' + czk(goods + shipPrice());
             pay.disabled = soldOut;
             if (el('cartEmail').value !== (cart.email || '')) el('cartEmail').value = cart.email || '';
             if (el('noteInput').value !== (cart.note || '')) el('noteInput').value = cart.note || '';
@@ -1588,12 +1667,13 @@
                 if (res.status === 409) {
                     const info = await res.json().catch(() => ({}));
                     if (info.error === 'not_enough_stock' && info.remaining > 0) {
-                        // srovnat počet kusů na zbytek skladu (ubíráme od konce košíku)
+                        // srovnat počet kusů na zbytek skladu (ubíráme od konce košíku, balíček = víc kusů)
                         let over = units() - info.remaining;
                         for (let i = cart.items.length - 1; i >= 0 && over > 0; i--) {
-                            const take = Math.min(cart.items[i].qty, over);
+                            const u = (PRODUCTS[cart.items[i].id] || { units: 1 }).units;
+                            const take = Math.min(cart.items[i].qty, Math.ceil(over / u));
                             cart.items[i].qty -= take;
-                            over -= take;
+                            over -= take * u;
                         }
                         cart.items = cart.items.filter(i => i.qty > 0);
                         saveCart();
@@ -1623,6 +1703,7 @@
         // ---- Start: počítadlo, zobrazení produktu, obnova z mailu, návrat ze Stripu ----
         renderCart();
         trackEcommerce('view_item', { currency: 'CZK', value: UNIT_PRICE, items: [{ item_id: 'onanovanky', item_name: PRODUCTS.onanovanky.name, price: UNIT_PRICE, quantity: 1 }] });
+        trackEcommerce('view_item_list', { item_list_id: 'koupit', item_list_name: 'Koupit Onanovánky', items: Object.values(PRODUCTS).map((p, i) => ({ item_id: p.id, item_name: p.name, price: p.price, index: i + 1, quantity: 1 })) });
         (async () => {
             const params = new URLSearchParams(location.search);
             const token = params.get('kosik');
@@ -1740,7 +1821,7 @@
             document.body.style.overflow = '';
             el('playPromo').focus();
         }
-        el('playPromo').addEventListener('click', openPromoVideo);
+        el('videoTeaser').addEventListener('click', openPromoVideo); // tlačítko i plakát (klik probublá)
         el('videoClose').addEventListener('click', closePromoVideo);
         videoOverlay.addEventListener('click', (e) => { if (e.target === videoOverlay) closePromoVideo(); });
         document.addEventListener('keydown', (e) => {
@@ -1927,6 +2008,7 @@
 
                 <div class="order-step">
                     <h3><span class="n">1</span> Jak ti je doručit</h3>
+                    <div class="ship-notice" id="shipFreeNotice" hidden>Máš v košíku balíček s dopravou v ceně. Vyber si jen, kam to poslat.</div>
                     <div class="ship-list" id="shipList">
                         <label class="ship on">
                             <input type="radio" name="ship" value="pickup_atelier" checked>

@@ -216,6 +216,7 @@ async function cartSave(req, res, body) {
         return;
     }
     const goods = shop.itemsTotal(cartData.items);
+    const shippingCzk = shop.shippingPriceFor(cartData.items, cartData.method);
     const saved = await withDb(c => carts.upsertCart(c, {
         token: (body.cart_save || {}).token,
         email: cartData.email,
@@ -224,8 +225,8 @@ async function cartSave(req, res, body) {
         packeta_point: cartData.point,
         note: cartData.note,
         goods_czk: goods,
-        shipping_czk: cartData.method.price,
-        total_czk: goods + cartData.method.price,
+        shipping_czk: shippingCzk,
+        total_czk: goods + shippingCzk,
         ga_client_id: sanitizeGaClientId(body.ga_client_id),
         ga_session_id: sanitizeGaSessionId(body.ga_session_id),
         fbp: sanitizeFbCookie(body.fbp),
@@ -257,6 +258,7 @@ async function shopCheckout(stripe, req, res, body) {
     const units = shop.unitsOf(items);
     const goods = shop.itemsTotal(items);
     const giftBag = shop.giftBagIncluded(goods);
+    const shippingCzk = shop.shippingPriceFor(items, method); // 0 u balíčku s dopravou v ceně
     const gaClientId = sanitizeGaClientId(body.ga_client_id);
     const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
     const fbp = sanitizeFbCookie(body.fbp);
@@ -276,8 +278,8 @@ async function shopCheckout(stripe, req, res, body) {
                 packeta_point: point,
                 note,
                 goods_czk: goods,
-                shipping_czk: method.price,
-                total_czk: goods + method.price,
+                shipping_czk: shippingCzk,
+                total_czk: goods + shippingCzk,
                 ga_client_id: gaClientId, ga_session_id: gaSessionId, fbp, fbc,
                 ip: clientIp(req),
                 user_agent: req.headers['user-agent'] || '',
@@ -295,7 +297,7 @@ async function shopCheckout(stripe, req, res, body) {
 
     const metaEvent = trackInitiateCheckout({
         eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
-        value: goods + method.price,
+        value: goods + shippingCzk,
         quantity: units,
         fbp: fbp,
         fbc: fbc,
@@ -306,7 +308,7 @@ async function shopCheckout(stripe, req, res, body) {
     // Zahájení objednávky do GA4 (a přes GA4 do Google Ads). Běží souběžně
     // se zakládáním platby ve Stripu, takže cestu k platbě nezdržuje.
     const gaEvent = trackBeginCheckout({
-        value: goods + method.price,
+        value: goods + shippingCzk,
         quantity: units,
         clientId: gaClientId,
         sessionId: gaSessionId
@@ -344,9 +346,9 @@ async function shopCheckout(stripe, req, res, body) {
         lineItems.push({
             price_data: {
                 currency: 'czk',
-                unit_amount: method.price * 100,
+                unit_amount: shippingCzk * 100,
                 product_data: {
-                    name: 'Doprava: ' + method.label,
+                    name: 'Doprava: ' + method.label + (shippingCzk === 0 ? ' (zdarma k balíčku)' : ''),
                     description: point ? point.name + (point.address ? ', ' + point.address : '') : undefined
                 }
             },

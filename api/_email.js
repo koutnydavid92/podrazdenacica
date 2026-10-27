@@ -325,11 +325,26 @@ function shopDeliveryHtml(order) {
         Balíme do 3 pracovních dnů. O doručení ti dá vědět Zásilkovna SMSkou nebo v appce.</p>`;
 }
 
+// Řádky zboží: od 27. 10. 2026 podle položek (balíčky), starší objednávky podle počtu kusů
+function shopItemRows(order) {
+    const items = Array.isArray(order.items) ? order.items : null;
+    if (items && items.length) {
+        return items.map(i => [`${i.qty} × ${esc(i.name)}`, czk(Number(i.unit_price_czk) * Number(i.qty))]);
+    }
+    return [[`${shopPlural(order.quantity)} × Onanovánky 2026`, czk(order.unit_price_czk * order.quantity)]];
+}
+
+function shopShippingRow(order) {
+    if (order.shipping_price_czk > 0) return ['Doprava', czk(order.shipping_price_czk)];
+    if (order.shipping_method === 'pickup_atelier') return ['Doprava (osobní odběr)', '0 Kč'];
+    return ['Doprava (zdarma k balíčku)', '0 Kč'];
+}
+
 function shopSummaryHtml(order) {
     const rows = [
-        [`${shopPlural(order.quantity)} × Onanovánky 2026`, czk(order.unit_price_czk * order.quantity)],
+        ...shopItemRows(order),
         ...(order.gift_bag ? [['Plátěná číča taška (dárek)', '0 Kč']] : []),
-        ...(order.shipping_price_czk > 0 ? [['Doprava', czk(order.shipping_price_czk)]] : [['Doprava (osobní odběr)', '0 Kč']]),
+        shopShippingRow(order),
         ['Zaplaceno', czk(order.total_czk)]
     ];
     return `<table style="width:100%;border-collapse:collapse;margin:16px 0;">${rows.map(([l, v], i) => `
@@ -365,7 +380,7 @@ async function sendShopConfirmationEmail({ order }) {
         footNote: 'Tenhle mail je potvrzení objednávky z podrazdenacica.cz/onanovanky. Prodávající: David Koutný, IČO 04356993. Obchodní podmínky: ' + BASE_URL + '/obchodni-podminky'
     });
     const text = `Objednávka č. ${order.order_no} je zaplacená.\n\n`
-        + `${order.quantity} × Onanovánky 2026: ${czk(order.unit_price_czk * order.quantity)}\n`
+        + shopItemRows(order).map(r => r[0].replace(/&amp;/g, '&') + ': ' + r[1]).join('\n') + '\n'
         + (order.gift_bag ? 'Plátěná číča taška (dárek): 0 Kč\n' : '')
         + `Doprava: ${czk(order.shipping_price_czk)}\nZaplaceno: ${czk(order.total_czk)}\n\n`
         + (order.shipping_method === 'pickup_atelier'
@@ -405,13 +420,13 @@ async function sendShopOrderNotification({ order }) {
     }
     const row = (l, v) => `<tr><td style="padding:6px 0;color:#CCCCCC;font-size:14px;vertical-align:top;width:120px;">${l}</td><td style="padding:6px 0;color:#F5F5F5;font-size:14px;">${v}</td></tr>`;
     const html = auctionShell({
-        heading: `Nová objednávka č. ${order.order_no}: ${order.quantity} × Onanovánky`,
+        heading: `Nová objednávka č. ${order.order_no}: ${Array.isArray(order.items) && order.items.length ? order.items.map(i => i.qty + ' × ' + esc(i.name)).join(', ') : order.quantity + ' × Onanovánky'}`,
         bodyHtml: `
             <table style="width:100%;border-collapse:collapse;margin:0 0 16px;">
                 ${row('Zákazník', esc(order.name || ''))}
                 ${row('E-mail', esc(order.email || ''))}
                 ${order.phone ? row('Telefon', esc(order.phone)) : ''}
-                ${row('Kusů', `${order.quantity}${order.gift_bag ? ' + plátěná taška' : ''}`)}
+                ${row('Kusů', `${order.quantity} Onanovánek celkem${order.gift_bag ? ' + plátěná taška' : ''}`)}
                 ${row('Zaplaceno', `<b style="color:#FE45E8;">${czk(order.total_czk)}</b> (doprava ${czk(order.shipping_price_czk)})`)}
                 ${row('Doručení', esc(ship) + (where ? '<br>' + where : ''))}
                 ${order.note ? row('Vzkaz', '„' + esc(order.note) + '“') : ''}

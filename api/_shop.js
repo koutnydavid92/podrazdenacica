@@ -27,6 +27,26 @@ const PRODUCTS = {
         image: 'https://www.podrazdenacica.cz/images/onanovanky/obalka-og.jpg',
         components: { onanovanky: 1 },
         active: true
+    },
+    // Balíčky (David 27. 10. 2026): ceny a texty z jeho zadání
+    'balicek-3plus1': {
+        id: 'balicek-3plus1',
+        name: 'Alfasamičičí baličíček (3+1)',
+        price: 999,
+        description: 'Čtyři Onanovánky 2026 za cenu tří. Topovej dárek pro mámu, ségru, bestku a kolegyňku z kanclu.',
+        image: 'https://www.podrazdenacica.cz/images/onanovanky/balicek-3plus1.jpg',
+        components: { onanovanky: 4 },
+        active: true
+    },
+    'balicek-5plus1': {
+        id: 'balicek-5plus1',
+        name: 'Ultimátní vánočiční baličíček (5+1)',
+        price: 1666,
+        description: 'Šest Onanovánek 2026 za cenu pěti, k tomu plátěná číča taška a doprava zdarma.',
+        image: 'https://www.podrazdenacica.cz/images/onanovanky/balicek-5plus1.jpg',
+        components: { onanovanky: 6 },
+        freeShipping: true,        // doprava zdarma, ať si zákazník vybere cokoliv
+        active: true
     }
 };
 
@@ -69,6 +89,16 @@ function stockNeeds(items) {
 
 function itemsTotal(items) {
     return items.reduce((s, i) => s + i.unit_price_czk * i.qty, 0);
+}
+
+// Doprava zdarma, když je v košíku položka, která ji má v ceně (balíček 5+1)
+function freeShippingIncluded(items) {
+    return items.some(i => PRODUCTS[i.id] && PRODUCTS[i.id].freeShipping);
+}
+
+// Co zákazník zaplatí za zvolenou dopravu při daném košíku
+function shippingPriceFor(items, method) {
+    return freeShippingIncluded(items) ? 0 : method.price;
 }
 
 // Do Stripe metadat (max 500 znaků na hodnotu) jde jen id a počet
@@ -221,7 +251,7 @@ async function fulfillShopSession(client, session) {
                 session.id,
                 typeof session.payment_intent === 'string' ? session.payment_intent : null,
                 PRODUCT, q, UNIT_PRICE_CZK,
-                md.shipping_method || 'pickup_atelier', method.price, total, giftBagIncluded(goods),
+                md.shipping_method || 'pickup_atelier', shippingPriceFor(items, method), total, giftBagIncluded(goods),
                 shippingName || details.name || null,
                 details.email || null,
                 details.phone || null,
@@ -290,6 +320,7 @@ async function logHeurekaOrder({ email, orderNo }) {
 module.exports = {
     PRODUCT, PRODUCT_NAME, UNIT_PRICE_CZK, MAX_PER_ORDER, GIFT_BAG_FROM_CZK, SHIPPING, PRODUCTS,
     product, normalizeItems, unitsOf, stockNeeds, itemsTotal, itemsForMetadata, itemsFromMetadata,
+    freeShippingIncluded, shippingPriceFor,
     shippingMethod, clampQuantity, goodsTotal, giftBagIncluded, sanitizeEmail, sanitizePoint,
     stockAvailable, stockShortage, fulfillShopSession, logHeurekaOrder
 };
