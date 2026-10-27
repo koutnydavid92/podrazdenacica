@@ -1843,7 +1843,7 @@
         function openPromoVideo() {
             if (!promoVideo.getAttribute('src')) {
                 promoVideo.preload = 'auto';
-                promoVideo.src = window.innerWidth < 820 ? '/videos/onanovanky/promo-720.mp4' : '/videos/onanovanky/promo.mp4';
+                promoVideo.src = window.innerWidth < 820 ? '/videos/onanovanky/promo-720.mp4?v=2' : '/videos/onanovanky/promo.mp4?v=2'; // ?v=2: menší soubory z 27. 10. 2026, obejde cache
                 videoLoading.hidden = false;
             }
             videoOverlay.hidden = false;
