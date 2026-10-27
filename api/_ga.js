@@ -51,7 +51,8 @@ async function trackPurchase(o) {
         value: value,
         currency: 'CZK',
         tickets: quantity,
-        items: [{
+        // Obchod posílá celý košík (o.items), vstupenky jednu položku
+        items: Array.isArray(o.items) && o.items.length ? o.items : [{
             // výchozí je vstupenka; obchod (Onanovánky) si pošle vlastní položku
             item_id: o.itemId || 'cica-art-fest-vstupenka',
             item_name: o.itemName || 'Vstupenka Číča Art Fest',

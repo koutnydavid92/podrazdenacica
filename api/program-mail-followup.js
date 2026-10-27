@@ -100,6 +100,27 @@ module.exports = async (req, res) => {
     // Večerní souhrn obchodu (vercel.json: ?job=shop-digest v 19:00 UTC).
     // Vlastní funkci mít nemůže (limit 12), tak sdílí tenhle cron.
     const job = (req.query && req.query.job) || (String(req.url || '').match(/[?&]job=([a-z-]+)/) || [])[1];
+
+    // Připomínky opuštěných košíků (viz api/_shop_carts.js). Volá pg_cron
+    // v Supabase každých 15 minut s hlavičkou x-cron-secret (CRON_SECRET),
+    // Vercel Hobby umí vlastní cron jen jednou denně. Spuštění navíc neuškodí:
+    // každý košík dostane každou připomínku nejvýš jednou.
+    if (job === 'cart-reminders') {
+        const secret = process.env.CRON_SECRET;
+        const secretOk = Boolean(secret) && pinEquals(req.headers['x-cron-secret'], secret);
+        if (!isCron && !isAdmin && !secretOk) { res.status(401).json({ error: 'unauthorized' }); return; }
+        try {
+            const { runCartReminders } = require('./_shop_carts');
+            const out = await withDb(c => runCartReminders(c, { send: true }));
+            console.log('cart reminders:', JSON.stringify(out));
+            res.status(200).json(out);
+        } catch (e) {
+            console.error('cart reminders failed:', e.message);
+            res.status(500).json({ error: 'reminders_failed' });
+        }
+        return;
+    }
+
     if (job === 'shop-digest') {
         if (!isCron && !isAdmin) { res.status(401).json({ error: 'unauthorized' }); return; }
         try {

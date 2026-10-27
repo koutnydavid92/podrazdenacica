@@ -99,7 +99,8 @@ as $$
         'gift_bag', gift_bag,
         'packeta_point_name', packeta_point_name,
         'packeta_point_address', packeta_point_address,
-        'status', status
+        'status', status,
+        'items', items                      -- 27. 10. 2026: položky košíku (starší objednávky null)
     )
     from shop_orders
     where stripe_session_id = p_session_id;
@@ -114,4 +115,67 @@ as $$
 $$;
 
 -- PostgREST musí po přidání funkcí načíst schéma znovu:
+notify pgrst, 'reload schema';
+
+-- ============================================================
+-- 27. 10. 2026: košík s více položkami (příprava na balíčky) a opuštěné
+-- košíky s připomínkou. Záloha dat před změnou: Web/zalohy-db/2026-10-27.
+-- ============================================================
+
+-- Položky objednávky [{id, name, qty, unit_price_czk}]. Sloupce product,
+-- quantity (= kusů Onanovánek) a unit_price_czk zůstávají kvůli adminu,
+-- souhrnům a dashboardu. Starší objednávky mají items null.
+alter table shop_orders add column if not exists items jsonb;
+
+-- Opuštěné košíky: řádek vzniká, jakmile zákazník v košíku zadá e-mail nebo
+-- klikne na Zaplatit (api/_shop_carts.js). Token je neuhodnutelný odkaz pro
+-- obnovu košíku z mailu. Připomínky 3 h a 24 h po poslední změně, bez slevy.
+create table if not exists shop_carts (
+    id uuid primary key default gen_random_uuid(),
+    token text not null unique,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    email text not null,
+    items jsonb not null,                      -- [{id, name, qty, unit_price_czk}]
+    shipping_method text,
+    packeta_point jsonb,                       -- {id, name, address, country}
+    note text,
+    goods_czk int not null default 0,
+    shipping_czk int not null default 0,
+    total_czk int not null default 0,
+    checkout_started_at timestamptz,           -- kliknutí na Zaplatit (odchod do Stripu)
+    status text not null default 'open' check (status in ('open', 'paid', 'expired', 'unsubscribed')),
+    paid_at timestamptz,
+    paid_order_id uuid references shop_orders(id),
+    reminder1_sent_at timestamptz,
+    reminder2_sent_at timestamptz,
+    ga_client_id text,
+    ga_session_id text,
+    fbp text,
+    fbc text,
+    ip inet,
+    user_agent text
+);
+create index if not exists shop_carts_status on shop_carts (status, updated_at);
+create index if not exists shop_carts_email on shop_carts (lower(email), created_at);
+alter table shop_carts enable row level security;
+
+-- Obnova košíku z odkazu v mailu (/onanovanky?kosik=<token>). Ven jde jen to,
+-- co stránka potřebuje; token zná jen příjemce mailu.
+create or replace function get_shop_cart(p_token text)
+returns json
+language sql security definer set search_path = public
+as $$
+    select json_build_object(
+        'items', items,
+        'shipping_method', shipping_method,
+        'packeta_point', packeta_point,
+        'note', note,
+        'email', email,
+        'status', status
+    )
+    from shop_carts
+    where token = p_token;
+$$;
+
 notify pgrst, 'reload schema';

@@ -1,15 +1,22 @@
 // POST /api/checkout - založí Stripe Checkout Session.
-//   {quantity}                        - vstupenky na Číča Art Fest (hlídá kapacitu 200)
-//   {product: 'onanovanky', ...}      - obchod s Onanovánkami (větev shopCheckout níže)
+//   {quantity}                                  - vstupenky na Číča Art Fest (hlídá kapacitu 200)
+//   {items:[{id,qty}], shipping_method, ...}    - obchod s Onanovánkami (větev shopCheckout níže)
+//   {product:'onanovanky', quantity, ...}       - starší stránka obchodu (do 27. 10. 2026), totéž
+//   {cart_save:{...}}                           - uložení košíku s e-mailem (opuštěné košíky)
+//   {cart_stop:'<token>'}                       - zrušení připomínek z odkazu v mailu
+//   {track:'view_content'|'add_to_cart', ...}   - serverové události do Mety
 // Obchod žije tady, ne ve vlastním souboru: Vercel Hobby povoluje 12 funkcí a jsou plné.
 const Stripe = require('stripe');
 const {
     withDb, remainingPublic, unitPriceCzk, quantityDiscount, MAX_TICKETS_PER_ORDER
 } = require('./_lib');
-const { trackInitiateCheckout, trackViewContent } = require('./_meta');
+const {
+    trackInitiateCheckout, trackViewContent, trackAddToCart, sanitizeFbCookie, sanitizeEventId
+} = require('./_meta');
 const { trackBeginCheckout } = require('./_ga');
 const { clientIp } = require('./_lib');
 const shop = require('./_shop');
+const carts = require('./_shop_carts');
 
 // Tělo requestu: Vercel ho obvykle naparsuje sám, ale request bez těla
 // nebo bez hlavičky Content-Type sem dorazí jako undefined nebo jako řetězec.
@@ -34,17 +41,10 @@ function sanitizeGaSessionId(v) {
     return /^[0-9]{1,20}$/.test(s) ? s : null;
 }
 
-// Cookies Meta pixelu mají tvar "fb.1.<čas>.<hodnota>", u _fbc je na konci
-// ID prokliku z reklamy. Pouštíme dál jen tenhle tvar a rozumnou délku.
-function sanitizeFbCookie(v) {
-    const s = String(v || '').trim();
-    return /^fb\.[0-9]\.[0-9]{1,20}\.[A-Za-z0-9_-]{1,300}$/.test(s) ? s : null;
-}
-
-// ID, podle kterého Meta spáruje událost z prohlížeče se stejnou ze serveru.
-function sanitizeEventId(v) {
-    const s = String(v || '').trim();
-    return /^[A-Za-z0-9_.-]{6,80}$/.test(s) ? s : null;
+// Adresa stránky pro Metu: jen náš web, jinak výchozí stránka obchodu
+function safeSourceUrl(v) {
+    return /^https:\/\/(www\.)?podrazdenacica\.cz\/[A-Za-z0-9\/_.-]*$/.test(String(v || ''))
+        ? v : 'https://www.podrazdenacica.cz/onanovanky';
 }
 
 module.exports = async (req, res) => {
@@ -64,8 +64,7 @@ module.exports = async (req, res) => {
                 fbc: sanitizeFbCookie(body.fbc),
                 clientIp: clientIp(req),
                 userAgent: req.headers['user-agent'] || '',
-                eventSourceUrl: /^https:\/\/(www\.)?podrazdenacica\.cz\/[A-Za-z0-9\/_.-]*$/.test(String(body.url || ''))
-                    ? body.url : 'https://www.podrazdenacica.cz/onanovanky',
+                eventSourceUrl: safeSourceUrl(body.url),
                 contentName: 'Onanovanky 2026',
                 contentId: 'onanovanky',
                 value: shop.UNIT_PRICE_CZK
@@ -74,15 +73,43 @@ module.exports = async (req, res) => {
             return;
         }
 
+        // Přidání do košíku do Mety ze serveru (stejné event_id jako pixel)
+        if (body.track === 'add_to_cart') {
+            const items = shop.normalizeItems(body.items) || [];
+            await trackAddToCart({
+                eventId: sanitizeEventId(body.event_id) || 'atc_' + Date.now(),
+                fbp: sanitizeFbCookie(body.fbp),
+                fbc: sanitizeFbCookie(body.fbc),
+                clientIp: clientIp(req),
+                userAgent: req.headers['user-agent'] || '',
+                eventSourceUrl: safeSourceUrl(body.url),
+                contents: items.map(i => ({ id: i.id, quantity: i.qty, item_price: i.unit_price_czk })),
+                value: shop.itemsTotal(items)
+            }).catch(() => {});
+            res.status(204).end();
+            return;
+        }
+
+        if (body.cart_save) {
+            await cartSave(req, res, body);
+            return;
+        }
+        if (body.cart_stop) {
+            const out = await withDb(c => carts.stopCart(c, body.cart_stop));
+            res.status(out.ok ? 200 : 400).json(out);
+            return;
+        }
+
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+        if (body.product === shop.PRODUCT || Array.isArray(body.items)) {
+            await shopCheckout(stripe, req, res, body);
+            return;
+        }
 
         // GA4 identifikátory ze stránky festu si vezmeme s sebou do Stripu,
         // ať webhook umí nákup nahlásit do analytiky i se správnou návštěvou.
         // Chybí, když kupující nedal souhlas s cookies - to je v pořádku.
-        if (body.product === shop.PRODUCT) {
-            await shopCheckout(stripe, req, res, body);
-            return;
-        }
         const gaClientId = sanitizeGaClientId(body.ga_client_id);
         const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
         // Totéž pro Metu: _fbp drží prohlížeč, _fbc proklik z reklamy.
@@ -162,49 +189,117 @@ module.exports = async (req, res) => {
 };
 
 // ---- Obchod: Onanovánky ----
-// Tělo: {product, quantity, shipping_method, packeta_point?, note?, ga_*, fbp, fbc, ic_event_id}
-// Cenu, dopravu i tašku zdarma počítá server. Adresu a telefon vybírá Stripe
-// jen tam, kde jsou potřeba (na adresu / výdejní místo).
-async function shopCheckout(stripe, req, res, body) {
-    const quantity = shop.clampQuantity(body.quantity);
-    const methodKey = String(body.shipping_method || '');
+
+// Společná příprava košíku z těla requestu: ověřené položky, doprava, místo,
+// vzkaz, e-mail. Vrací {error} nebo data.
+function readCart(src) {
+    const items = shop.normalizeItems(Array.isArray(src.items) ? src.items
+        : [{ id: shop.PRODUCT, qty: src.quantity }]);
+    if (!items) return { error: 'bad_items' };
+    if (shop.unitsOf(items) > shop.MAX_PER_ORDER) return { error: 'too_many' };
+    const methodKey = String(src.shipping_method || '');
     const method = shop.shippingMethod(methodKey);
-    if (!method) {
-        res.status(400).json({ error: 'bad_shipping' });
+    if (!method) return { error: 'bad_shipping' };
+    const point = shop.sanitizePoint(src.packeta_point);
+    return {
+        items, methodKey, method, point,
+        note: String(src.note || '').replace(/\s+/g, ' ').trim().slice(0, 400),
+        email: shop.sanitizeEmail(src.email)
+    };
+}
+
+// Uložení košíku s e-mailem pro připomínky (viz api/_shop_carts.js).
+async function cartSave(req, res, body) {
+    const cartData = readCart(body.cart_save || {});
+    if (cartData.error || !cartData.email) {
+        res.status(400).json({ error: cartData.error || 'bad_email' });
         return;
     }
-    const point = method.needsPoint ? shop.sanitizePoint(body.packeta_point) : null;
+    const goods = shop.itemsTotal(cartData.items);
+    const saved = await withDb(c => carts.upsertCart(c, {
+        token: (body.cart_save || {}).token,
+        email: cartData.email,
+        items: cartData.items,
+        shipping_method: cartData.methodKey,
+        packeta_point: cartData.point,
+        note: cartData.note,
+        goods_czk: goods,
+        shipping_czk: cartData.method.price,
+        total_czk: goods + cartData.method.price,
+        ga_client_id: sanitizeGaClientId(body.ga_client_id),
+        ga_session_id: sanitizeGaSessionId(body.ga_session_id),
+        fbp: sanitizeFbCookie(body.fbp),
+        fbc: sanitizeFbCookie(body.fbc),
+        ip: clientIp(req),
+        user_agent: req.headers['user-agent'] || '',
+        checkout_started: false
+    }));
+    res.status(200).json({ token: saved.token });
+}
+
+// Tělo: {items:[{id,qty}], shipping_method, packeta_point?, note?, email?, heureka_optout?,
+//        cart_token?, ga_*, fbp, fbc, ic_event_id}
+// Cenu, dopravu i tašku zdarma počítá server. Jméno, telefon a adresu vybírá
+// Stripe jen tam, kde jsou potřeba (na adresu / výdejní místo).
+async function shopCheckout(stripe, req, res, body) {
+    const cartData = readCart(body);
+    if (cartData.error) {
+        res.status(400).json({ error: cartData.error });
+        return;
+    }
+    const { items, methodKey, method, point, note, email } = cartData;
     if (method.needsPoint && !point) {
         res.status(400).json({ error: 'missing_point' });
         return;
     }
-    const note = String(body.note || '').replace(/\s+/g, ' ').trim().slice(0, 400);
     // Heureka Ověřeno zákazníky: zákazník může dotazník odmítnout zaškrtnutím v objednávce
     const heurekaOptOut = body.heureka_optout === true || body.heureka_optout === '1';
-
-    const stock = await withDb(shop.stockAvailable);
-    if (stock <= 0) {
-        res.status(409).json({ error: 'sold_out' });
-        return;
-    }
-    if (quantity > stock) {
-        res.status(409).json({ error: 'not_enough_stock', remaining: stock });
-        return;
-    }
-
+    const units = shop.unitsOf(items);
+    const goods = shop.itemsTotal(items);
+    const giftBag = shop.giftBagIncluded(goods);
     const gaClientId = sanitizeGaClientId(body.ga_client_id);
     const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
     const fbp = sanitizeFbCookie(body.fbp);
     const fbc = sanitizeFbCookie(body.fbc);
-    const goods = shop.goodsTotal(quantity);
-    const giftBag = shop.giftBagIncluded(quantity);
+
+    // Sklad a uložení košíku v jednom připojení k databázi
+    let shortage = null;
+    let savedCart = null;
+    await withDb(async (c) => {
+        shortage = await shop.stockShortage(c, shop.stockNeeds(items));
+        if (shortage || !email) return;
+        try {
+            savedCart = await carts.upsertCart(c, {
+                token: body.cart_token,
+                email, items,
+                shipping_method: methodKey,
+                packeta_point: point,
+                note,
+                goods_czk: goods,
+                shipping_czk: method.price,
+                total_czk: goods + method.price,
+                ga_client_id: gaClientId, ga_session_id: gaSessionId, fbp, fbc,
+                ip: clientIp(req),
+                user_agent: req.headers['user-agent'] || '',
+                checkout_started: true
+            });
+        } catch (e) {
+            console.error('cart save failed', e.message); // košík nesmí zastavit platbu
+        }
+    });
+    if (shortage) {
+        if (shortage.remaining <= 0) res.status(409).json({ error: 'sold_out' });
+        else res.status(409).json({ error: 'not_enough_stock', remaining: shortage.remaining });
+        return;
+    }
 
     const metaEvent = trackInitiateCheckout({
         eventId: sanitizeEventId(body.ic_event_id) || 'ic_' + Date.now(),
         value: goods + method.price,
-        quantity: quantity,
+        quantity: units,
         fbp: fbp,
         fbc: fbc,
+        email: email,
         eventSourceUrl: 'https://www.podrazdenacica.cz/onanovanky'
     }).catch(() => { /* měření nesmí shodit prodej */ });
 
@@ -212,23 +307,26 @@ async function shopCheckout(stripe, req, res, body) {
     // se zakládáním platby ve Stripu, takže cestu k platbě nezdržuje.
     const gaEvent = trackBeginCheckout({
         value: goods + method.price,
-        quantity: quantity,
+        quantity: units,
         clientId: gaClientId,
         sessionId: gaSessionId
     }).catch(() => { /* měření nesmí shodit prodej */ });
 
-    const lineItems = [{
-        price_data: {
-            currency: 'czk',
-            unit_amount: shop.UNIT_PRICE_CZK * 100,
-            product_data: {
-                name: shop.PRODUCT_NAME,
-                description: 'Antisystémové omalovánky pro dospělé. A4, 30 motivů, spirála nahoře.',
-                images: ['https://www.podrazdenacica.cz/images/onanovanky/obalka-og.jpg']
-            }
-        },
-        quantity: quantity
-    }];
+    const lineItems = items.map(i => {
+        const p = shop.product(i.id);
+        return {
+            price_data: {
+                currency: 'czk',
+                unit_amount: i.unit_price_czk * 100,
+                product_data: {
+                    name: i.name,
+                    description: p.description,
+                    images: p.image ? [p.image] : undefined
+                }
+            },
+            quantity: i.qty
+        };
+    });
     if (giftBag) {
         lineItems.push({
             price_data: {
@@ -264,8 +362,10 @@ async function shopCheckout(stripe, req, res, body) {
         metadata: {
             event: 'shop',
             product: shop.PRODUCT,
-            quantity: String(quantity),
+            quantity: String(units),
+            items: shop.itemsForMetadata(items),
             shipping_method: methodKey,
+            ...(savedCart ? { cart_id: savedCart.id } : {}),
             ...(point ? {
                 packeta_point_id: point.id,
                 packeta_point_name: point.name,
@@ -290,8 +390,11 @@ async function shopCheckout(stripe, req, res, body) {
         },
         allow_promotion_codes: true,
         success_url: origin + '/onanovanky-dekuji?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: origin + '/onanovanky#koupit'
+        cancel_url: origin + '/onanovanky#kosik'
     };
+    // E-mail z košíku předvyplníme do pokladny (Stripe ho pak nenechá měnit),
+    // takže potvrzení i případná připomínka jdou na stejnou adresu.
+    if (email) params.customer_email = email;
     if (method.needsAddress) {
         params.shipping_address_collection = { allowed_countries: [method.country] };
     }
@@ -299,5 +402,5 @@ async function shopCheckout(stripe, req, res, body) {
     const session = await stripe.checkout.sessions.create(params);
     await metaEvent;
     await gaEvent;
-    res.status(200).json({ url: session.url });
+    res.status(200).json({ url: session.url, cart_token: savedCart ? savedCart.token : null });
 }

@@ -275,12 +275,16 @@
         }
 
         function renderOrder(o) {
+            // Zaplaceno: košík v prohlížeči (localStorage, viz onanovanky.html) už nemá co obnovovat
+            try { localStorage.removeItem('onanovanky_cart_v1'); } catch (e) {}
             const first = vokativ(o.name);
             document.getElementById('paidLead').textContent =
                 (first ? first + ', o' : 'O') + 'bjednávka č. ' + o.order_no + ' je zaplacená. Potvrzení ti letí na '
                 + (o.email || 'mail') + '.';
             const rows = [
-                [o.quantity + ' × Onanovánky 2026', czk(o.unit_price_czk * o.quantity)],
+                ...((Array.isArray(o.items) && o.items.length)
+                    ? o.items.map(i => [i.qty + ' × ' + i.name, czk(Number(i.unit_price_czk) * Number(i.qty))])
+                    : [[o.quantity + ' × Onanovánky 2026', czk(o.unit_price_czk * o.quantity)]]),
                 ...(o.gift_bag ? [['Plátěná číča taška', 'dárek']] : []),
                 [o.shipping_price_czk > 0 ? 'Doprava' : 'Osobní odběr', czk(o.shipping_price_czk)],
             ];
@@ -304,12 +308,14 @@
                     value: Number(o.total_czk) || 0,
                     currency: 'CZK',
                     shipping: Number(o.shipping_price_czk) || 0,
-                    items: [{
-                        item_id: 'onanovanky',
-                        item_name: 'Onanovánky 2026',
-                        price: Number(o.unit_price_czk) || 333,
-                        quantity: Number(o.quantity) || 1
-                    }]
+                    items: (Array.isArray(o.items) && o.items.length)
+                        ? o.items.map(i => ({ item_id: i.id, item_name: i.name, price: Number(i.unit_price_czk) || 0, quantity: Number(i.qty) || 1 }))
+                        : [{
+                            item_id: 'onanovanky',
+                            item_name: 'Onanovánky 2026',
+                            price: Number(o.unit_price_czk) || 333,
+                            quantity: Number(o.quantity) || 1
+                        }]
                 }
             });
             // Heureka.cz: měření konverzí, část 2 (děkovací stránka). Jen po

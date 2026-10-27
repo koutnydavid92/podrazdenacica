@@ -142,7 +142,36 @@ function trackInitiateCheckout(o) {
  * @returns {Promise<{sent: boolean, reason?: string}>}
  */
 function trackPurchase(o) {
-    return sendEvent('Purchase', Object.assign({ eventId: o.transactionId }, o));
+    // Víc položek v košíku (od 27. 10. 2026): contents = [{id, quantity, item_price}]
+    const custom = Array.isArray(o.contents) && o.contents.length ? {
+        customData: {
+            value: Number(o.value) || 0,
+            currency: 'CZK',
+            content_type: 'product',
+            content_ids: o.contents.map(c => c.id),
+            contents: o.contents,
+            num_items: o.contents.reduce((s, c) => s + (Number(c.quantity) || 0), 0)
+        }
+    } : {};
+    return sendEvent('Purchase', Object.assign({ eventId: o.transactionId }, custom, o));
+}
+
+/**
+ * Přidání do košíku (AddToCart) ze serveru: stejné event_id jako pixel
+ * v prohlížeči, dorazí i přes adblocker. Střední krok trychtýře pro
+ * optimalizaci reklam, když nákupů je málo.
+ */
+function trackAddToCart(o) {
+    return sendEvent('AddToCart', Object.assign({
+        customData: {
+            content_type: 'product',
+            content_ids: (o.contents || []).map(c => c.id),
+            content_name: o.contentName || 'Onanovanky 2026',
+            contents: o.contents || [{ id: 'onanovanky', quantity: 1 }],
+            value: Number(o.value) || 0,
+            currency: 'CZK'
+        }
+    }, o));
 }
 
 /**
@@ -193,6 +222,6 @@ function sanitizeEventId(v) {
 }
 
 module.exports = {
-    trackPurchase, trackInitiateCheckout, trackViewContent, trackLead,
+    trackPurchase, trackInitiateCheckout, trackViewContent, trackLead, trackAddToCart,
     sanitizeFbCookie, sanitizeEventId
 };

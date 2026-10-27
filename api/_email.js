@@ -520,6 +520,61 @@ async function sendShopSampleEmail({ to }) {
     });
 }
 
+// Připomínka opuštěného košíku. Krok 1 tři hodiny po poslední změně košíku,
+// krok 2 po cca 24 hodinách; bez slevy (rozhodnutí Davida 27. 10. 2026).
+// Odkaz obnoví košík na /onanovanky, druhý odkaz připomínky vypne.
+async function sendShopCartReminderEmail({ cart, step }) {
+    const first = step === 1;
+    const items = Array.isArray(cart.items) ? cart.items : [];
+    const link = `${BASE_URL}/onanovanky?kosik=${encodeURIComponent(cart.token)}`;
+    const stop = `${BASE_URL}/onanovanky?kosik=${encodeURIComponent(cart.token)}&zrusit=1`;
+    const ship = SHIP_LABEL[cart.shipping_method] || 'Doprava';
+    const rows = items.map(i => [`${i.qty} × ${esc(i.name)}`, czk(Number(i.unit_price_czk) * Number(i.qty))]);
+    if (Number(cart.goods_czk) >= 999) rows.push(['Plátěná číča taška (dárek)', '0 Kč']);
+    rows.push([esc(ship), czk(cart.shipping_czk)]);
+    rows.push(['Celkem', czk(cart.total_czk)]);
+    const table = `<table style="width:100%;border-collapse:collapse;margin:16px 0;">${rows.map(([l, v], i) => `
+        <tr>
+            <td style="padding:8px 0;border-top:1px solid #2A2A2A;color:${i === rows.length - 1 ? '#F5F5F5' : '#CCCCCC'};font-size:14px;${i === rows.length - 1 ? 'font-weight:bold;' : ''}">${l}</td>
+            <td style="padding:8px 0;border-top:1px solid #2A2A2A;color:${i === rows.length - 1 ? '#FE45E8' : '#F5F5F5'};font-size:14px;text-align:right;${i === rows.length - 1 ? 'font-weight:bold;' : ''}">${v}</td>
+        </tr>`).join('')}</table>`;
+    const html = auctionShell({
+        heading: first ? 'Košík čeká. Onanovánky taky.' : 'Poslední šťouchnutí. Pak už mlčíme.',
+        bodyHtml: `
+            <p style="color:#CCCCCC;font-size:15px;line-height:1.6;margin:0;">
+                ${first
+                    ? 'Nechal*a sis u nás v košíku Onanovánky a utekl*a před pokladnou. Stává se. Košík jsme ti podrželi, stačí dokončit a balíme do 3 pracovních dnů.'
+                    : 'Tvůj košík pořád žije. Jestli ses rozmyslel*a, v pohodě, tohle je poslední mail. Jestli ne, pastelky už se těší.'}
+            </p>
+            ${table}
+            ${auctionButton(link, 'Dokončit objednávku')}
+            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+                Něco nešlo? Odepiš na tenhle mail a vyřešíme to.
+            </p>`,
+        footNote: `Tenhle mail přišel, protože sis na podrazdenacica.cz/onanovanky nechal*a e-mail v košíku. `
+            + (first ? 'Pošleme nejvýš ještě jednu připomínku. ' : 'Další už nepřijde. ')
+            + `<a href="${stop}" style="color:#888888;">Zrušit připomínky</a>`
+    });
+    const text = (first
+        ? 'Nechal*a sis u nás v košíku Onanovánky. Košík jsme ti podrželi, stačí dokončit:\n'
+        : 'Tvůj košík pořád žije. Tohle je poslední připomínka:\n')
+        + link + '\n\n'
+        + items.map(i => `${i.qty} × ${i.name}: ${czk(Number(i.unit_price_czk) * Number(i.qty))}`).join('\n')
+        + `\n${ship}: ${czk(cart.shipping_czk)}\nCelkem: ${czk(cart.total_czk)}\n\n`
+        + `Zrušit připomínky: ${stop}\n\nMňau.`;
+    return ecomail('/transactional/send-message', {
+        message: {
+            subject: first ? 'Nechal*a sis Onanovánky v košíku 🖤' : 'Ještě jsou tady. Onanovánky, ne výmluvy. 🎨',
+            from_name: FROM_NAME,
+            from_email: FROM_EMAIL,
+            reply_to: REPLY_TO,
+            to: [{ email: cart.email, name: '' }],
+            html,
+            text
+        }
+    });
+}
+
 // Kupující a zájemci o ukázku do hlavního listu se štítkem. Bez
 // potvrzovacího mailu: kupující dostal potvrzení objednávky, zájemce
 // o ukázku si mail sám vyžádal. Odhlášení je v každé kampani.
@@ -556,5 +611,5 @@ module.exports = {
     subscribeToEventList, subscribeToEventListSafe,
     sendAuctionVerifyEmail, sendOutbidEmail, sendWinnerEmail,
     sendShopConfirmationEmail, sendShopShippedEmail, sendShopSampleEmail, sendShopOrderNotification,
-    sendShopDigestEmail, subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE, esc, czk
+    sendShopDigestEmail, sendShopCartReminderEmail, subscribeToShopListSafe, SHOP_TAG_BUYER, SHOP_TAG_SAMPLE, esc, czk
 };

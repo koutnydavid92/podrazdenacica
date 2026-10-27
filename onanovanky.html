@@ -693,6 +693,100 @@
             .ship .p { grid-column: 2; justify-self: start; }
         }
 
+        /* ===== Košík (varianta A, 27. 10. 2026): nabídka, ikona v hlavičce, panel zprava ===== */
+        .header-actions { display: flex; align-items: center; gap: 0.6rem; flex: none; }
+        .cart-btn {
+            position: relative;
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 1px solid var(--divider); background: transparent; color: var(--white);
+            cursor: pointer; transition: border-color .2s ease, color .2s ease;
+        }
+        .cart-btn:hover, .cart-btn:focus-visible { border-color: var(--accent-neon); color: var(--accent-neon); outline: none; }
+        .cart-btn svg { width: 22px; height: 22px; }
+        .cart-count {
+            position: absolute; top: -5px; right: -5px; min-width: 20px; height: 20px; padding: 0 5px;
+            border-radius: 999px; background: var(--accent-neon); color: var(--black);
+            font-size: 0.75rem; font-weight: 700; line-height: 20px; text-align: center;
+        }
+        .cart-count[hidden] { display: none; }
+        .cart-btn.bump { animation: cartBump .4s ease; }
+        @keyframes cartBump { 30% { transform: scale(1.2); } }
+
+        /* Nabídka (karty produktů, balíčky přibudou jako další karty) */
+        .offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 540px)); justify-content: center; gap: 1.4rem; }
+        .offer {
+            display: grid; grid-template-columns: 170px 1fr; gap: 1.3rem; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--accent-neon); border-radius: 22px; padding: 1.3rem;
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.12);
+        }
+        .offer-media img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; display: block; border: 1px solid #2A2A2A; }
+        .offer-body h3 { font-family: 'Archivo Black', sans-serif; font-size: 1.35rem; margin-bottom: 0.4rem; color: var(--white); }
+        .offer-body p { color: var(--text-secondary); line-height: 1.5; font-size: 0.95rem; }
+        .offer-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem 1rem; flex-wrap: wrap; margin: 1rem 0 0.6rem; }
+        .offer-price { font-family: 'Archivo Black', sans-serif; font-size: 1.9rem; color: var(--accent-neon); line-height: 1; }
+        .offer .btn-primary { padding: 0.85rem 1.6rem; font-size: 1rem; }
+        .offer .btn-primary:disabled { opacity: .5; cursor: default; transform: none; }
+        .offer-note { font-size: 0.85rem; color: #888 !important; }
+        .offer-avail { justify-content: center; margin: -1.6rem auto 1.8rem; max-width: 620px; }
+        .sold-out.show { display: block; }
+        .avail-line.off .dot, .shop-avail.off .dot { background: #888; box-shadow: none; }
+
+        /* Panel košíku */
+        .cart-backdrop { position: fixed; inset: 0; z-index: 1900; background: rgba(5, 3, 8, 0.7); }
+        .cart-backdrop[hidden] { display: none; }
+        .cart-drawer {
+            position: fixed; top: 0; right: 0; bottom: 0; z-index: 1950;
+            width: min(460px, 100%);
+            background: var(--bg-card); border-left: 1px solid var(--divider);
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.55);
+            transform: translateX(100%); transition: transform .3s ease;
+            display: flex; flex-direction: column;
+        }
+        .cart-drawer.open { transform: translateX(0); }
+        .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.2rem; border-bottom: 1px solid var(--divider); flex: none; }
+        .cart-head h2 { font-family: 'Archivo Black', sans-serif; font-size: 1.4rem; color: var(--white); }
+        .cart-close { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--divider); background: transparent; color: var(--white); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+        .cart-close:hover { border-color: var(--accent-neon); color: var(--accent-neon); }
+        .cart-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0.4rem 1.2rem 2.5rem; }
+        .cart-notice { margin: 0.9rem 0 0; border: 1px solid var(--accent-neon); background: rgba(254, 69, 232, 0.08); border-radius: 12px; padding: 0.7rem 1rem; font-size: 0.92rem; line-height: 1.5; color: var(--text-primary); }
+        .cart-notice[hidden] { display: none; }
+        .cart-empty { text-align: center; padding: 3rem 0; }
+        .cart-empty .big { font-size: 2rem; color: var(--accent-neon); }
+        .cart-empty p { color: var(--text-secondary); margin: 0.6rem 0 1.4rem; }
+        .cart-empty[hidden], .cart-form[hidden] { display: none; }
+        .cart-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 0.8rem; align-items: center; padding: 0.9rem 0; border-bottom: 1px solid var(--divider); }
+        .cart-item img { width: 56px; height: 70px; object-fit: cover; border-radius: 8px; display: block; }
+        .cart-item .t { color: var(--white); font-weight: 700; line-height: 1.3; }
+        .cart-item .u { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.4rem; }
+        .cart-item .qty button { width: 36px; height: 36px; font-size: 1.2rem; }
+        .cart-item .qty output { min-width: 32px; font-size: 1.05rem; }
+        .cart-item .right { text-align: right; }
+        .cart-item .line { color: var(--white); font-weight: 700; white-space: nowrap; }
+        .cart-item .rm { background: none; border: none; color: #888; cursor: pointer; font-size: 0.82rem; text-decoration: underline; padding: 0; margin-top: 0.35rem; font-family: 'DM Sans', sans-serif; }
+        .cart-item .rm:hover { color: var(--accent-neon); }
+        .cart-drawer .bag-hint { margin: 0.8rem 0 0.4rem; }
+        .cart-drawer .order-step { margin: 1.4rem 0 0; }
+        .cart-drawer .order-step h3 .opt { color: #888; font-weight: 400; font-size: .9rem; }
+        .cart-drawer input[type="email"], .cart-drawer textarea {
+            width: 100%; padding: 0.9rem 1rem; background: var(--bg-primary); border: 2px solid var(--divider); border-radius: 12px;
+            color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 1rem;
+        }
+        .cart-drawer textarea { min-height: 76px; resize: vertical; }
+        .cart-drawer input[type="email"]:focus, .cart-drawer textarea:focus { outline: none; border-color: var(--accent-neon); }
+        .cart-fine { color: #888; font-size: 0.85rem; margin-top: 0.4rem; }
+        .cart-drawer .summary { margin-top: 1.4rem; }
+        .cart-drawer .btn-primary { width: 100%; text-align: center; margin-top: 1rem; font-size: 1.05rem; padding: 1rem 1.4rem; }
+        .cart-drawer .btn-primary:disabled { opacity: .5; cursor: wait; transform: none; }
+        body.cart-open { overflow: hidden; }
+        @media (max-width: 520px) {
+            .offer { grid-template-columns: 110px 1fr; gap: 1rem; padding: 1rem; }
+            .offer-body h3 { font-size: 1.15rem; }
+            .offer-price { font-size: 1.6rem; }
+            .cart-item { grid-template-columns: 48px 1fr auto; }
+            .cart-item img { width: 48px; height: 60px; }
+        }
+
         /* Náhled ukázky (lightbox sdílený se style.css). Clarity, říjen 2026:
            lidé klepali na miniatury a čekali zvětšení, tak ho dostanou. */
         .sheet { cursor: zoom-in; }
@@ -797,11 +891,17 @@
                     <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
                 </div>
             </nav>
-            <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <div class="header-actions">
+                <button class="cart-btn" id="cartButton" type="button" aria-label="Košík" aria-haspopup="dialog" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+                    <span class="cart-count" id="cartCount" hidden>0</span>
+                </button>
+                <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -884,98 +984,32 @@
         </div>
     </section>
 
-    <!-- Objednávka -->
+    <!-- Nabídka: produkty do košíku (varianta A, 27. 10. 2026). Doprava, e-mail
+         a platba se řeší v panelu košíku (#cartDrawer níže). Balíčky přibudou
+         jako další <article class="offer"> a položka v PRODUCTS (tady i v api/_shop.js). -->
     <section id="koupit">
         <div class="container">
             <h2 class="section-title reveal" style="text-align:center;">Koupit Onanovánky</h2>
-            <div class="order-box reveal" id="orderBox">
-                <form id="orderForm" novalidate>
-                    <p class="avail-line"><span class="dot"></span><span><b>Skladem.</b> Balíme do 3 pracovních dnů, Zásilkovna pak doručí obvykle do jednoho až dvou dnů.</span></p>
-                    <div class="order-step">
-                        <h3><span class="n">1</span> Kolik kusů</h3>
-                        <div class="qty-row">
-                            <div class="qty" role="group" aria-label="Počet kusů">
-                                <button type="button" id="qtyMinus" aria-label="Míň">−</button>
-                                <output id="qtyOut" aria-live="polite">1</output>
-                                <button type="button" id="qtyPlus" aria-label="Víc">+</button>
-                            </div>
-                            <div class="bag-hint" id="bagHint"></div>
+            <p class="avail-line offer-avail reveal"><span class="dot"></span><span><b>Skladem.</b> Balíme do 3 pracovních dnů, Zásilkovna pak doručí obvykle do jednoho až dvou dnů.</span></p>
+            <div class="offer-grid reveal" id="offerGrid">
+                <article class="offer" data-product="onanovanky">
+                    <div class="offer-media">
+                        <img src="/images/onanovanky/produkt-labubu.jpg" alt="Onanovánky 2026, kniha otevřená na stránce Labudusumu" loading="lazy" width="1080" height="1350">
+                    </div>
+                    <div class="offer-body">
+                        <h3>Onanovánky 2026</h3>
+                        <p>30 motivů, A4 na spirále, obálka s matnou laminací. Vymaluj, odtrhni, pověs na zeď.</p>
+                        <div class="offer-row">
+                            <div class="offer-price">333 Kč</div>
+                            <button type="button" class="btn-primary" data-add="onanovanky" data-cta="onanovanky_do_kosiku">Do košíku</button>
                         </div>
+                        <p class="offer-note">Od tří kusů plátěná číča taška jako dárek. Osobní odběr v Brně zdarma, Zásilkovna od 89 Kč.</p>
                     </div>
-
-                    <div class="order-step">
-                        <h3><span class="n">2</span> Jak ti je doručit</h3>
-                        <div class="ship-list" id="shipList">
-                            <label class="ship on">
-                                <input type="radio" name="ship" value="pickup_atelier" checked>
-                                <span><span class="t">Osobní odběr v ateliéru</span><span class="s">Veselá 5, Brno. Po zaplacení se domluvíme na čase, držíme měsíc.</span></span>
-                                <span class="p free">0 Kč</span>
-                            </label>
-                            <label class="ship">
-                                <input type="radio" name="ship" value="packeta_point_cz">
-                                <span><span class="t">Zásilkovna, výdejní místo nebo Z-BOX</span><span class="s">Česko. Vybereš si místo na mapě.</span></span>
-                                <span class="p">89 Kč</span>
-                            </label>
-                            <label class="ship">
-                                <input type="radio" name="ship" value="packeta_home_cz">
-                                <span><span class="t">Zásilkovna až domů</span><span class="s">Česko. Adresu vyplníš při platbě.</span></span>
-                                <span class="p">129 Kč</span>
-                            </label>
-                            <label class="ship">
-                                <input type="radio" name="ship" value="packeta_point_sk">
-                                <span><span class="t">Zásilkovna, výdejní místo nebo Z-BOX</span><span class="s">Slovensko. Vybereš si místo na mapě.</span></span>
-                                <span class="p">129 Kč</span>
-                            </label>
-                            <label class="ship">
-                                <input type="radio" name="ship" value="packeta_home_sk">
-                                <span><span class="t">Zásilkovna až domů</span><span class="s">Slovensko. Adresu vyplníš při platbě.</span></span>
-                                <span class="p">169 Kč</span>
-                            </label>
-                        </div>
-                        <div class="point-box" id="pointBox">
-                            <div id="pointChosen"><span class="none">Ještě nemáš vybrané výdejní místo.</span></div>
-                            <button type="button" class="btn-small" id="pointButton">Vybrat na mapě</button>
-                        </div>
-                    </div>
-
-                    <div class="order-step">
-                        <h3><span class="n">3</span> Vzkaz pro číču <span style="color:#888;font-weight:400;font-size:.9rem;">(nepovinný)</span></h3>
-                        <textarea id="noteInput" name="note" maxlength="400" placeholder="Je to dárek? Chceš věnování? Nebo nám jen něco chceš říct."></textarea>
-                    </div>
-
-                    <div class="order-step" style="margin-bottom:1rem;">
-                        <label class="check">
-                            <input type="checkbox" id="ageCheck">
-                            <span>Potvrzuji, že jsem plnoletý/á.</span>
-                        </label>
-                        <label class="check">
-                            <input type="checkbox" id="termsCheck">
-                            <span>Souhlasím s <a href="/obchodni-podminky" target="_blank" rel="noopener">obchodními podmínkami</a> a beru na vědomí <a href="/podminky" target="_blank" rel="noopener">zpracování osobních údajů</a>.</span>
-                        </label>
-                        <label class="check">
-                            <input type="checkbox" id="heurekaOptOut">
-                            <span>Nechci po nákupu dostat dotazník spokojenosti Heureka Ověřeno zákazníky.</span>
-                        </label>
-                    </div>
-
-                    <div class="summary" aria-live="polite">
-                        <div class="row"><span id="sumGoodsLabel">1 × Onanovánky</span><span id="sumGoods">333 Kč</span></div>
-                        <div class="row" id="sumBagRow" hidden><span>Plátěná číča taška</span><span>dárek</span></div>
-                        <div class="row"><span id="sumShipLabel">Osobní odběr</span><span id="sumShip">0 Kč</span></div>
-                        <div class="row total"><span>Celkem</span><span id="sumTotal">333 Kč</span></div>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="payButton" data-cta="onanovanky_zaplatit">Zaplatit 333 Kč</button>
-                    <div class="form-err" id="orderErr" role="alert"></div>
-                    <p class="pay-note">
-                        Platba kartou, Apple Pay nebo Google Pay přes Stripe. Jméno, e-mail
-                        a případnou adresu vyplníš až tam. Balíme do 3 pracovních dnů.
-                    </p>
-                </form>
-                <div class="sold-out">
-                    <h3>Vyprodáno. Dotiskujeme.</h3>
-                    <p>Nech nám mail v sekci níž a dáme ti vědět, až budou zpátky. Mňau.</p>
-                </div>
+                </article>
+            </div>
+            <div class="sold-out" id="offerSoldOut">
+                <h3>Vyprodáno. Dotiskujeme.</h3>
+                <p>Nech nám mail v sekci výš a dáme ti vědět, až budou zpátky. Mňau.</p>
             </div>
         </div>
     </section>
@@ -1184,74 +1218,293 @@
         }, { threshold: 0.2 });
         trackedSections.forEach(id => { const el = document.getElementById(id); if (el) sectionObserver.observe(el); });
 
-        // ---- Objednávka ----
+        // ---- Košík (varianta A, 27. 10. 2026) ----
+        // Položky si pamatuje prohlížeč (localStorage), ceny a sklad hlídá server
+        // (api/_shop.js). Panel vyjede zprava, platba zůstává ve Stripu. Jakmile
+        // člověk zadá e-mail, košík se uloží i na server kvůli připomínce
+        // nedokončené objednávky (api/_shop_carts.js: 3 h a 24 h, bez slevy).
+        const PRODUCTS = {
+            // zrcadlo katalogu z api/_shop.js (platí vždycky server), při změně upravit obojí
+            onanovanky: { id: 'onanovanky', name: 'Onanovánky 2026', price: UNIT_PRICE, image: '/images/onanovanky/produkt-labubu.jpg' }
+        };
+        const CART_KEY = 'onanovanky_cart_v1';
         const el = id => document.getElementById(id);
-        function markSoldOut() {
-            el('orderBox').classList.add('is-sold-out');
-            const badge = el('availBadge');
-            if (badge) { badge.classList.add('off'); badge.innerHTML = '<span class="dot"></span><span>Vyprodáno.&nbsp;<small>Dotiskujeme, nech nám mail níž.</small></span>'; }
-        }
         const czk = n => n.toLocaleString('cs-CZ') + ' Kč';
-        let qty = 1;
-        let point = null;
-
-        function shipKey() {
-            return (document.querySelector('input[name="ship"]:checked') || {}).value || 'pickup_atelier';
+        function escapeHtml(s) {
+            return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
-        function render() {
+        function emptyCart() { return { items: [], shipping: 'pickup_atelier', point: null, note: '', email: '', token: null }; }
+        function loadCart() {
+            try {
+                const c = JSON.parse(localStorage.getItem(CART_KEY) || 'null');
+                if (c && Array.isArray(c.items)) return Object.assign(emptyCart(), c);
+            } catch (e) { /* bez úložiště začínáme s prázdným košíkem */ }
+            return emptyCart();
+        }
+        let cart = loadCart();
+        let soldOut = false;
+        let cartSaveTimer = null;
+        const cartDrawer = el('cartDrawer');
+
+        function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) { /* ticho */ } }
+        function cartItems() { return cart.items.filter(i => PRODUCTS[i.id] && i.qty > 0); }
+        function units() { return cartItems().reduce((s, i) => s + i.qty, 0); }
+        function goodsTotal() { return cartItems().reduce((s, i) => s + PRODUCTS[i.id].price * i.qty, 0); }
+        function gaItems() { return cartItems().map(i => ({ item_id: i.id, item_name: PRODUCTS[i.id].name, price: PRODUCTS[i.id].price, quantity: i.qty })); }
+        function shipKey() { return SHIPPING[cart.shipping] ? cart.shipping : 'pickup_atelier'; }
+        function orderTotal() { return goodsTotal() + SHIPPING[shipKey()].price; }
+        function emailValid(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v || '').trim()); }
+
+        // GA4 a Meta identifikátory návštěvy pro server (viz api/checkout.js)
+        function idsForCheckout() {
+            try {
+                const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
+                // Cookie má dva tvary: starší GS1.1.<id>.… a novější GS2.1.s<id>$o…
+                const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.s?(\d+)/);
+                const fbp = document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+                const fbc = document.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
+                return {
+                    ga_client_id: ga ? ga[1] : null,
+                    ga_session_id: gs ? gs[1] : null,
+                    fbp: fbp ? decodeURIComponent(fbp[1]) : null,
+                    fbc: fbc ? decodeURIComponent(fbc[1]) : null
+                };
+            } catch (e) { return {}; }
+        }
+        // Serverová kopie události do Mety přes náš endpoint (sendBeacon přežije i odchod ze stránky)
+        function beacon(payload) {
+            const body = JSON.stringify(payload);
+            try {
+                if (!navigator.sendBeacon || !navigator.sendBeacon('/api/checkout', new Blob([body], { type: 'application/json' }))) {
+                    fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+                }
+            } catch (e) { /* ticho */ }
+        }
+        // E-commerce události ve formátu GA4: do dataLayer (GTM a kontrola v konzoli)
+        // i přímo do gtag, protože GA4 se načítá mimo GTM. `extra` jde navíc na
+        // první úroveň objektu (GTM tagy Mety čtou value a transaction_id odtud).
+        function trackEcommerce(event, data, extra) {
+            try {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ ecommerce: null });
+                window.dataLayer.push(Object.assign({ event, ecommerce: data }, extra || {}));
+                if (typeof gtag === 'function') gtag('event', event, data);
+            } catch (e) { /* měření nesmí nic rozbít */ }
+        }
+
+        function showErr(msg) {
+            const box = el('orderErr');
+            box.textContent = msg;
+            box.classList.toggle('show', Boolean(msg));
+        }
+        function notice(msg) {
+            const box = el('cartNotice');
+            box.textContent = msg;
+            box.hidden = !msg;
+        }
+        function markSoldOut() {
+            soldOut = true;
+            document.querySelectorAll('[data-add]').forEach(b => { b.disabled = true; b.textContent = 'Vyprodáno'; });
+            el('offerSoldOut').classList.add('show');
+            const badge = el('availBadge');
+            if (badge) { badge.classList.add('off'); badge.innerHTML = '<span class="dot"></span><span>Vyprodáno.&nbsp;<small>Dotiskujeme, nech nám mail výš.</small></span>'; }
+            document.querySelectorAll('.avail-line').forEach(a => { a.classList.add('off'); a.innerHTML = '<span class="dot"></span><span><b>Vyprodáno.</b> Dotiskujeme, nech nám mail výš.</span>'; });
+            renderCart();
+        }
+
+        // ---- Panel ----
+        function openCart() {
+            const wasOpen = cartDrawer.classList.contains('open');
+            cartDrawer.classList.add('open');
+            cartDrawer.setAttribute('aria-hidden', 'false');
+            el('cartBackdrop').hidden = false;
+            document.body.classList.add('cart-open');
+            el('cartButton').setAttribute('aria-expanded', 'true');
+            renderCart();
+            if (!wasOpen && cartItems().length) trackEcommerce('view_cart', { currency: 'CZK', value: goodsTotal(), items: gaItems() });
+            if (!wasOpen) setTimeout(() => el('cartClose').focus(), 60);
+        }
+        function closeCart() {
+            if (!cartDrawer.classList.contains('open')) return;
+            cartDrawer.classList.remove('open');
+            cartDrawer.setAttribute('aria-hidden', 'true');
+            el('cartBackdrop').hidden = true;
+            document.body.classList.remove('cart-open');
+            el('cartButton').setAttribute('aria-expanded', 'false');
+            el('cartButton').focus();
+        }
+        el('cartButton').addEventListener('click', openCart);
+        el('cartClose').addEventListener('click', closeCart);
+        el('cartBackdrop').addEventListener('click', closeCart);
+
+        // ---- Položky ----
+        function addToCart(id, qty, opts) {
+            qty = qty || 1;
+            opts = opts || {};
+            const p = PRODUCTS[id];
+            if (!p || soldOut) return;
+            const add = Math.max(0, Math.min(qty, MAX_QTY - units()));
+            if (!add) {
+                openCart();
+                showErr('Víc než ' + MAX_QTY + ' kusů na jednu objednávku nedáme. Napiš nám na jsem@podrazdenacica.cz, domluvíme cenu i dopravu.');
+                return;
+            }
+            const item = cart.items.find(i => i.id === id);
+            if (item) item.qty += add; else cart.items.push({ id, qty: add });
+            saveCart();
+            renderCart();
+            showErr('');
+            const btn = el('cartButton');
+            btn.classList.remove('bump');
+            void btn.offsetWidth;
+            btn.classList.add('bump');
+            trackEcommerce('add_to_cart', { currency: 'CZK', value: p.price * add, items: [{ item_id: id, item_name: p.name, price: p.price, quantity: add }] });
+            const eventId = 'atc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+            metaEvent('track', 'AddToCart', { content_type: 'product', content_ids: [id], content_name: p.name, contents: [{ id, quantity: add }], value: p.price * add, currency: 'CZK' }, eventId);
+            const ids = idsForCheckout();
+            beacon({ track: 'add_to_cart', event_id: eventId, items: [{ id, qty: add }], url: location.origin + location.pathname, fbp: ids.fbp, fbc: ids.fbc });
+            scheduleCartSave();
+            if (!opts.silent) openCart();
+        }
+        function setQty(id, qty) {
+            const p = PRODUCTS[id];
+            const item = cart.items.find(i => i.id === id);
+            if (!p || !item) return;
+            const next = Math.max(0, Math.min(qty, item.qty + (MAX_QTY - units())));
+            const diff = next - item.qty;
+            if (!diff) return;
+            item.qty = next;
+            cart.items = cart.items.filter(i => i.qty > 0);
+            saveCart();
+            renderCart();
+            showErr('');
+            trackEcommerce(diff > 0 ? 'add_to_cart' : 'remove_from_cart', {
+                currency: 'CZK', value: p.price * Math.abs(diff),
+                items: [{ item_id: id, item_name: p.name, price: p.price, quantity: Math.abs(diff) }]
+            });
+            scheduleCartSave();
+        }
+        document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => addToCart(b.dataset.add, 1)));
+        el('cartItems').addEventListener('click', (e) => {
+            const t = e.target.closest('button');
+            if (!t) return;
+            const current = id => (cart.items.find(i => i.id === id) || { qty: 0 }).qty;
+            if (t.dataset.inc) setQty(t.dataset.inc, current(t.dataset.inc) + 1);
+            if (t.dataset.dec) setQty(t.dataset.dec, current(t.dataset.dec) - 1);
+            if (t.dataset.rm) setQty(t.dataset.rm, 0);
+        });
+
+        // ---- Vykreslení ----
+        function renderCart() {
+            const items = cartItems();
+            const n = units();
+            el('cartCount').textContent = n;
+            el('cartCount').hidden = n === 0;
+            el('cartEmpty').hidden = items.length > 0;
+            el('cartForm').hidden = items.length === 0;
+            el('cartItems').innerHTML = items.map(i => {
+                const p = PRODUCTS[i.id];
+                return '<div class="cart-item">'
+                    + '<img src="' + p.image + '" alt="" width="56" height="70" loading="lazy">'
+                    + '<div><div class="t">' + escapeHtml(p.name) + '</div><div class="u">' + czk(p.price) + ' za kus</div>'
+                    + '<div class="qty" role="group" aria-label="Počet kusů"><button type="button" data-dec="' + i.id + '" aria-label="Míň">−</button><output aria-live="polite">' + i.qty + '</output><button type="button" data-inc="' + i.id + '" aria-label="Víc"' + (n >= MAX_QTY ? ' disabled' : '') + '>+</button></div></div>'
+                    + '<div class="right"><div class="line">' + czk(p.price * i.qty) + '</div><button type="button" class="rm" data-rm="' + i.id + '">Odebrat</button></div>'
+                    + '</div>';
+            }).join('');
+            const goods = goodsTotal();
             const ship = SHIPPING[shipKey()];
-            const goods = UNIT_PRICE * qty;
             const gift = goods >= GIFT_FROM;
-            const total = goods + ship.price;
-            el('qtyOut').textContent = qty;
-            el('qtyMinus').disabled = qty <= 1;
-            el('qtyPlus').disabled = qty >= MAX_QTY;
             const hint = el('bagHint');
             if (gift) {
                 hint.textContent = 'Taška je tvoje. Plátěná, ručně sprejovaná, v balíku zdarma.';
                 hint.classList.add('ok');
-            } else {
+            } else if (goods > 0) {
                 const missing = Math.ceil((GIFT_FROM - goods) / UNIT_PRICE);
                 hint.textContent = missing === 1
                     ? 'Ještě jeden kus a přihodíme plátěnou číča tašku zdarma.'
                     : 'Ještě ' + missing + ' kusy a přihodíme plátěnou číča tašku zdarma.';
                 hint.classList.remove('ok');
             }
-            el('sumGoodsLabel').textContent = qty + ' × Onanovánky';
+            document.querySelectorAll('input[name="ship"]').forEach(r => { r.checked = r.value === shipKey(); });
+            document.querySelectorAll('.ship').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
+            el('pointBox').classList.toggle('show', ship.point);
+            el('sumGoodsLabel').textContent = items.length === 1
+                ? items[0].qty + ' × ' + PRODUCTS[items[0].id].name
+                : 'Zboží (' + n + ' ks)';
             el('sumGoods').textContent = czk(goods);
             el('sumBagRow').hidden = !gift;
             el('sumShipLabel').textContent = ship.label;
             el('sumShip').textContent = ship.price ? czk(ship.price) : '0 Kč';
-            el('sumTotal').textContent = czk(total);
-            el('payButton').textContent = 'Zaplatit ' + czk(total);
-            // výdejní místo jen u Zásilkovny na výdejní místo
-            el('pointBox').classList.toggle('show', ship.point);
-            document.querySelectorAll('.ship').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
-        }
-        el('qtyMinus').addEventListener('click', () => { qty = Math.max(1, qty - 1); render(); });
-        el('qtyPlus').addEventListener('click', () => { qty = Math.min(MAX_QTY, qty + 1); render(); });
-        document.querySelectorAll('input[name="ship"]').forEach(r => r.addEventListener('change', () => {
-            // jiná země = jiné výdejní místo
-            const ship = SHIPPING[shipKey()];
-            if (point && ship.point && point.country !== ship.country) point = null;
+            el('sumTotal').textContent = czk(goods + ship.price);
+            const pay = el('payButton');
+            pay.textContent = soldOut ? 'Vyprodáno' : 'Zaplatit ' + czk(goods + ship.price);
+            pay.disabled = soldOut;
+            if (el('cartEmail').value !== (cart.email || '')) el('cartEmail').value = cart.email || '';
+            if (el('noteInput').value !== (cart.note || '')) el('noteInput').value = cart.note || '';
             renderPoint();
-            render();
-        }));
-
+        }
         function renderPoint() {
             const box = el('pointChosen');
-            if (point) {
-                box.innerHTML = '<div class="chosen">' + escapeHtml(point.name)
-                    + '<small>' + escapeHtml(point.address) + '</small></div>';
+            if (cart.point) {
+                box.innerHTML = '<div class="chosen">' + escapeHtml(cart.point.name)
+                    + '<small>' + escapeHtml(cart.point.address) + '</small></div>';
                 el('pointButton').textContent = 'Změnit místo';
             } else {
                 box.innerHTML = '<span class="none">Ještě nemáš vybrané výdejní místo.</span>';
                 el('pointButton').textContent = 'Vybrat na mapě';
             }
         }
-        function escapeHtml(s) {
-            return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        // ---- Doprava, e-mail, vzkaz ----
+        document.querySelectorAll('input[name="ship"]').forEach(r => r.addEventListener('change', () => {
+            cart.shipping = r.value;
+            const ship = SHIPPING[shipKey()];
+            // jiná země = jiné výdejní místo
+            if (cart.point && ship.point && cart.point.country !== ship.country) cart.point = null;
+            saveCart();
+            renderCart();
+            trackEcommerce('add_shipping_info', { currency: 'CZK', value: orderTotal(), shipping_tier: ship.label, items: gaItems() });
+            scheduleCartSave();
+        }));
+        el('cartEmail').addEventListener('input', () => { cart.email = el('cartEmail').value.trim(); saveCart(); });
+        el('cartEmail').addEventListener('change', () => { if (emailValid(cart.email)) saveCartToServer(); });
+        el('noteInput').addEventListener('input', () => { cart.note = el('noteInput').value; saveCart(); scheduleCartSave(); });
+
+        // Košík na server (jen s platným e-mailem): základ pro připomínku nedokončené objednávky
+        function cartPayload() {
+            return {
+                token: cart.token,
+                email: String(cart.email || '').trim().toLowerCase(),
+                items: cartItems().map(i => ({ id: i.id, qty: i.qty })),
+                shipping_method: shipKey(),
+                packeta_point: cart.point,
+                note: cart.note
+            };
         }
+        function scheduleCartSave() {
+            clearTimeout(cartSaveTimer);
+            cartSaveTimer = setTimeout(saveCartToServer, 1500);
+        }
+        async function saveCartToServer() {
+            clearTimeout(cartSaveTimer);
+            cartSaveTimer = null;
+            if (!emailValid(cart.email) || !cartItems().length) return;
+            try {
+                const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.assign({ cart_save: cartPayload() }, idsForCheckout())),
+                    keepalive: true
+                });
+                if (res.ok) {
+                    const d = await res.json();
+                    if (d.token) { cart.token = d.token; saveCart(); }
+                }
+            } catch (e) { /* připomínka je bonus, nákup na ní nezávisí */ }
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden' && cartSaveTimer) saveCartToServer();
+        });
 
         // Widget Zásilkovny se načte až při prvním kliknutí, ať stránku nezpomaluje
         let packetaLoading = null;
@@ -1275,15 +1528,17 @@
                 await loadPacketa();
                 Packeta.Widget.pick(PACKETA_API_KEY, (p) => {
                     if (!p) return;
-                    point = {
+                    cart.point = {
                         id: String(p.id),
                         name: p.name || '',
                         address: [p.street, p.zip, p.city].filter(Boolean).join(', ')
                             || String(p.formatedValue || p.nameStreet || '').replace(/^"?Packeta"?,?\s*/, '').slice(0, 200),
                         country: (p.country || ship.country || '').toLowerCase()
                     };
+                    saveCart();
                     renderPoint();
                     showErr('');
+                    scheduleCartSave();
                 }, { country: ship.country, language: 'cs', valueFormat: 'id,name,street,city,zip,country' });
             } catch (e) {
                 showErr('Mapu Zásilkovny se nepovedlo načíst. Zkus to znovu, nebo vyber doručení až domů.');
@@ -1291,59 +1546,26 @@
             btn.disabled = false;
         });
 
-        function showErr(msg) {
-            const box = el('orderErr');
-            box.textContent = msg;
-            box.classList.toggle('show', Boolean(msg));
-        }
-
-        // GA4 a Meta identifikátory návštěvy pro server (viz api/checkout.js)
-        function idsForCheckout() {
-            try {
-                const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
-                // Cookie má dva tvary: starší GS1.1.<id>.… a novější GS2.1.s<id>$o…
-                const gs = document.cookie.match(/(?:^|;\s*)_ga_R06FFJPHLK=GS\d\.\d\.s?(\d+)/);
-                const fbp = document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
-                const fbc = document.cookie.match(/(?:^|;\s*)_fbc=([^;]+)/);
-                return {
-                    ga_client_id: ga ? ga[1] : null,
-                    ga_session_id: gs ? gs[1] : null,
-                    fbp: fbp ? decodeURIComponent(fbp[1]) : null,
-                    fbc: fbc ? decodeURIComponent(fbc[1]) : null
-                };
-            } catch (e) { return {}; }
-        }
-
-        el('orderForm').addEventListener('submit', async (e) => {
+        // ---- Zaplatit: ověření, měření, pokladna ve Stripu ----
+        el('cartForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             showErr('');
+            const items = cartItems();
             const ship = SHIPPING[shipKey()];
+            if (!items.length) { showErr('Košík je prázdný.'); return; }
+            if (ship.point && !cart.point) { showErr('Vyber si výdejní místo Zásilkovny na mapě.'); return; }
+            if (!emailValid(cart.email)) { showErr('Napiš nám e-mail, kam poslat potvrzení.'); el('cartEmail').focus(); return; }
             if (!el('ageCheck').checked) { showErr('Potvrď prosím, že jsi plnoletý/á.'); return; }
             if (!el('termsCheck').checked) { showErr('Bez souhlasu s obchodními podmínkami to nejde.'); return; }
-            if (ship.point && !point) { showErr('Vyber si výdejní místo Zásilkovny na mapě.'); return; }
 
-            const goods = UNIT_PRICE * qty;
+            const total = orderTotal();
             const icEventId = 'ic_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
-            try {
-                window.dataLayer = window.dataLayer || [];
-                window.dataLayer.push({ ecommerce: null });
-                window.dataLayer.push({
-                    event: 'begin_checkout',
-                    value: goods + ship.price,
-                    currency: 'CZK',
-                    ecommerce: {
-                        value: goods + ship.price,
-                        currency: 'CZK',
-                        items: [{ item_id: 'onanovanky', item_name: 'Onanovánky 2026', price: UNIT_PRICE, quantity: qty }]
-                    }
-                });
-                if (typeof fbq === 'function') {
-                    fbq('track', 'InitiateCheckout', {
-                        value: goods + ship.price, currency: 'CZK', content_type: 'product',
-                        content_name: 'Onanovanky 2026', contents: [{ id: 'onanovanky', quantity: qty }]
-                    }, { eventID: icEventId });
-                }
-            } catch (err) { /* měření nesmí zabránit nákupu */ }
+            trackEcommerce('begin_checkout', { currency: 'CZK', value: total, shipping_tier: ship.label, items: gaItems() }, { value: total, currency: 'CZK' });
+            // Stejné event_id posílá server (api/checkout.js), Meta si obě zprávy spáruje
+            metaEvent('track', 'InitiateCheckout', {
+                value: total, currency: 'CZK', content_type: 'product',
+                content_ids: items.map(i => i.id), contents: items.map(i => ({ id: i.id, quantity: i.qty })), num_items: units()
+            }, icEventId);
 
             const btn = el('payButton');
             btn.disabled = true;
@@ -1353,40 +1575,100 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(Object.assign({
-                        product: 'onanovanky',
-                        quantity: qty,
+                        items: items.map(i => ({ id: i.id, qty: i.qty })),
                         shipping_method: shipKey(),
-                        packeta_point: point,
-                        note: el('noteInput').value,
+                        packeta_point: cart.point,
+                        note: cart.note,
+                        email: String(cart.email || '').trim().toLowerCase(),
                         heureka_optout: el('heurekaOptOut').checked,
+                        cart_token: cart.token,
                         ic_event_id: icEventId
                     }, idsForCheckout()))
                 });
                 if (res.status === 409) {
                     const info = await res.json().catch(() => ({}));
                     if (info.error === 'not_enough_stock' && info.remaining > 0) {
-                        qty = Math.min(qty, info.remaining);
-                        render();
+                        // srovnat počet kusů na zbytek skladu (ubíráme od konce košíku)
+                        let over = units() - info.remaining;
+                        for (let i = cart.items.length - 1; i >= 0 && over > 0; i--) {
+                            const take = Math.min(cart.items[i].qty, over);
+                            cart.items[i].qty -= take;
+                            over -= take;
+                        }
+                        cart.items = cart.items.filter(i => i.qty > 0);
+                        saveCart();
+                        renderCart();
                         showErr('Tolik kusů už nemáme. Zbývá ' + info.remaining + ', počet jsme ti srovnali, zkus to znovu.');
                     } else {
                         markSoldOut();
+                        showErr('Právě se vyprodaly. Dotiskujeme, nech nám mail výš.');
                     }
+                    btn.disabled = soldOut;
+                    renderCart();
                     return;
                 }
                 if (!res.ok) throw new Error('http ' + res.status);
                 const data = await res.json();
                 if (!data.url) throw new Error('no url');
+                if (data.cart_token) { cart.token = data.cart_token; saveCart(); }
                 window.location.href = data.url;
                 return;
             } catch (err) {
                 showErr('Pokladnu se nepovedlo otevřít. Zkus to za chvíli znovu, nebo napiš na jsem@podrazdenacica.cz.');
             }
             btn.disabled = false;
-            render();
+            renderCart();
         });
 
-        render();
-        renderPoint();
+        // ---- Start: počítadlo, zobrazení produktu, obnova z mailu, návrat ze Stripu ----
+        renderCart();
+        trackEcommerce('view_item', { currency: 'CZK', value: UNIT_PRICE, items: [{ item_id: 'onanovanky', item_name: PRODUCTS.onanovanky.name, price: UNIT_PRICE, quantity: 1 }] });
+        (async () => {
+            const params = new URLSearchParams(location.search);
+            const token = params.get('kosik');
+            const stop = params.get('zrusit') === '1';
+            if (token) {
+                // token nepatří do adresy ani do analytiky
+                history.replaceState(null, '', location.pathname + location.hash);
+                if (!/^[A-Za-z0-9_-]{16,48}$/.test(token)) return;
+                if (stop) {
+                    try {
+                        await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cart_stop: token }) });
+                    } catch (e) { /* ticho */ }
+                }
+                try {
+                    const cfg = window.CICA_CONFIG;
+                    const res = await fetch(cfg.SUPABASE_URL + '/rest/v1/rpc/get_shop_cart', {
+                        method: 'POST',
+                        headers: { 'apikey': cfg.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + cfg.SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ p_token: token })
+                    });
+                    const saved = res.ok ? await res.json() : null;
+                    if (saved && saved.status === 'paid') {
+                        openCart();
+                        notice('Tenhle košík už je zaplacený. Díky! Kdyby ses chtěl*a vrátit pro další, jsme tady.');
+                        return;
+                    }
+                    if (saved && Array.isArray(saved.items)) {
+                        cart.items = saved.items.filter(i => PRODUCTS[i.id]).map(i => ({ id: i.id, qty: Math.max(1, parseInt(i.qty, 10) || 1) }));
+                        cart.shipping = SHIPPING[saved.shipping_method] ? saved.shipping_method : 'pickup_atelier';
+                        cart.point = saved.packeta_point && saved.packeta_point.id ? saved.packeta_point : null;
+                        cart.note = saved.note || '';
+                        cart.email = saved.email || cart.email;
+                        cart.token = token;
+                        saveCart();
+                        openCart();
+                        notice(stop ? 'Připomínky jsme vypnuli. Košík tu na tebe přesto počká.' : 'Košík jsme ti obnovili. Zbývá zaplatit.');
+                    } else if (stop) {
+                        openCart();
+                        notice('Připomínky jsme vypnuli.');
+                    }
+                } catch (e) { /* bez obnovy zůstane lokální košík */ }
+                return;
+            }
+            // návrat ze Stripu po zrušení platby (cancel_url končí #kosik)
+            if (location.hash === '#kosik' && cartItems().length) openCart();
+        })();
 
         // Zobrazení stránky do Mety přes náš server (obchází adblockery, plní
         // publika pro retargeting). Jen po souhlasu s cookies: hned, když už je
@@ -1463,6 +1745,7 @@
         videoOverlay.addEventListener('click', (e) => { if (e.target === videoOverlay) closePromoVideo(); });
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !videoOverlay.hidden) { closePromoVideo(); return; }
+            if (e.key === 'Escape' && cartDrawer.classList.contains('open')) { closeCart(); return; }
             if (!sheetBox.classList.contains('active')) return;
             if (e.key === 'Escape') closeSheet();
             if (e.key === 'ArrowLeft') openSheet(sheetIndex - 1);
@@ -1623,6 +1906,101 @@
         <video id="promoVideo" controls playsinline preload="none" poster="/videos/onanovanky/promo-poster.webp" width="1080" height="1920"></video>
         <div class="video-loading" id="videoLoading" hidden>Načítám video…</div>
     </div>
+
+    <!-- Košík: panel zprava (varianta A, 27. 10. 2026) -->
+    <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+    <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
+        <div class="cart-head">
+            <h2 id="cartTitle">Košík</h2>
+            <button type="button" class="cart-close" id="cartClose" aria-label="Zavřít košík">&times;</button>
+        </div>
+        <div class="cart-body">
+            <div class="cart-notice" id="cartNotice" role="status" hidden></div>
+            <div class="cart-empty" id="cartEmpty">
+                <p class="big">₍^. .^₎⟆</p>
+                <p>Košík je prázdný. Zatím.</p>
+                <button type="button" class="btn-primary" data-add="onanovanky" data-cta="onanovanky_do_kosiku_prazdny">Přidat Onanovánky za 333 Kč</button>
+            </div>
+            <form class="cart-form" id="cartForm" novalidate hidden>
+                <div class="cart-items" id="cartItems"></div>
+                <div class="bag-hint" id="bagHint"></div>
+
+                <div class="order-step">
+                    <h3><span class="n">1</span> Jak ti je doručit</h3>
+                    <div class="ship-list" id="shipList">
+                        <label class="ship on">
+                            <input type="radio" name="ship" value="pickup_atelier" checked>
+                            <span><span class="t">Osobní odběr v ateliéru</span><span class="s">Veselá 5, Brno. Po zaplacení se domluvíme na čase, držíme měsíc.</span></span>
+                            <span class="p free">0 Kč</span>
+                        </label>
+                        <label class="ship">
+                            <input type="radio" name="ship" value="packeta_point_cz">
+                            <span><span class="t">Zásilkovna, výdejní místo nebo Z-BOX</span><span class="s">Česko. Vybereš si místo na mapě.</span></span>
+                            <span class="p">89 Kč</span>
+                        </label>
+                        <label class="ship">
+                            <input type="radio" name="ship" value="packeta_home_cz">
+                            <span><span class="t">Zásilkovna až domů</span><span class="s">Česko. Adresu vyplníš při platbě.</span></span>
+                            <span class="p">129 Kč</span>
+                        </label>
+                        <label class="ship">
+                            <input type="radio" name="ship" value="packeta_point_sk">
+                            <span><span class="t">Zásilkovna, výdejní místo nebo Z-BOX</span><span class="s">Slovensko. Vybereš si místo na mapě.</span></span>
+                            <span class="p">129 Kč</span>
+                        </label>
+                        <label class="ship">
+                            <input type="radio" name="ship" value="packeta_home_sk">
+                            <span><span class="t">Zásilkovna až domů</span><span class="s">Slovensko. Adresu vyplníš při platbě.</span></span>
+                            <span class="p">169 Kč</span>
+                        </label>
+                    </div>
+                    <div class="point-box" id="pointBox">
+                        <div id="pointChosen"><span class="none">Ještě nemáš vybrané výdejní místo.</span></div>
+                        <button type="button" class="btn-small" id="pointButton">Vybrat na mapě</button>
+                    </div>
+                </div>
+
+                <div class="order-step">
+                    <h3><span class="n">2</span> Kam poslat potvrzení</h3>
+                    <input type="email" id="cartEmail" name="email" placeholder="tvuj@mail.cz" autocomplete="email" inputmode="email" required>
+                    <p class="cart-fine">Jméno, telefon a případnou adresu vyplníš až při platbě.</p>
+                </div>
+
+                <div class="order-step">
+                    <h3><span class="n">3</span> Vzkaz pro číču <span class="opt">(nepovinný)</span></h3>
+                    <textarea id="noteInput" name="note" maxlength="400" placeholder="Je to dárek? Chceš věnování? Nebo nám jen něco chceš říct."></textarea>
+                </div>
+
+                <div class="order-step" style="margin-bottom:0.6rem;">
+                    <label class="check">
+                        <input type="checkbox" id="ageCheck">
+                        <span>Potvrzuji, že jsem plnoletý/á.</span>
+                    </label>
+                    <label class="check">
+                        <input type="checkbox" id="termsCheck">
+                        <span>Souhlasím s <a href="/obchodni-podminky" target="_blank" rel="noopener">obchodními podmínkami</a> a beru na vědomí <a href="/podminky" target="_blank" rel="noopener">zpracování osobních údajů</a>.</span>
+                    </label>
+                    <label class="check">
+                        <input type="checkbox" id="heurekaOptOut">
+                        <span>Nechci po nákupu dostat dotazník spokojenosti Heureka Ověřeno zákazníky.</span>
+                    </label>
+                </div>
+
+                <div class="summary" aria-live="polite">
+                    <div class="row"><span id="sumGoodsLabel">1 × Onanovánky</span><span id="sumGoods">333 Kč</span></div>
+                    <div class="row" id="sumBagRow" hidden><span>Plátěná číča taška</span><span>dárek</span></div>
+                    <div class="row"><span id="sumShipLabel">Osobní odběr</span><span id="sumShip">0 Kč</span></div>
+                    <div class="row total"><span>Celkem</span><span id="sumTotal">333 Kč</span></div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="payButton" data-cta="onanovanky_zaplatit">Zaplatit 333 Kč</button>
+                <div class="form-err" id="orderErr" role="alert"></div>
+                <p class="pay-note">
+                    Platba kartou, Apple Pay nebo Google Pay přes Stripe. Balíme do 3 pracovních dnů.
+                </p>
+            </form>
+        </div>
+    </aside>
 
     <!-- Náhled ukázky (zvětšená stránka, listování šipkami nebo přejetím prstu) -->
     <div class="lightbox" id="sheetLightbox" role="dialog" aria-modal="true" aria-label="Náhled stránky Onanovánek">

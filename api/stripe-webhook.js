@@ -124,25 +124,26 @@ module.exports = async (req, res) => {
 // mail jde jen když ještě nebyl odeslán.
 async function handleShopSession(stripe, session) {
     const md = session.metadata || {};
-    const quantity = shop.clampQuantity(md.quantity);
-    const result = await withDb(c => shop.fulfillShopSession(c, session, quantity));
-    console.log('shop fulfilled', session.id, JSON.stringify(result));
+    // Položky čte server z metadat (items), starší pokladny mají jen quantity
+    const result = await withDb(c => shop.fulfillShopSession(c, session));
+    console.log('shop fulfilled', session.id, JSON.stringify(Object.assign({}, result, { items: undefined })));
 
     if (result.created > 0) {
         const value = session.amount_total ? session.amount_total / 100 : 0;
+        const quantity = result.quantity;
         await trackPurchase({
             transactionId: session.id,
             value: value,
             quantity: quantity,
             clientId: md.ga_client_id || null,
             sessionId: md.ga_session_id || null,
-            itemId: shop.PRODUCT,
-            itemName: shop.PRODUCT_NAME
+            items: result.items.map(i => ({ item_id: i.id, item_name: i.name, price: i.unit_price_czk, quantity: i.qty }))
         });
         await trackPurchaseMeta({
             transactionId: session.id,
             value: value,
             quantity: quantity,
+            contents: result.items.map(i => ({ id: i.id, quantity: i.qty, item_price: i.unit_price_czk })),
             fbp: md.fbp || null,
             fbc: md.fbc || null,
             email: (session.customer_details && session.customer_details.email) || null,

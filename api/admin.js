@@ -235,6 +235,11 @@ async function handleShop(c, body) {
             where status = 'paid' and shipping_method <> 'pickup_atelier' and packeta_tracking is null order by order_no`);
         return { ok: true, csv: packeta.csvFile(rows), count: rows.length };
     }
+    if (body.action === 'shop_cart_reminders') {
+        // Ruční spuštění připomínek opuštěných košíků (send:false jen spočítá)
+        const { runCartReminders } = require('./_shop_carts');
+        return { ok: true, result: await runCartReminders(c, { send: body.send !== false }) };
+    }
     if (body.action === 'shop_set_stock') {
         const stock = parseInt(body.stock, 10);
         if (!(stock >= 0 && stock <= 100000)) return { ok: false, error: 'bad_stock' };
@@ -259,7 +264,7 @@ async function handleShop(c, body) {
                 address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
                 note, status, packeta_tracking, packeta_consign_code, packeta_status_code, packeta_status_text, packeta_status_at,
                 labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
-                shipped_mail_sent_at, stripe_session_id
+                shipped_mail_sent_at, stripe_session_id, items
          from shop_orders order by created_at desc limit 1000`)).rows;
     const one = async (sql) => (await c.query(sql)).rows[0];
     const stats = {
@@ -273,11 +278,18 @@ async function handleShop(c, body) {
         pieces: (await one("select coalesce(sum(quantity),0)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
         revenue: (await one("select coalesce(sum(total_czk),0)::int as n from shop_orders where status not in ('cancelled','refunded')")).n,
         bags: (await one("select count(*)::int as n from shop_orders where gift_bag and status not in ('cancelled','refunded')")).n,
-        samples: (await one('select count(*)::int as n from shop_samples')).n
+        samples: (await one('select count(*)::int as n from shop_samples')).n,
+        carts_open: (await one("select count(*)::int as n from shop_carts where status = 'open'")).n,
+        carts_recovered: (await one("select count(*)::int as n from shop_carts where status = 'paid' and reminder1_sent_at is not null")).n
     };
     const samples = (await c.query(
         'select email, created_at from shop_samples order by created_at desc limit 500')).rows;
-    return { ok: true, stats, orders, samples, shipping: shop.SHIPPING, packeta_api: Boolean(process.env.PACKETA_API_PASSWORD), synced };
+    // Opuštěné košíky (poslední změna nahoře), token se do prohlížeče neposílá
+    const carts = (await c.query(
+        `select id, created_at, updated_at, email, items, shipping_method, total_czk, status,
+                checkout_started_at, reminder1_sent_at, reminder2_sent_at, paid_at
+         from shop_carts order by updated_at desc limit 100`)).rows;
+    return { ok: true, stats, orders, samples, carts, shipping: shop.SHIPPING, packeta_api: Boolean(process.env.PACKETA_API_PASSWORD), synced };
 }
 
 module.exports = async (req, res) => {
