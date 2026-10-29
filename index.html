@@ -96,15 +96,15 @@
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="images/logo.webp" type="image/webp">
-    <link rel="preload" as="image" href="images/hero-sm.webp" type="image/webp" media="(max-width: 600px)" fetchpriority="high">
-    <link rel="preload" as="image" href="images/hero.webp" type="image/webp" media="(min-width: 601px)" fetchpriority="high">
+    <link rel="preload" as="image" href="images/hero-2-sm.webp" type="image/webp" media="(max-width: 600px)" fetchpriority="high">
+    <link rel="preload" as="image" href="images/hero-2.webp" type="image/webp" media="(min-width: 601px)" fetchpriority="high">
     
     <!-- Google Fonts - non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"></noscript>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&family=Sedgwick+Ave+Display&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet"></noscript>
     
     <!-- Google Analytics - loads only after consent -->
     <script>
@@ -130,7 +130,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/rtg.js" defer></script>
 </head>
-<body>
+<body class="home">
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBTC7F4W"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -152,19 +152,19 @@
             </a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="#art">Art</a></li>
-                    <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
                     <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
-                    <li><a href="/cica-art-fest">Číča Art Fest</a></li>
-                    <li><a href="#words">Slova</a></li>
+                    <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
+                    <li><a href="#art">Art</a></li>
                     <li><a href="#podcast">Podcast</a></li>
-                    <li><a href="#collab">Spolupráce</a></li>
                     <li><a href="#newsletter">News</a></li>
+                    <li><a href="#collab">Spolupráce</a></li>
+                    <li><a href="/cica-art-fest">Číča Art Fest</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                 </ul>
                 <div class="social-icons">
                     <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
                     <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener" aria-label="LinkedIn">💼</a>
+                    <a href="https://herohero.co/podrazdenacica" target="_blank" rel="noopener" aria-label="HeroHero" class="social-herohero"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs><linearGradient id="hh-grad-nav" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b68ee"/><stop offset="100%" stop-color="#e87da0"/></linearGradient></defs><path d="M50 8 C28 8 10 28 10 52 C10 76 28 96 50 96 C72 96 90 76 90 52 C90 28 72 8 50 8Z" fill="url(#hh-grad-nav)"/><path d="M32 52 Q50 75 68 52" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/></svg></a>
                 </div>
             </nav>
             <button class="burger" aria-label="Otevřít menu" aria-expanded="false">
@@ -178,16 +178,20 @@
     <!-- Mobile Menu -->
     <div class="mobile-menu" role="navigation" aria-label="Mobilní navigace">
         <ul>
-            <li><a href="#art">Art</a></li>
-            <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
             <li><a href="/onanovanky">Onanovánky <span class="nav-badge">Nové</span></a></li>
-            <li><a href="/cica-art-fest">Číča Art Fest</a></li>
-            <li><a href="#words">Slova</a></li>
+            <li><a href="/hrave-nudesky">Hravé nudesky</a></li>
+            <li><a href="#art">Art</a></li>
             <li><a href="#podcast">Podcast</a></li>
-            <li><a href="#collab">Spolupráce</a></li>
             <li><a href="#newsletter">News</a></li>
+            <li><a href="#collab">Spolupráce</a></li>
+            <li><a href="/cica-art-fest">Číča Art Fest</a></li>
             <li><a href="#contact">Kontakt</a></li>
         </ul>
+        <div class="mobile-socials">
+            <a href="https://www.instagram.com/podrazdena_cica/" target="_blank" rel="noopener">📷 Instagram</a>
+            <a href="https://linkedin.com/in/podrazdenacica/" target="_blank" rel="noopener">💼 LinkedIn</a>
+            <a href="https://herohero.co/podrazdenacica" target="_blank" rel="noopener" class="social-herohero"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><defs><linearGradient id="hh-grad-mob" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7b68ee"/><stop offset="100%" stop-color="#e87da0"/></linearGradient></defs><path d="M50 8 C28 8 10 28 10 52 C10 76 28 96 50 96 C72 96 90 76 90 52 C90 28 72 8 50 8Z" fill="url(#hh-grad-mob)"/><path d="M32 52 Q50 75 68 52" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/></svg> HeroHero</a>
+        </div>
     </div>
     
     <main id="main-content">
@@ -196,13 +200,17 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <div class="hero-label">Umělkyně / brand manažerka chaosu</div>
-                    <h1 class="hero-title">Podrážděná číča. Velekněžka chaosu se sprejem v ruce.</h1>
+                    <div class="hero-label"><img class="hero-label-logo" src="images/logo.webp" alt="" width="154" height="140"><span class="hero-label-name">Podrážděná číča</span><span class="hero-label-sep" aria-hidden="true">·</span><span>Brněnská umělkyně z&nbsp;Orlové</span></div>
+                    <h1 class="hero-title">
+                        <span class="hero-title-line">Veselé umění,</span>
+                        <span class="hero-title-line">co ti dodá odvahu.</span>
+                        <span class="hero-title-punch" data-text="A vkus.">A&nbsp;vkus.</span>
+                    </h1>
                     <p class="hero-description">
-                        Maluju moneyfestační obrazy, hravé nudesky, muraly do školek
-                        i kanceláří, píšu a natáčím podcast pro bohyně neklidu.
-                        Brno, Veselá 5. P🩸rno i roztomilosti po zdech, trochu bordel,
-                        hodně svobody.
+                        Maluju <a href="#art">moneyfestační obrazy</a>, <a href="/onanovanky">onanovánky</a>,
+                        <a href="/hrave-nudesky">hravé nudesky</a>, muraly do školek i&nbsp;kanceláří,
+                        píšu a natáčím <a href="https://open.spotify.com/show/5OmY5EzGyAAPtRzKUtXZsV" target="_blank" rel="noopener">podcast</a> pro ostatní číče.
+                        <span class="hero-place">Brno, Vkus na Veselé.</span>
                     </p>
                     <div class="hero-buttons">
                         <a href="#art" class="btn-primary">Chci vidět art</a>
@@ -212,14 +220,14 @@
                 <div class="hero-visual">
                     <div class="hero-image">
                         <picture>
-                            <source media="(max-width: 600px)" srcset="images/hero-sm.webp" width="400" height="711">
-                            <source media="(min-width: 601px)" srcset="images/hero.webp" width="724" height="1287">
+                            <source media="(max-width: 600px)" srcset="images/hero-2-sm.webp" width="480" height="777">
+                            <source media="(min-width: 601px)" srcset="images/hero-2.webp" width="820" height="1327">
                             <img 
-                                src="images/hero-sm.webp" 
-                                alt="Podrážděná číča" 
+                                src="images/hero-2-sm.webp" 
+                                alt="Podrážděná číča na vernisáži mezi svými obrazy" 
                                 loading="eager" 
-                                width="400" 
-                                height="711" 
+                                width="480" 
+                                height="777" 
                                 fetchpriority="high">
                         </picture>
                     </div>
@@ -228,39 +236,63 @@
         </div>
     </section>
     
-    <!-- About Section -->
-    <section id="about">
+    <!-- Onanovánky teaser -->
+    <section id="onanovanky-hit">
         <div class="container">
-            <h2 class="section-title reveal">Kdo je Podrážděná číča</h2>
-            <div class="about-content reveal">
-                <div class="about-text">
-                    <p>
-                        Jsem Kristýna Mlynář Koutná. Podrážděná číča. Umělkyně, co si ze své 
-                        diagnózy udělala full-time job. Mám ateliér ve Vkusu na Veselé 5 
-                        v Brně, kde 70&nbsp;% stěn tvoří sklo a zbytek je prostor na psaní po 
-                        zdech, plátnech, lidech a vlastních příbězích.
-                    </p>
-                    <p>
-                        V mým světě spolu žijou bohyně, tažné i chovné krávy, PMS, mateřství, 
-                        trauma i rozkoš. Z kostek z hoven se tu staví katedrály a neon růžová je 
-                        barva vzpoury. Umění beru jako meditační nástroj pro všechny, kdo 
-                        odmítají být hodný holky – ale chtějí mít život vkusnej.
-                    </p>
-                    <ul class="about-features">
-                        <li>Umělecký ateliér ve Vkusu na Veselé 5, Brno</li>
-                        <li>Pátečičiny – páteční litánie pro bohyni neklidu</li>
-                        <li>Mindless mindfulness – spreje a šablony po městě</li>
-                        <li>Hot trollismus, ceckové tokeny a veřejná služba v jednom</li>
-                    </ul>
+            <div class="hit-box reveal">
+                <div class="hit-text">
+                    <div class="hero-label">Novinka v obchodě</div>
+                    <h2 class="hit-title">Onanovánky.<span class="hit-title-sub">Hit letošních Vánoc.</span></h2>
+                    <a href="/onanovanky" class="btn-primary">Omrknout Onanovánky</a>
                 </div>
-                <div class="about-image">
-                    <img 
-                        src="images/about.webp" 
-                        alt="Portrét umělkyně" 
-                        loading="lazy" 
-                        width="800" 
-                        height="1066">
+                <a href="/onanovanky" class="hit-cover" aria-label="Onanovánky 2026">
+                    <img src="images/onanovanky/obalka-home.webp" alt="Onanovánky 2026, obálka" width="640" height="907" loading="lazy">
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Podcast -->
+    <section id="podcast">
+        <div class="container">
+            <h2 class="section-title reveal">Podcast Dílna Podrážděné číči</h2>
+            <div class="spotify-embed reveal">
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5OmY5EzGyAAPtRzKUtXZsV?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <h3 class="platform-section-title" style="margin-top: 1.5rem;">Poslechni si všechny díly na</h3>
+                <div class="platform-links">
+                    <a href="https://open.spotify.com/show/5OmY5EzGyAAPtRzKUtXZsV?si=d05158c056a64225" target="_blank" rel="noopener" class="platform-link">
+                        <span class="platform-logo" style="font-size: 1.8rem;">🎵</span>
+                        <div class="platform-name">Spotify</div>
+                    </a>
+                    <a href="https://podcasts.apple.com/cz/podcast/d%C3%ADlna-podr%C3%A1%C5%BEd%C4%9Bn%C3%A9-%C4%8D%C3%AD%C4%8Di/id1889854666?l=cs" target="_blank" rel="noopener" class="platform-link">
+                        <span class="platform-logo" style="font-size: 1.8rem;">🎧</span>
+                        <div class="platform-name">Apple Podcasts</div>
+                    </a>
                 </div>
+            </div>
+            <h3 class="platform-section-title reveal podpora-title">Přispěj číče na žrádlo. A drogy.</h3>
+            <div class="platform-links reveal">
+                <a href="https://herohero.co/podrazdenacica" target="_blank" rel="noopener" class="platform-link">
+                    <div class="platform-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="hh-grad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#7b68ee"/>
+                                    <stop offset="100%" stop-color="#e87da0"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M50 8 C28 8 10 28 10 52 C10 76 28 96 50 96 C72 96 90 76 90 52 C90 28 72 8 50 8Z" fill="url(#hh-grad)"/>
+                            <path d="M32 52 Q50 75 68 52" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
+                        </svg>
+                    </div>
+                    <div class="platform-name">HeroHero</div>
+                </a>
+                <a href="https://www.forendors.cz/podrazdena_cica" target="_blank" rel="noopener" class="platform-link">
+                    <div class="platform-logo">
+                        <img src="images/forendors-logo.png" alt="Forendors" width="36" height="36">
+                    </div>
+                    <div class="platform-name">Forendors</div>
+                </a>
             </div>
         </div>
     </section>
@@ -275,6 +307,18 @@
                 tu dělá high-lighter na Všechno, co už nejde dál schovávat.
             </p>
             <div class="gallery-grid">
+                <div class="gallery-item gallery-item-wide reveal" data-delay="0">
+                    <div class="gallery-image">
+                        <picture>
+                            <source media="(max-width: 600px)" srcset="images/gallery-10-sm.webp">
+                            <img src="images/gallery-10.webp" alt="Čafčajky" loading="lazy" width="1200" height="768">
+                        </picture>
+                    </div>
+                    <div class="gallery-info">
+                        <h3>Čafčajky</h3>
+                        <p>Holky z Číča Art Festu. Když se sejde dost číč, vznikne z toho obraz.</p>
+                    </div>
+                </div>
                 <div class="gallery-item reveal" data-delay="0">
                     <div class="gallery-image">
                         <picture>
@@ -287,7 +331,7 @@
                         <p>Oltář pro všechny, co vědí, že extáze a konečnost patří do jednoho rámu.</p>
                     </div>
                 </div>
-                <div class="gallery-item reveal" data-delay="100">
+                <div class="gallery-item gallery-item-wide reveal" data-delay="100">
                     <div class="gallery-image">
                         <picture>
                             <source media="(max-width: 600px)" srcset="images/gallery-2-sm.webp">
@@ -384,6 +428,49 @@
                     </div>
                 </div>
             </div>
+            <div class="serie reveal" id="serie">
+                <div class="serie-head">
+                    <h3 class="serie-title">Série Královny Brno-venkov</h3>
+                    <div class="serie-nav">
+                        <span class="serie-hint" id="serieHint">Swipuj do boku <span aria-hidden="true">→</span></span>
+                        <span class="serie-count"><span id="serieIndex">1</span> / 10</span>
+                        <button class="serie-arrow" type="button" data-dir="-1" aria-label="Předchozí obraz">‹</button>
+                        <button class="serie-arrow" type="button" data-dir="1" aria-label="Další obraz">›</button>
+                    </div>
+                </div>
+                <div class="serie-track" id="serieTrack">
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 1 z 10">
+                        <img src="images/serie/kralovny-1.webp" alt="Série Královny Brno-venkov, obraz 1" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 2 z 10">
+                        <img src="images/serie/kralovny-2.webp" alt="Série Královny Brno-venkov, obraz 2" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 3 z 10">
+                        <img src="images/serie/kralovny-3.webp" alt="Série Královny Brno-venkov, obraz 3" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 4 z 10">
+                        <img src="images/serie/kralovny-4.webp" alt="Série Královny Brno-venkov, obraz 4" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 5 z 10">
+                        <img src="images/serie/kralovny-5.webp" alt="Série Královny Brno-venkov, obraz 5" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 6 z 10">
+                        <img src="images/serie/kralovny-6.webp" alt="Série Královny Brno-venkov, obraz 6" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 7 z 10">
+                        <img src="images/serie/kralovny-7.webp" alt="Série Královny Brno-venkov, obraz 7" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 8 z 10">
+                        <img src="images/serie/kralovny-8.webp" alt="Série Královny Brno-venkov, obraz 8" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 9 z 10">
+                        <img src="images/serie/kralovny-9.webp" alt="Série Královny Brno-venkov, obraz 9" loading="lazy" width="600" height="750">
+                    </button>
+                    <button class="serie-item" type="button" aria-label="Série Královny Brno-venkov, obraz 10 z 10">
+                        <img src="images/serie/kralovny-10.webp" alt="Série Královny Brno-venkov, obraz 10" loading="lazy" width="600" height="750">
+                    </button>
+                </div>
+            </div>
             <div class="art-cta reveal">
                 <a href="#contact" class="btn-primary">Chci takový obraz</a>
             </div>
@@ -443,45 +530,6 @@
                     </p>
                     <a href="https://www.instagram.com/p/DMPounLsYhr/" target="_blank" rel="noopener">Číst celý příběh →</a>
                 </div>
-            </div>
-            <div id="podcast" class="spotify-embed reveal">
-                <h3>🎵 Podcast na Spotify</h3>
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/show/5OmY5EzGyAAPtRzKUtXZsV?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                <h3 class="platform-section-title" style="margin-top: 1.5rem;">Poslechni si všechny díly na</h3>
-                <div class="platform-links">
-                    <a href="https://open.spotify.com/show/5OmY5EzGyAAPtRzKUtXZsV?si=d05158c056a64225" target="_blank" rel="noopener" class="platform-link">
-                        <span class="platform-logo" style="font-size: 1.8rem;">🎵</span>
-                        <div class="platform-name">Spotify</div>
-                    </a>
-                    <a href="https://podcasts.apple.com/cz/podcast/d%C3%ADlna-podr%C3%A1%C5%BEd%C4%9Bn%C3%A9-%C4%8D%C3%AD%C4%8Di/id1889854666?l=cs" target="_blank" rel="noopener" class="platform-link">
-                        <span class="platform-logo" style="font-size: 1.8rem;">🎧</span>
-                        <div class="platform-name">Apple Podcasts</div>
-                    </a>
-                </div>
-            </div>
-            <h3 class="platform-section-title reveal">Přispěj číče na žrádlo. A drogy.</h3>
-            <div class="platform-links reveal">
-                <a href="https://herohero.co/podrazdenacica" target="_blank" rel="noopener" class="platform-link">
-                    <div class="platform-logo">
-                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="hh-grad" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#7b68ee"/>
-                                    <stop offset="100%" stop-color="#e87da0"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M50 8 C28 8 10 28 10 52 C10 76 28 96 50 96 C72 96 90 76 90 52 C90 28 72 8 50 8Z" fill="url(#hh-grad)"/>
-                            <path d="M32 52 Q50 75 68 52" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
-                        </svg>
-                    </div>
-                    <div class="platform-name">HeroHero</div>
-                </a>
-                <a href="https://www.forendors.cz/podrazdena_cica" target="_blank" rel="noopener" class="platform-link">
-                    <div class="platform-logo">
-                        <img src="images/forendors-logo.png" alt="Forendors" width="36" height="36">
-                    </div>
-                    <div class="platform-name">Forendors</div>
-                </a>
             </div>
         </div>
     </section>
@@ -586,6 +634,46 @@
                     <button type="submit" class="btn-primary">Pošli mi to hezký</button>
                     <div class="form-message" id="formMessage"></div>
                 </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title reveal">Kdo je Podrážděná číča</h2>
+            <div class="about-content reveal">
+                <div class="about-image">
+                    <picture>
+                        <source media="(max-width: 600px)" srcset="images/about-2-sm.webp" width="900" height="675">
+                        <img 
+                            src="images/about-2.webp" 
+                            alt="Výstava Podrážděné číči v růžovém světle" 
+                            loading="lazy" 
+                            width="1600" 
+                            height="611">
+                    </picture>
+                </div>
+                <div class="about-text">
+                    <p>
+                        Jsem Kristýna Mlynář Koutná. Podrážděná číča. Umělkyně, co si ze své 
+                        diagnózy udělala full-time job. Mám ateliér ve Vkusu na Veselé 5 
+                        v Brně, kde 70&nbsp;% stěn tvoří sklo a zbytek je prostor na psaní po 
+                        zdech, plátnech, lidech a vlastních příbězích.
+                    </p>
+                    <p>
+                        V mým světě spolu žijou bohyně, tažné i chovné krávy, PMS, mateřství, 
+                        trauma i rozkoš. Z kostek z hoven se tu staví katedrály a neon růžová je 
+                        barva vzpoury. Umění beru jako meditační nástroj pro všechny, kdo 
+                        odmítají být hodný holky – ale chtějí mít život vkusnej.
+                    </p>
+                    <ul class="about-features">
+                        <li>Umělecký ateliér ve Vkusu na Veselé 5, Brno</li>
+                        <li>Pátečičiny – páteční litánie pro bohyni neklidu</li>
+                        <li>Mindless mindfulness – spreje a šablony po městě</li>
+                        <li>Hot trollismus, ceckové tokeny a veřejná služba v jednom</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -776,7 +864,7 @@
         reveals.forEach(element => revealObserver.observe(element));
         
         // Gallery lightbox with navigation
-        const galleryItems = document.querySelectorAll('.gallery-item');
+        const galleryItems = document.querySelectorAll('.gallery-item, .serie-item');
         const lightbox = document.getElementById('lightbox');
         const lightboxClose = document.getElementById('lightboxClose');
         const lightboxImage = document.getElementById('lightboxImage');
@@ -787,13 +875,13 @@
         
         function openLightbox(index) {
             const item = galleryItems[index];
-            const img = item.querySelector('.gallery-image img');
+            const img = item.querySelector('img');
             const title = item.querySelector('.gallery-info h3');
             
-            if (img && title) {
+            if (img) {
                 lightboxImage.src = img.src;
                 lightboxImage.alt = img.alt;
-                lightboxTitle.textContent = title.textContent;
+                lightboxTitle.textContent = title ? title.textContent : '';
                 currentImageIndex = index;
                 lightbox.classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -860,6 +948,31 @@
             }
         });
         
+        // Série Královny Brno-venkov: karusel se scroll-snapem, šipky, počítadlo, nápověda
+        const serieTrack = document.getElementById('serieTrack');
+        if (serieTrack) {
+            const serieItems = serieTrack.querySelectorAll('.serie-item');
+            const serieIndex = document.getElementById('serieIndex');
+            const serieHint = document.getElementById('serieHint');
+            const cardStep = () => serieItems.length > 1
+                ? serieItems[1].offsetLeft - serieItems[0].offsetLeft
+                : serieTrack.clientWidth;
+            const updateSerie = () => {
+                const i = Math.round(serieTrack.scrollLeft / cardStep());
+                serieIndex.textContent = Math.min(serieItems.length, Math.max(1, i + 1));
+                const atEnd = serieTrack.scrollLeft + serieTrack.clientWidth >= serieTrack.scrollWidth - 4;
+                serieTrack.classList.toggle('at-end', atEnd);
+                if (serieTrack.scrollLeft > 20) serieHint.classList.add('hidden');
+            };
+            serieTrack.addEventListener('scroll', updateSerie, { passive: true });
+            document.querySelectorAll('.serie-arrow').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    serieTrack.scrollBy({ left: cardStep() * Number(btn.dataset.dir), behavior: 'smooth' });
+                });
+            });
+            updateSerie();
+        }
+
         // Current year in footer
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 

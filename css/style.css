@@ -2008,3 +2008,607 @@ main {
         top: 64px;
     }
 }
+
+/* ===== Homepage (29. 10. 2026): nový claim a rozvržení podle zlatého řezu (φ = 1,618) =====
+   Všechno je zavěšené na <body class="home">, aby se nic nerozsypalo na ostatních
+   stránkách, které tenhle soubor sdílí. Mezery i poměry sloupců jdou po mocninách φ:
+   1 / 1,618 / 2,618 / 4,236 / 6,854 rem. */
+.home {
+    --s-1: 1rem;
+    --s-2: 1.618rem;
+    --s-3: 2.618rem;
+    --s-4: 4.236rem;
+    --s-5: 6.854rem;
+}
+
+.home section {
+    padding: var(--s-5) 0;
+}
+
+.home #hero {
+    padding-top: 100px;
+    padding-bottom: var(--s-4);
+}
+
+.home .section-title {
+    margin-bottom: var(--s-3);
+}
+
+/* Hero: text 61,8 % šířky, fotka 38,2 % (zlatý řez) */
+.home .hero-content {
+    grid-template-columns: 1.618fr 1fr;
+    gap: var(--s-4);
+}
+
+.home .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--s-2);
+}
+
+.home .hero-label-logo {
+    height: 1.9em;
+    width: auto;
+    filter: brightness(0) invert(1);
+    flex-shrink: 0;
+}
+
+/* Jméno bílé, pozice neonová, mezi nimi tečka. Na mobilu se pozice zalomí pod jméno. */
+.home .hero-label {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+}
+
+.home .hero-label-name {
+    color: var(--white);
+}
+
+.home .hero-label-sep {
+    color: var(--accent-neon);
+}
+
+/* Claim: dva řádky bílé, pointa „A vkus.“ 1,618× větší, obrysová neonová */
+.home .hero-title {
+    font-size: clamp(2.4rem, 4.4vw, 3.9rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--s-2);
+    background: none;
+    color: var(--white);
+    -webkit-text-fill-color: var(--white);
+}
+
+.home .hero-title-line {
+    display: block;
+}
+
+/* Pointa jako graffiti tag: Sedgwick Ave Display (volná licence, styl bold tag),
+   neonová výplň, jemná záře, lehce nakloněná. */
+.home .hero-title-punch {
+    display: inline-block;
+    margin-top: 0.05em;
+    padding-right: 0.15em;
+    font-family: 'Sedgwick Ave Display', 'Archivo Black', sans-serif;
+    font-weight: 400;
+    font-size: 1.9em;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    color: var(--accent-neon);
+    -webkit-text-fill-color: var(--accent-neon);
+    -webkit-text-stroke: 0;
+    transform: rotate(-4deg);
+    transform-origin: left bottom;
+    text-shadow:
+        0.04em 0.05em 0 #7a0078,
+        0 0 24px rgba(255, 0, 255, 0.5);
+}
+
+.home .hero-description {
+    font-size: 1.15rem;
+    max-width: 34em;
+    margin-bottom: var(--s-3);
+}
+
+.home .hero-description a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-neon);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    transition: color 0.3s ease;
+}
+
+.home .hero-description a:hover {
+    color: var(--accent-neon);
+}
+
+.home .hero-place {
+    display: block;
+    margin-top: 0.7em;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Onanovánky: hit letošních Vánoc (box hned pod hero, obálka vykloněná přes okraj) */
+.home #onanovanky-hit {
+    padding-top: 0;
+}
+
+.home .hit-box {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.618fr 1fr;
+    gap: var(--s-4);
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--accent-neon);
+    border-radius: 24px;
+    padding: var(--s-4) var(--s-4) var(--s-4) var(--s-4);
+    box-shadow: 0 0 60px rgba(255, 0, 255, 0.12);
+    overflow: visible;
+}
+
+.home .hit-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: radial-gradient(circle at 80% 50%, rgba(255, 0, 255, 0.16) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+.home .hit-text {
+    position: relative;
+}
+
+.home .hit-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.2rem, 4.4vw, 3.9rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin: var(--s-2) 0 var(--s-3);
+}
+
+.home .hit-title-sub {
+    display: block;
+    margin-top: 0.15em;
+    background: linear-gradient(135deg, var(--white), var(--accent-neon));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.home .hit-cover {
+    position: relative;
+    display: block;
+    justify-self: center;
+    width: min(100%, 320px);
+    margin: calc(-1 * var(--s-5)) 0 calc(-1 * var(--s-4));
+    transform: rotate(4deg);
+    transition: transform 0.4s ease;
+}
+
+.home .hit-cover:hover {
+    transform: rotate(0deg) scale(1.03);
+}
+
+.home .hit-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 0, 255, 0.35);
+}
+
+/* Fotka v hero jako zlatý obdélník na výšku, vejde se nad ohyb */
+.home .hero-visual {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.home .hero-image {
+    aspect-ratio: 1 / 1.618;
+    height: min(72vh, 740px);
+    width: auto;
+    max-width: 100%;
+}
+
+/* O číče: pod nadpisem široký „kino“ pás z výstavy (φ² : 1), pod ním text na 61,8 % šířky */
+.home .about-content {
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+}
+
+.home .about-text {
+    max-width: 61.8%;
+}
+
+.home .about-image {
+    aspect-ratio: 2.618 / 1;
+    width: 100%;
+}
+
+.home .about-image picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Galerie: 10 obrazů, dva z nich (Čafčajky, Dámská společnost) přes 2 sloupce =
+   12 polí, mřížka vyjde beze zbytku ve 2, 3 i 4 sloupcích. dense doplní díry. */
+.home .gallery-grid {
+    grid-auto-flow: dense;
+}
+
+.home .gallery-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.home .gallery-image {
+    height: auto;
+    aspect-ratio: 3 / 4;
+    flex: 1;
+    min-height: 0;
+}
+
+@media (min-width: 600px) {
+    .home .gallery-item-wide {
+        grid-column: span 2;
+    }
+
+    .home .gallery-item-wide .gallery-image {
+        aspect-ratio: 1.618 / 1;
+    }
+}
+
+/* Tablet na výšku: v jednom sloupci byly obrazy přes celou šířku a skoro metr vysoké */
+@media (min-width: 600px) and (max-width: 768px) {
+    .home .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 599px) {
+    .home .gallery-item-wide .gallery-image {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+/* Série Královny Brno-venkov: zeď jako hlavička, pod ní karusel velkých karet
+   (scroll-snap, 3 karty na desktopu, na mobilu jedna a kousek další vykukuje) */
+.home .serie {
+    margin-top: var(--s-4);
+    scroll-margin-top: 130px;
+}
+
+.home .serie-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--s-2);
+    flex-wrap: wrap;
+    margin-bottom: var(--s-2);
+}
+
+.home .serie-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.9rem, 3.6vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--white), var(--accent-neon));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.home .serie-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.home .serie-hint {
+    margin-right: auto;
+    color: var(--accent-neon);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    transition: opacity 0.4s ease;
+}
+
+.home .serie-hint span {
+    display: inline-block;
+    animation: serieNudge 1.2s ease-in-out infinite;
+}
+
+@keyframes serieNudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(6px); }
+}
+
+.home .serie-hint.hidden {
+    opacity: 0;
+}
+
+.home .serie-count {
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.home .serie-arrow {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-neon);
+    background: transparent;
+    color: var(--accent-neon);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 4px;
+    transition: all 0.3s ease;
+}
+
+.home .serie-arrow:hover {
+    background: var(--accent-neon);
+    color: var(--white);
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
+}
+
+.home .serie-track {
+    display: flex;
+    gap: var(--s-2);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 6px 0 var(--s-2);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 88%, transparent 100%);
+}
+
+.home .serie-track.at-end {
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+.home .serie-track::-webkit-scrollbar {
+    display: none;
+}
+
+.home .serie-item {
+    flex: 0 0 calc((100% - 2 * var(--s-2)) / 3);
+    scroll-snap-align: start;
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: 2px solid var(--accent-neon);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg-card);
+    cursor: pointer;
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home .serie-item:hover,
+.home .serie-item:focus-visible {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 50px rgba(255, 0, 255, 0.35);
+    outline: none;
+}
+
+.home .serie-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+    .home .serie-item {
+        flex-basis: calc((100% - var(--s-2)) / 2);
+    }
+}
+
+@media (max-width: 768px) {
+    .home .serie-head {
+        align-items: center;
+    }
+
+    .home .serie-item {
+        flex-basis: 82%;
+    }
+
+    .home .serie-nav {
+        gap: 0.75rem;
+    }
+
+    .home .serie-hint {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+}
+
+/* Pátečičiny: 5 karet dělalo 4 + 1. Na desktopu 3 + 2 (šestisloupcová mřížka),
+   na tabletu 2 + 2 + 1 přes celou šířku. */
+@media (min-width: 1025px) {
+    .home .words-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .home .word-card {
+        grid-column: span 2;
+    }
+
+    .home .word-card:nth-child(n+4) {
+        grid-column: span 3;
+    }
+
+    /* Spolupráce: 4 karty, mezi 1025 a 1199 px se vešly jen 3 + 1 */
+    .home .collab-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .home .collab-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .home .words-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .home .word-card:nth-child(5) {
+        grid-column: span 2;
+    }
+}
+
+/* Patička: sekce už má spodní odsazení, dvojitá mezera pryč */
+.home footer {
+    margin-top: 0;
+}
+
+@media (max-width: 1024px) {
+    .home section {
+        padding: var(--s-4) 0;
+    }
+
+    .home .hero-content,
+    .home .about-content {
+        grid-template-columns: 1fr;
+        gap: var(--s-3);
+    }
+
+    .home .hero-title {
+        font-size: clamp(1.8rem, 8vw, 3.9rem);
+    }
+
+    .home .hero-visual {
+        justify-content: center;
+    }
+
+    .home .hit-box {
+        grid-template-columns: 1fr;
+        gap: var(--s-3);
+        padding: var(--s-3) var(--s-2) 0;
+        text-align: center;
+    }
+
+    .home .hit-text .btn-primary {
+        width: auto;
+        display: inline-block;
+        padding: 1rem 2rem;
+        white-space: nowrap;
+    }
+
+    .home .hit-text .hero-label {
+        justify-content: center;
+    }
+
+    .home .hit-cover {
+        width: min(70%, 260px);
+        margin: var(--s-2) 0 calc(-1 * var(--s-3));
+    }
+
+    .home .hero-image {
+        height: auto;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+    }
+
+    .home .about-text {
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .home .about-image {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobil: magnet Labubu ležel přes tlačítko „Chci vědět víc“ (tlačítko bylo na celou šířku) */
+    .home .nudesky-teaser-box .btn-primary {
+        width: auto;
+        display: inline-block;
+    }
+}
+
+@media (max-width: 480px) {
+    .home .hero-label-sep {
+        display: none;
+    }
+
+    /* Logo a jméno na prvním řádku, pozice pod nimi */
+    .home #hero .hero-label > span:last-child {
+        flex-basis: 100%;
+    }
+}
+
+/* Podcast jako vlastní sekce pod Onanovánkami */
+.home #podcast {
+    padding-top: 0;
+}
+
+.home #podcast .spotify-embed {
+    margin-bottom: 0;
+}
+
+.home .podpora-title {
+    margin-top: var(--s-3);
+}
+
+/* HeroHero mezi ikonkami sociálních sítí (29. 10. 2026) */
+.social-icons .social-herohero svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.social-icons .social-herohero:hover svg {
+    transform: translateY(-2px);
+}
+
+/* Mobilní menu: řádek se sítěmi pod odkazy */
+.mobile-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--divider);
+}
+
+.mobile-socials a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.mobile-socials a:hover {
+    color: var(--accent-neon);
+}
+
+.mobile-socials svg {
+    width: 18px;
+    height: 18px;
+}
