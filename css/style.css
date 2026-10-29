@@ -2025,8 +2025,10 @@ main {
     padding: var(--s-5) 0;
 }
 
+/* Hlavička je fixní a vysoká ~107 px (na mobilu ~71 px). Odsazení hero musí být větší,
+   jinak při nižším okně štítek se jménem zajede pod hlavičku (David, 29. 10. 2026). */
 .home #hero {
-    padding-top: 100px;
+    padding-top: 170px;
     padding-bottom: var(--s-4);
 }
 
@@ -2495,6 +2497,10 @@ main {
 
     .home .hero-title {
         font-size: clamp(1.8rem, 8vw, 3.9rem);
+    }
+
+    .home #hero {
+        padding-top: 130px;
     }
 
     .home .hero-visual {

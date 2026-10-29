@@ -140,7 +140,7 @@
     <!-- Header -->
     <header id="top">
         <div class="header-content">
-            <a href="#top" class="logo-link">
+            <a href="/" class="logo-link" aria-label="Podrážděná číča, na začátek stránky">
                 <picture>
                     <source srcset="images/logo.webp" type="image/webp">
                     <img src="images/logo.png" alt="Podrážděná Číča" class="logo-image" width="154" height="140" fetchpriority="high">
@@ -814,6 +814,13 @@
             }
         });
         
+        // Logo: na homepage plynule nahoru (bez znovunačtení), z jiných stránek vede na /
+        document.querySelector('.logo-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+        });
+
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
