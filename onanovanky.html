@@ -12,6 +12,25 @@
         gtag('consent', 'update', {ad_storage: s, ad_user_data: s, ad_personalization: s, analytics_storage: s, personalization_storage: s});
     };
     try { if (localStorage.getItem('cookieConsent') === 'accepted') window.updateConsent('granted'); } catch (e) {}
+    // Chyby skriptu stránky se hlásí do GA4 (událost js_error), ať se mrtvá tlačítka
+    // nehledají naslepo (29. 10. 2026: kamarádovi Davida na mobilu nešlo Do košíku).
+    window.addEventListener('error', function (e) {
+        try {
+            var p = { event: 'js_error', error_message: String(e.message || 'chyba').slice(0, 150), error_source: String(e.filename || '').split('/').pop().slice(0, 60) + ':' + (e.lineno || 0), error_page: location.pathname };
+            window.dataLayer.push(p);
+            if (typeof gtag === 'function') gtag('event', 'js_error', p);
+        } catch (x) {}
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+        try {
+            var r = e.reason; var p = { event: 'js_error', error_message: String(r && r.message ? r.message : r).slice(0, 150), error_source: 'promise', error_page: location.pathname };
+            window.dataLayer.push(p);
+            if (typeof gtag === 'function') gtag('event', 'js_error', p);
+        } catch (x) {}
+    });
+    // Klepnutí na Do košíku dřív, než doběhne skript stránky: tlačítko si ho uloží
+    // (inline onclick) a košík ho provede hned po startu.
+    window.__cartReady = false;
     </script>
     <!-- Google Tag Manager - odložené načtení kvůli rychlosti (LCP).
          dataLayer žije hned, eventy se frontují a GTM je po načtení zpracuje. -->
@@ -112,7 +131,8 @@
             gtag('js', new Date());
             gtag('config', 'G-R06FFJPHLK');
         }
-        if (localStorage.getItem('cookieConsent') === 'accepted') {
+        function consentAccepted() { try { return localStorage.getItem('cookieConsent') === 'accepted'; } catch (e) { return false; } }
+        if (consentAccepted()) {
             loadGA();
         }
         // Heureka.cz: měření konverzí, část 1 (produktová stránka). Jen po souhlasu
@@ -126,7 +146,7 @@
             g=r.getElementsByTagName(a)[0];n.async=1;n.src=c;g.parentNode.insertBefore(n,g)
             })(window, document, 'script', 'https://www.heureka.cz/ocm/sdk.js?version=2&page=product_detail', 'heureka', 'cz');
         }
-        if (localStorage.getItem('cookieConsent') === 'accepted') {
+        if (consentAccepted()) {
             loadHeurekaProduct();
         }
         document.addEventListener('DOMContentLoaded', function () {
@@ -1053,7 +1073,7 @@
                         <p>Když si chceš jen tak onanovávat a zahnat stres. Vymaluj, odtrhni, pověs na zeď.</p>
                         <div class="offer-row">
                             <div class="offer-price">333 Kč</div>
-                            <button type="button" class="btn-primary" data-add="onanovanky" data-cta="onanovanky_do_kosiku">Do košíku</button>
+                            <button type="button" class="btn-primary" onclick="if(!window.__cartReady)window.__pendingAdd=this.getAttribute('data-add')" data-add="onanovanky" data-cta="onanovanky_do_kosiku">Do košíku</button>
                         </div>
                     </div>
                 </article>
@@ -1066,7 +1086,7 @@
                         <p>Když potřebuješ topovej dárek pro mámu, ségru, bestku a kolegyňku z kanclu.</p>
                         <div class="offer-row">
                             <div class="offer-price">999 Kč</div>
-                            <button type="button" class="btn-primary" data-add="balicek-3plus1" data-cta="onanovanky_do_kosiku_3plus1">Do košíku</button>
+                            <button type="button" class="btn-primary" onclick="if(!window.__cartReady)window.__pendingAdd=this.getAttribute('data-add')" data-add="balicek-3plus1" data-cta="onanovanky_do_kosiku_3plus1">Do košíku</button>
                         </div>
                     </div>
                 </article>
@@ -1080,7 +1100,7 @@
                         <p>K tomu všemu dostaneš tašku a dopravu zdarma. Horste, to se prostě vyplatí!</p>
                         <div class="offer-row">
                             <div class="offer-price">1 666 Kč</div>
-                            <button type="button" class="btn-primary" data-add="balicek-5plus1" data-cta="onanovanky_do_kosiku_5plus1">Do košíku</button>
+                            <button type="button" class="btn-primary" onclick="if(!window.__cartReady)window.__pendingAdd=this.getAttribute('data-add')" data-add="balicek-5plus1" data-cta="onanovanky_do_kosiku_5plus1">Do košíku</button>
                         </div>
                     </div>
                 </article>
@@ -1217,7 +1237,11 @@
             packeta_home_sk: { price: 169, label: 'Zásilkovna až domů (SK)', point: false, country: 'sk' }
         };
 
-        requestAnimationFrame(() => {
+        // Dřív běželo v requestAnimationFrame kvůli LCP; ve skrytém panelu nebo v prohlížeči
+        // uvnitř appky se ale odložilo či nespustilo a tlačítka byla mrtvá. Panel košíku,
+        // video a náhled ukázek jsou v HTML až za tímhle skriptem, proto čekáme na
+        // DOMContentLoaded (přijde vždy, hned po načtení dokumentu).
+        function initPage() {
         // Mobile menu toggle
         const burger = document.querySelector('.burger');
         const mobileMenu = document.querySelector('.mobile-menu');
@@ -1754,6 +1778,8 @@
             card.style.outlineOffset = '4px';
             setTimeout(function () { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
         })();
+        window.__cartReady = true;
+        if (window.__pendingAdd) { const pending = window.__pendingAdd; window.__pendingAdd = null; addToCart(pending, 1); }
         trackEcommerce('view_item', { currency: 'CZK', value: UNIT_PRICE, items: [{ item_id: 'onanovanky', item_name: PRODUCTS.onanovanky.name, price: UNIT_PRICE, quantity: 1 }] });
         trackEcommerce('view_item_list', { item_list_id: 'koupit', item_list_name: 'Koupit Onanovánky', items: Object.values(PRODUCTS).map((p, i) => ({ item_id: p.id, item_name: p.name, price: p.price, index: i + 1, quantity: 1 })) });
         (async () => {
@@ -1825,7 +1851,7 @@
                 }
             } catch (e) { /* ticho */ }
         };
-        if (localStorage.getItem('cookieConsent') === 'accepted') window.sendMetaView();
+        try { if (localStorage.getItem('cookieConsent') === 'accepted') window.sendMetaView(); } catch (e) { /* bez úložiště nic */ }
 
         // Je co prodávat? Ptáme se databáze přes veřejnou RPC (jen ano/ne).
         (async () => {
@@ -2030,7 +2056,9 @@
             sheetTouchX = null;
             if (Math.abs(dx) > 40) openSheet(sheetIndex + (dx < 0 ? 1 : -1));
         });
-        }); // End requestAnimationFrame
+        } // konec initPage
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPage);
+        else initPage();
     </script>
 
     <!-- Video: průlet Onanovánkami (otevře se z tlačítka v hero) -->
@@ -2052,7 +2080,7 @@
             <div class="cart-empty" id="cartEmpty">
                 <p class="big">₍^. .^₎⟆</p>
                 <p>Košík je prázdný. Zatím.</p>
-                <button type="button" class="btn-primary" data-add="onanovanky" data-cta="onanovanky_do_kosiku_prazdny">Přidat Onanovánky za 333 Kč</button>
+                <button type="button" class="btn-primary" onclick="if(!window.__cartReady)window.__pendingAdd=this.getAttribute('data-add')" data-add="onanovanky" data-cta="onanovanky_do_kosiku_prazdny">Přidat Onanovánky za 333 Kč</button>
             </div>
             <form class="cart-form" id="cartForm" novalidate hidden>
                 <div class="cart-items" id="cartItems"></div>
@@ -2166,7 +2194,9 @@
             const cookieBanner = document.getElementById('cookieBanner');
             const acceptCookies = document.getElementById('acceptCookies');
             const declineCookies = document.getElementById('declineCookies');
-            if (!localStorage.getItem('cookieConsent')) {
+            let consentState = null;
+            try { consentState = localStorage.getItem('cookieConsent'); } catch (e) { /* zablokované úložiště: lištu ukážeme */ }
+            if (!consentState) {
                 cookieBanner.classList.add('show');
             }
             acceptCookies.addEventListener('click', () => {
