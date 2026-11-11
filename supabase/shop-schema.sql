@@ -179,3 +179,46 @@ as $$
 $$;
 
 notify pgrst, 'reload schema';
+
+-- ============================================================
+-- 11. 11. 2026: zdroj objednávky bez cookies a otázka po nákupu.
+-- Záloha dat před změnou: Web/Onanovánky/zalohy/shop-2026-11-11-12-15.json
+-- ============================================================
+
+-- Odkud návštěva přišla, zapamatované webem bez cookies (js/src.js) a poslané
+-- s objednávkou: {source, medium, campaign, content, click, referrer, landing}.
+-- Kanál z toho počítá api/_shop.js channelOf (admin i dashboard stejně).
+alter table shop_orders add column if not exists source jsonb;
+-- Odpověď na „Odkud o Onanovánkách víš?“ z děkovací stránky nebo z mailu
+-- (klíče v api/_shop.js SURVEY_OPTIONS), volný text u „Odjinud“.
+alter table shop_orders add column if not exists survey text;
+alter table shop_orders add column if not exists survey_note text;
+alter table shop_orders add column if not exists survey_at timestamptz;
+
+-- Děkovací stránka potřebuje vědět, zda už zákazník odpověděl (survey) a
+-- session_id dál zůstává jediným klíčem, ven nejde nic navíc.
+create or replace function get_shop_order(p_session_id text)
+returns json
+language sql security definer set search_path = public
+as $$
+    select json_build_object(
+        'order_no', order_no,
+        'name', name,
+        'email', email,
+        'quantity', quantity,
+        'unit_price_czk', unit_price_czk,
+        'shipping_method', shipping_method,
+        'shipping_price_czk', shipping_price_czk,
+        'total_czk', total_czk,
+        'gift_bag', gift_bag,
+        'packeta_point_name', packeta_point_name,
+        'packeta_point_address', packeta_point_address,
+        'status', status,
+        'items', items,                     -- 27. 10. 2026: položky košíku (starší objednávky null)
+        'survey', survey                    -- 11. 11. 2026: odpověď „odkud o nás víš“ (null = neodpovězeno)
+    )
+    from shop_orders
+    where stripe_session_id = p_session_id;
+$$;
+
+notify pgrst, 'reload schema';

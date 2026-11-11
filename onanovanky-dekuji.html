@@ -135,6 +135,35 @@
         }
         .btn.ghost { background: transparent; color: var(--text-primary); border: 1px solid var(--divider); }
         .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .survey .hint { font-size: .9rem; color: #888; margin-bottom: 12px; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid #3A3A3A;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font: inherit;
+            font-size: .9rem;
+            cursor: pointer;
+        }
+        .chip:hover, .chip:focus-visible { border-color: var(--accent-neon); outline: none; }
+        .chip[aria-pressed="true"] { background: var(--accent-neon); color: #0D0D0D; border-color: var(--accent-neon); }
+        .chip:disabled { opacity: .6; cursor: default; }
+        #surveyOther { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        #surveyOther input {
+            flex: 1 1 200px;
+            background: #0D0D0D;
+            color: var(--text-primary);
+            border: 1px solid #3A3A3A;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font: inherit;
+            font-size: .9rem;
+        }
+        #surveyOther input:focus { border-color: var(--accent-neon); outline: none; }
+        .btn.small { margin-top: 0; padding: 10px 18px; font-size: .9rem; }
+        #surveyDone { color: var(--accent-neon); font-weight: 700; margin-top: 10px; }
         .foot { text-align: center; color: #777; font-size: .85rem; margin-top: 30px; }
         .foot .big { font-size: 1.4rem; color: var(--accent-neon); margin-bottom: 6px; }
         [hidden] { display: none !important; }
@@ -169,6 +198,17 @@
             <div class="box" id="bagBox" hidden>
                 <h2>A taška k tomu</h2>
                 <p>K balíčku 5+1 přihazujeme plátěnou číča tašku. Ručně sprejovanou, každá trochu jiná.</p>
+            </div>
+
+            <div class="box survey" id="surveyBox" hidden>
+                <h2>Jedna drzá otázka. Odkud o Onanovánkách víš?</h2>
+                <p class="hint">Klepni, zabere to vteřinu. Číče to pomůže vědět, kde na ni lidi narážejí.</p>
+                <div class="chips" id="surveyChips"></div>
+                <form id="surveyOther" hidden>
+                    <input type="text" id="surveyNote" maxlength="160" placeholder="Napiš odkud (třeba z trhu v Olomouci)" autocomplete="off">
+                    <button type="submit" class="btn small">Poslat</button>
+                </form>
+                <p id="surveyDone" hidden>Díky, máme to. Mňau.</p>
             </div>
 
             <p style="margin-top:18px;">
@@ -207,11 +247,82 @@
         // kupujícího) - schováme ho do sessionStorage a z URL smažeme.
         const params = new URLSearchParams(window.location.search);
         let sessionId = (params.get('session_id') || '').trim();
-        if (sessionId) {
-            try { sessionStorage.setItem('shopSessionId', sessionId); } catch (e) {}
+        // Odpověď „odkud o nás víš“ z odkazu v potvrzovacím mailu (?odkud=instagram)
+        const odkudFromMail = (params.get('odkud') || '').trim();
+        if (sessionId || odkudFromMail) {
+            if (sessionId) { try { sessionStorage.setItem('shopSessionId', sessionId); } catch (e) {} }
             history.replaceState(null, '', window.location.pathname);
-        } else {
+        }
+        if (!sessionId) {
             try { sessionId = (sessionStorage.getItem('shopSessionId') || '').trim(); } catch (e) {}
+        }
+
+        // Možnosti odpovědi: stejné klíče jako api/_shop.js SURVEY_OPTIONS (při změně upravit obě)
+        const SURVEY_OPTIONS = {
+            instagram: 'Z Instagramu',
+            kamarad: 'Od kamarádky nebo kamaráda',
+            google: 'Vyhledávání na Googlu',
+            reklama: 'Z reklamy',
+            caf: 'Z Číča Art Festu',
+            trh: 'Z trhu, stánku nebo prodejny',
+            podcast: 'Z podcastu nebo rozhovoru',
+            mail: 'Z mailu od číči',
+            jinde: 'Odjinud'
+        };
+        let surveySending = false;
+        async function sendSurvey(answer, note) {
+            if (surveySending || !sessionId) return;
+            surveySending = true;
+            document.querySelectorAll('#surveyChips .chip').forEach(b => { b.disabled = true; b.setAttribute('aria-pressed', String(b.dataset.key === answer)); });
+            try {
+                const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ survey: { session_id: sessionId, answer, note: note || '' } })
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                document.getElementById('surveyOther').hidden = true;
+                document.getElementById('surveyDone').hidden = false;
+                try { if (window.gtag) gtag('event', 'survey_answer', { answer }); } catch (e) {}
+            } catch (e) {
+                surveySending = false;
+                document.querySelectorAll('#surveyChips .chip').forEach(b => { b.disabled = false; b.setAttribute('aria-pressed', 'false'); });
+            }
+        }
+        function renderSurvey(o) {
+            const box = document.getElementById('surveyBox');
+            if (o.survey && SURVEY_OPTIONS[o.survey] && !odkudFromMail) {
+                // Už odpověděl*a (třeba z mailu): otázku neopakovat
+                box.hidden = true;
+                return;
+            }
+            const chips = document.getElementById('surveyChips');
+            chips.innerHTML = Object.keys(SURVEY_OPTIONS).map(k =>
+                `<button type="button" class="chip" data-key="${esc(k)}" aria-pressed="false">${esc(SURVEY_OPTIONS[k])}</button>`).join('');
+            chips.addEventListener('click', (e) => {
+                const b = e.target.closest('.chip');
+                if (!b) return;
+                if (b.dataset.key === 'jinde') {
+                    chips.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+                    document.getElementById('surveyOther').hidden = false;
+                    document.getElementById('surveyNote').focus();
+                    return;
+                }
+                sendSurvey(b.dataset.key, '');
+            });
+            document.getElementById('surveyOther').addEventListener('submit', (e) => {
+                e.preventDefault();
+                sendSurvey('jinde', document.getElementById('surveyNote').value);
+            });
+            box.hidden = false;
+            if (odkudFromMail && SURVEY_OPTIONS[odkudFromMail]) {
+                if (odkudFromMail === 'jinde') {
+                    chips.querySelector('[data-key="jinde"]').setAttribute('aria-pressed', 'true');
+                    document.getElementById('surveyOther').hidden = false;
+                } else {
+                    sendSurvey(odkudFromMail, '');
+                }
+            }
         }
 
         const views = ['loadingView', 'paidView', 'pendingView'];
@@ -293,6 +404,7 @@
                 + `<tr class="total"><td>Zaplaceno</td><td>${esc(czk(o.total_czk))}</td></tr>`;
             document.getElementById('deliveryBox').innerHTML = (DELIVERY[o.shipping_method] || DELIVERY.pickup_atelier)(o);
             document.getElementById('bagBox').hidden = !o.gift_bag;
+            renderSurvey(o);
 
             // Nákup do GTM (Meta pixel a spol.). Do GA4 ho hlásí Stripe webhook
             // (api/_ga.js), odsud by se počítal dvakrát.

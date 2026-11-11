@@ -918,6 +918,7 @@
         }
     </style>
     <script src="/js/rtg.js" defer></script>
+    <script src="/js/src.js" defer></script>
 </head>
 <body>
     <!-- Google Tag Manager (noscript) -->
@@ -1406,7 +1407,11 @@
         function emailValid(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v || '').trim()); }
 
         // GA4 a Meta identifikátory návštěvy pro server (viz api/checkout.js)
+        // a zdroj návštěvy bez cookies (js/src.js), aby objednávka znala svůj
+        // původ i bez souhlasu s cookies.
         function idsForCheckout() {
+            let src = null;
+            try { src = typeof window.pcSource === 'function' ? window.pcSource() : null; } catch (e) { src = null; }
             try {
                 const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.(\d+\.\d+)/);
                 // Cookie má dva tvary: starší GS1.1.<id>.… a novější GS2.1.s<id>$o…
@@ -1417,9 +1422,10 @@
                     ga_client_id: ga ? ga[1] : null,
                     ga_session_id: gs ? gs[1] : null,
                     fbp: fbp ? decodeURIComponent(fbp[1]) : null,
-                    fbc: fbc ? decodeURIComponent(fbc[1]) : null
+                    fbc: fbc ? decodeURIComponent(fbc[1]) : null,
+                    src: src
                 };
-            } catch (e) { return {}; }
+            } catch (e) { return { src: src }; }
         }
         // Serverová kopie události do Mety přes náš endpoint (sendBeacon přežije i odchod ze stránky)
         function beacon(payload) {

@@ -211,6 +211,15 @@ async function stockShortage(client, needs) {
     return null;
 }
 
+// Zdroj návštěvy ze Stripe metadat (klíč src, JSON do 500 znaků) -> text pro
+// jsonb sloupec, nebo null. Metadata ze starších pokladen klíč nemají.
+function sourceFromMetadata(md) {
+    try {
+        const src = sanitizeSource(JSON.parse(md.src || 'null'));
+        return src ? JSON.stringify(src) : null;
+    } catch (e) { return null; }
+}
+
 // Zapíše zaplacenou objednávku a odečte sklad. Idempotentní: když už pro
 // session objednávka existuje (webhook přišel dvakrát), nic dalšího nevznikne.
 // Vrací {created, already, orderNo, orderId, items, quantity}.
@@ -245,8 +254,8 @@ async function fulfillShopSession(client, session) {
                 name, email, phone,
                 address_line1, address_line2, address_city, address_zip, address_country,
                 packeta_point_id, packeta_point_name, packeta_point_address,
-                note, ga_client_id, ga_session_id, items)
-             values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24::jsonb)
+                note, ga_client_id, ga_session_id, items, source)
+             values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24::jsonb,$25::jsonb)
              returning id, order_no`,
             [
                 session.id,
@@ -267,7 +276,8 @@ async function fulfillShopSession(client, session) {
                 md.note || null,
                 md.ga_client_id || null,
                 md.ga_session_id || null,
-                JSON.stringify(items)
+                JSON.stringify(items),
+                sourceFromMetadata(md)
             ]);
         order = rows[0];
         const needs = stockNeeds(items);
@@ -293,6 +303,87 @@ async function fulfillShopSession(client, session) {
     return { created: 1, already: false, orderNo: order.order_no, orderId: order.id, items, quantity: q };
 }
 
+
+// ---- Zdroj objednávky bez cookies (js/src.js) a otázka po nákupu ----
+
+// Z webu přijde {source, medium, campaign, content, click, referrer, landing}.
+// Pustíme jen známé klíče, krátké řetězce bez řídicích znaků. Vrací null,
+// když není co uložit.
+const SOURCE_KEYS = ['source', 'medium', 'campaign', 'content', 'click', 'referrer', 'landing'];
+function sanitizeSource(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const out = {};
+    for (const k of SOURCE_KEYS) {
+        const v = String(raw[k] == null ? '' : raw[k]).replace(/[\u0000-\u001f\u007f<>"'\\]/g, '').trim().slice(0, 100);
+        if (v) out[k] = v;
+    }
+    return Object.keys(out).length ? out : null;
+}
+
+// Zdroj -> kanál, stejně pro admin i dashboard. Pořadí záleží: reklamy mají
+// přednost (značka prokliku nebo placené medium), pak konkrétní weby.
+const SOURCE_CHANNELS = {
+    meta_ads: 'Reklama na Metě',
+    google_ads: 'Google Ads',
+    sklik: 'Sklik',
+    heureka: 'Heureka',
+    email: 'E-mail od číči',
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    google: 'Hledání na Googlu',
+    seznam: 'Hledání na Seznamu',
+    other: 'Jiný odkaz',
+    direct: 'Přímo (bez odkazu)'
+};
+function channelOf(src) {
+    if (!src || typeof src !== 'object') return null;
+    const s = String(src.source || '').toLowerCase();
+    const m = String(src.medium || '').toLowerCase();
+    const r = String(src.referrer || '').toLowerCase();
+    const k = String(src.click || '').toLowerCase();
+    const paid = /cpc|ppc|paid|display|demandgen|banner|^ads?$|retarget|remarketing/.test(m);
+    if (k === 'meta' || (paid && /facebook|instagram|meta|^fb$|^ig$/.test(s))) return 'meta_ads';
+    if (k === 'google' || (paid && /google/.test(s))) return 'google_ads';
+    if (k === 'sklik' || /sklik/.test(s) || (paid && /seznam/.test(s))) return 'sklik';
+    if (/heureka/.test(s) || /heureka/.test(r)) return 'heureka';
+    if (/mail|newsletter|ecomail/.test(m) || /ecomail|^e?mail$/.test(s)) return 'email';
+    if (/instagram|^ig$/.test(s) || /instagram\.com$/.test(r)) return 'instagram';
+    if (/facebook|^fb$/.test(s) || /facebook\.com$|^fb\.com$|messenger\.com$/.test(r)) return 'facebook';
+    if (/google/.test(s) || /(^|\.)google\.[a-z.]+$/.test(r)) return 'google';
+    if (/seznam/.test(s) || /seznam\.cz$/.test(r)) return 'seznam';
+    if (s || r) return 'other';
+    return 'direct';
+}
+
+// Odpovědi na „Odkud o Onanovánkách víš?“ (děkovací stránka a potvrzovací mail)
+const SURVEY_OPTIONS = {
+    instagram: 'Z Instagramu',
+    kamarad: 'Od kamarádky nebo kamaráda',
+    google: 'Vyhledávání na Googlu',
+    reklama: 'Z reklamy',
+    caf: 'Z Číča Art Festu',
+    trh: 'Z trhu, stánku nebo prodejny',
+    podcast: 'Z podcastu nebo rozhovoru',
+    mail: 'Z mailu od číči',
+    jinde: 'Odjinud'
+};
+
+// Uloží odpověď k zaplacené objednávce podle session_id ze Stripu (zná ho jen
+// kupující: z adresy děkovací stránky a z potvrzovacího mailu). Opakovaná
+// odpověď přepíše předchozí. Vrací {ok} nebo {ok:false, error}.
+async function saveSurvey(client, raw) {
+    const sessionId = String((raw && raw.session_id) || '').trim();
+    const answer = String((raw && raw.answer) || '').trim();
+    const note = String((raw && raw.note) || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+    if (!/^cs_(test|live)_[A-Za-z0-9]{10,120}$/.test(sessionId)) return { ok: false, error: 'bad_session' };
+    if (!Object.prototype.hasOwnProperty.call(SURVEY_OPTIONS, answer)) return { ok: false, error: 'bad_answer' };
+    const { rows } = await client.query(
+        `update shop_orders set survey = $2, survey_note = $3, survey_at = now()
+         where stripe_session_id = $1 and status not in ('pending','cancelled')
+         returning order_no`,
+        [sessionId, answer, note || null]);
+    return rows.length ? { ok: true } : { ok: false, error: 'not_found' };
+}
 
 // Heureka „Ověřeno zákazníky“: po zaplacení nahlásíme objednávku (e-mail +
 // ITEM_ID z feedu), Heureka pošle zákazníkovi dotazník spokojenosti. Volá se jen
@@ -323,5 +414,6 @@ module.exports = {
     product, normalizeItems, unitsOf, stockNeeds, itemsTotal, itemsForMetadata, itemsFromMetadata,
     freeShippingIncluded, shippingPriceFor,
     shippingMethod, clampQuantity, goodsTotal, giftBagIncluded, sanitizeEmail, sanitizePoint,
-    stockAvailable, stockShortage, fulfillShopSession, logHeurekaOrder
+    stockAvailable, stockShortage, fulfillShopSession, logHeurekaOrder,
+    sanitizeSource, channelOf, SOURCE_CHANNELS, SURVEY_OPTIONS, saveSurvey
 };

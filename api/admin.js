@@ -264,8 +264,13 @@ async function handleShop(c, body) {
                 address_zip, address_country, packeta_point_id, packeta_point_name, packeta_point_address,
                 note, status, packeta_tracking, packeta_consign_code, packeta_status_code, packeta_status_text, packeta_status_at,
                 labeled_at, shipped_at, picked_up_at, confirmation_sent_at,
-                shipped_mail_sent_at, stripe_session_id, items
-         from shop_orders order by created_at desc limit 1000`)).rows;
+                shipped_mail_sent_at, stripe_session_id, items, source, survey, survey_note
+         from shop_orders order by created_at desc limit 1000`)).rows
+        // Zdroj bez cookies a odpověď po nákupu jako čitelné popisky (11. 11. 2026)
+        .map(o => Object.assign(o, {
+            source_channel: shop.SOURCE_CHANNELS[shop.channelOf(o.source)] || null,
+            survey_label: shop.SURVEY_OPTIONS[o.survey] || null
+        }));
     const one = async (sql) => (await c.query(sql)).rows[0];
     const stats = {
         stock: stockRow.stock,

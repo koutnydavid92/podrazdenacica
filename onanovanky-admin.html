@@ -168,6 +168,16 @@
         };
         const STATUS_LABEL = { paid: 'zaplaceno', labeled: 'štítek, k podání', shipped: 'podáno', picked_up: 'vyzvednuto', cancelled: 'storno', refunded: 'vráceno' };
 
+        // Surový zdroj návštěvy (UTM, odkazující web, první stránka) jako nápověda po najetí myší
+        function sourceTitle(src) {
+            if (!src || typeof src !== 'object') return '';
+            return [
+                src.source ? 'zdroj ' + src.source : '', src.medium ? 'medium ' + src.medium : '',
+                src.campaign ? 'kampaň ' + src.campaign : '', src.content ? 'obsah ' + src.content : '',
+                src.click ? 'proklik z reklamy ' + src.click : '', src.referrer ? 'odkaz z ' + src.referrer : '',
+                src.landing ? 'první stránka ' + src.landing : ''
+            ].filter(Boolean).join(', ');
+        }
         function deliveryCell(o) {
             const label = SHIP_LABEL[o.shipping_method] || o.shipping_method;
             if (o.shipping_method === 'pickup_atelier') return `<b>${esc(label)}</b>`;
@@ -221,7 +231,9 @@
                 <tr data-id="${esc(o.id)}">
                     <td><b>${o.order_no}</b><small>${czk(o.total_czk)}</small></td>
                     <td>${esc(fmtDate(o.created_at))}</td>
-                    <td>${esc(o.name)}<small>${esc(o.email)}</small>${o.phone ? `<small>${esc(o.phone)}</small>` : ''}</td>
+                    <td>${esc(o.name)}<small>${esc(o.email)}</small>${o.phone ? `<small>${esc(o.phone)}</small>` : ''}
+                        ${o.source_channel ? `<small title="${esc(sourceTitle(o.source))}">Přišel*a: ${esc(o.source_channel)}</small>` : ''}
+                        ${o.survey_label ? `<small>Odpověď: ${esc(o.survey_label)}${o.survey_note ? ' („' + esc(o.survey_note) + '“)' : ''}</small>` : ''}</td>
                     <td>${itemsCell(o)}${o.gift_bag ? ' <span class="pill pink">+ taška</span>' : ''}
                         ${o.note ? `<small class="note">„${esc(o.note)}“</small>` : ''}</td>
                     <td>${deliveryCell(o)}</td>

@@ -5,6 +5,7 @@
 //   {cart_save:{...}}                           - uložení košíku s e-mailem (opuštěné košíky)
 //   {cart_stop:'<token>'}                       - zrušení připomínek z odkazu v mailu
 //   {track:'view_content'|'add_to_cart', ...}   - serverové události do Mety
+//   {survey:{session_id, answer, note?}}        - odpověď „odkud o nás víš“ po nákupu
 // Obchod žije tady, ne ve vlastním souboru: Vercel Hobby povoluje 12 funkcí a jsou plné.
 const Stripe = require('stripe');
 const {
@@ -96,6 +97,12 @@ module.exports = async (req, res) => {
         }
         if (body.cart_stop) {
             const out = await withDb(c => carts.stopCart(c, body.cart_stop));
+            res.status(out.ok ? 200 : 400).json(out);
+            return;
+        }
+        // Odpověď na „Odkud o Onanovánkách víš?“ z děkovací stránky nebo z mailu
+        if (body.survey) {
+            const out = await withDb(c => shop.saveSurvey(c, body.survey));
             res.status(out.ok ? 200 : 400).json(out);
             return;
         }
@@ -263,6 +270,10 @@ async function shopCheckout(stripe, req, res, body) {
     const gaSessionId = sanitizeGaSessionId(body.ga_session_id);
     const fbp = sanitizeFbCookie(body.fbp);
     const fbc = sanitizeFbCookie(body.fbc);
+    // Zdroj návštěvy bez cookies (js/src.js): do metadat jako JSON, Stripe
+    // pustí do jedné hodnoty 500 znaků, sanitizeSource drží každé pole do 100.
+    const source = shop.sanitizeSource(body.src);
+    const sourceJson = source ? JSON.stringify(source).slice(0, 500) : null;
 
     // Sklad a uložení košíku v jednom připojení k databázi
     let shortage = null;
@@ -378,7 +389,8 @@ async function shopCheckout(stripe, req, res, body) {
             ...(gaClientId ? { ga_client_id: gaClientId } : {}),
             ...(gaSessionId ? { ga_session_id: gaSessionId } : {}),
             ...(fbp ? { fbp: fbp } : {}),
-            ...(fbc ? { fbc: fbc } : {})
+            ...(fbc ? { fbc: fbc } : {}),
+            ...(sourceJson ? { src: sourceJson } : {})
         },
         // Telefon chce Zásilkovna kvůli SMS o doručení; u odběru v ateliéru
         // se hodí pro domluvu, ale nevynucujeme ho.

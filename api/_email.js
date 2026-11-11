@@ -361,6 +361,30 @@ function shopPlural(n) {
 }
 
 // Potvrzení zaplacené objednávky
+// „Odkud o Onanovánkách víš?“ v potvrzovacím mailu: každá odpověď je odkaz na
+// děkovací stránku, která ji uloží (api/checkout.js, větev survey). Bez
+// session_id (starší objednávky, ruční odeslání) se blok vynechá.
+function shopSurveyLinks(order) {
+    const sid = String(order.stripe_session_id || '');
+    if (!/^cs_(test|live)_[A-Za-z0-9]{10,120}$/.test(sid)) return [];
+    const { SURVEY_OPTIONS } = require('./_shop');
+    return Object.keys(SURVEY_OPTIONS).map(key => ({
+        key,
+        label: SURVEY_OPTIONS[key],
+        url: `${BASE_URL}/onanovanky-dekuji?session_id=${encodeURIComponent(sid)}&odkud=${encodeURIComponent(key)}`
+    }));
+}
+function shopSurveyHtml(order) {
+    const links = shopSurveyLinks(order);
+    if (!links.length) return '';
+    const pill = l => `<a href="${l.url}" style="display:inline-block;margin:0 6px 8px 0;padding:7px 13px;border:1px solid #3A3A3A;border-radius:999px;color:#F5F5F5;font-size:13px;text-decoration:none;">${esc(l.label)}</a>`;
+    return `<div style="border-top:1px solid #2A2A2A;padding-top:16px;">
+        <p style="color:#F5F5F5;font-size:15px;line-height:1.5;margin:0 0 4px;"><b>Jedna drzá otázka.</b> Odkud o Onanovánkách víš?</p>
+        <p style="color:#888888;font-size:13px;line-height:1.5;margin:0 0 12px;">Klepni na odpověď, zabere to vteřinu a číče to pomůže vědět, kde na ni lidi narážejí.</p>
+        <div>${links.map(pill).join('')}</div>
+    </div>`;
+}
+
 async function sendShopConfirmationEmail({ order }) {
     const first = shopFirstName(order.name);
     const html = auctionShell({
@@ -374,13 +398,15 @@ async function sendShopConfirmationEmail({ order }) {
             ${order.note ? `<p style="color:#888888;font-size:13px;line-height:1.6;margin:0 0 12px;">Tvůj vzkaz: „${esc(order.note)}“</p>` : ''}
             ${order.gift_bag ? `<p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0 0 12px;">
                 Do balíku přihazujeme <b style="color:#F5F5F5;">plátěnou číča tašku</b>. Ručně sprejovanou, každá trochu jiná.</p>` : ''}
-            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0;">
+            <p style="color:#CCCCCC;font-size:14px;line-height:1.6;margin:0 0 18px;">
                 Vybarvené kousky chceme vidět: označ
                 <a href="https://www.instagram.com/podrazdena_cica/" style="color:#FE45E8;">@podrazdena_cica</a>.
                 Cokoliv k objednávce: odpověz na tenhle mail.
-            </p>`,
+            </p>
+            ${shopSurveyHtml(order)}`,
         footNote: 'Tenhle mail je potvrzení objednávky z podrazdenacica.cz/onanovanky. Prodávající: David Koutný, IČO 04356993. Obchodní podmínky: ' + BASE_URL + '/obchodni-podminky'
     });
+    const surveyLinks = shopSurveyLinks(order);
     const text = `Objednávka č. ${order.order_no} je zaplacená.\n\n`
         + shopItemRows(order).map(r => r[0].replace(/&amp;/g, '&') + ': ' + r[1]).join('\n') + '\n'
         + (order.gift_bag ? 'Plátěná číča taška (dárek): 0 Kč\n' : '')
@@ -388,6 +414,10 @@ async function sendShopConfirmationEmail({ order }) {
         + (order.shipping_method === 'pickup_atelier'
             ? `Osobní odběr: Veselá 5, Brno. Napiš na ${REPLY_TO}, domluvíme čas. Držíme měsíc.`
             : 'Balíme do 3 pracovních dnů, o doručení dá vědět Zásilkovna.')
+        + (surveyLinks.length
+            ? '\n\nJedna drzá otázka: odkud o Onanovánkách víš? Klepni na odpověď:\n'
+                + surveyLinks.map(l => `${l.label}: ${l.url}`).join('\n')
+            : '')
         + '\n\nMňau.';
     return ecomail('/transactional/send-message', {
         message: {
