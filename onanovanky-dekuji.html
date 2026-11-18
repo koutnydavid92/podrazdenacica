@@ -46,6 +46,12 @@
 
     <!-- Google Analytics - jen po souhlasu s cookies -->
     <script>
+        // Parametry z adresy (session_id, odkud) si schováme a adresu hned vyčistíme,
+        // dřív než se spustí jakékoli měření. Značka Google Ads jinak pozdější
+        // čištění adresy bere jako přechod na novou stránku a původní adresu
+        // i se session_id pošle jako „předchozí stránku“.
+        window.__pageQuery = window.location.search;
+        if (window.__pageQuery) { try { history.replaceState(null, '', window.location.pathname); } catch (e) {} }
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         function loadGA() {
@@ -56,6 +62,10 @@
             gtag('js', new Date());
             // page_location bez query stringu - session_id nesmí do analytiky
             gtag('config', 'G-R06FFJPHLK', {
+                page_location: window.location.origin + window.location.pathname
+            });
+            // Značka Google Ads (účet 939-527-6741): stejné pravidlo, adresa bez query stringu.
+            gtag('config', 'AW-18472793871', {
                 page_location: window.location.origin + window.location.pathname
             });
         }
@@ -245,7 +255,7 @@
     <script>
         // session_id nepatří do adresy (jde přes něj dohledat jméno a e-mail
         // kupujícího) - schováme ho do sessionStorage a z URL smažeme.
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(window.__pageQuery || window.location.search);
         let sessionId = (params.get('session_id') || '').trim();
         // Odpověď „odkud o nás víš“ z odkazu v potvrzovacím mailu (?odkud=instagram)
         const odkudFromMail = (params.get('odkud') || '').trim();
